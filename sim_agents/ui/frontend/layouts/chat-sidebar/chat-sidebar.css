@@ -1,0 +1,48 @@
+/**
+ * Chat Sidebar Layout - Styles
+ * =============================
+ */
+
+.chat-sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: var(--spacing-lg);
+    overflow-y: auto;
+    background-color: var(--light-gray);
+}
+
+/* Typing indicator */
+.typing-indicator-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--white);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.typing-text {
+    font-size: 13px;
+    color: var(--medium-gray);
+    font-style: italic;
+}
+
+/* Scrollbar for messages */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background-color: var(--echo-blue);
+    border-radius: 3px;
+}

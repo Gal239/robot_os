@@ -1,0 +1,45 @@
+{
+  "tool_id": "write_file",
+  "description": "Create or overwrite file with auto-summarization. File summary auto-generated using Claude and stored in document metadata with exact token counts.",
+  "type": "function_tool",
+  "parameters": {
+    "path": {
+      "type": "string",
+      "description": "File path in workspace",
+      "required": true
+    },
+    "content": {
+      "type": "string",
+      "description": "File content in actual format",
+      "required": true
+    },
+    "mime_type": {
+      "type": "string",
+      "description": "MIME type (e.g., text/markdown, text/csv)",
+      "required": true
+    },
+    "why_created": {
+      "type": "string",
+      "description": "Optional reason for creating file",
+      "required": false,
+      "default": ""
+    }
+  },
+  "returns": {
+    "path": "string",
+    "size_bytes": "integer",
+    "token_count": "integer",
+    "blocks_count": "integer",
+    "summary": "string"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "path": {"type": "string"},
+      "size_bytes": {"type": "integer"},
+      "token_count": {"type": "integer"},
+      "blocks_count": {"type": "integer"}
+    },
+    "required": ["path", "size_bytes", "token_count", "blocks_count"]
+  }
+}

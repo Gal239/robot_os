@@ -1,0 +1,37 @@
+/**
+ * Scene Maker Page - Styles
+ * ==========================
+ */
+
+.page-container {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    gap: var(--spacing-xl);
+    padding: var(--spacing-xl);
+    height: calc(100vh - 80px); /* Full height minus app-bar */
+    overflow: hidden;
+}
+
+.page-sidebar {
+    height: 100%;
+    overflow: hidden;
+}
+
+.page-main {
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .page-container {
+        grid-template-columns: 40% 60%;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 50% 50%;
+    }
+}

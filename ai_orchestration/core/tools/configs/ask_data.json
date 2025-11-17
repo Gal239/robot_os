@@ -1,0 +1,54 @@
+{
+  "tool_id": "ask_data",
+  "description": "Ask questions about files to extract data, summarize, analyze, or get structure. BE CREATIVE - you can extract specific data (prices, names, dates), get sections (conclusion, intro), summarize (50-page PDF in 3 bullets), convert formats (Excel to JSON), analyze structure (function names in code), or ask anything. Both your QUESTION and LLM's ANSWER load to context (efficient - not full file). Works with images (vision), PDFs, Excel, code, text. Supports multiple files for comparison.",
+  "type": "function_tool",
+  "parameters": {
+    "file_path": {
+      "type": "string",
+      "description": "Single file path (for backward compatibility)",
+      "required": false,
+      "default": null
+    },
+    "file_paths": {
+      "type": "array",
+      "description": "List of file paths (for multi-file queries)",
+      "required": false,
+      "default": null
+    },
+    "question": {
+      "type": "string",
+      "description": "Question about the file(s) - be creative, extract anything",
+      "required": false,
+      "default": ""
+    },
+    "model": {
+      "type": "string",
+      "description": "LLM model to use (should support vision for images)",
+      "required": false,
+      "default": "claude-sonnet-4-5-20250929"
+    },
+    "max_tokens": {
+      "type": "integer",
+      "description": "Max tokens in response",
+      "required": false,
+      "default": 4000
+    }
+  },
+  "returns": {
+    "answer": "string",
+    "file_paths": "array",
+    "file_types": "array",
+    "file_path": "string",
+    "file_type": "string",
+    "error": "string"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "answer": {"type": "string"},
+      "file_paths": {"type": "array"},
+      "file_types": {"type": "array"}
+    },
+    "required": ["answer"]
+  }
+}

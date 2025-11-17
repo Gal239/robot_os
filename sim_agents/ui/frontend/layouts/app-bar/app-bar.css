@@ -1,0 +1,56 @@
+/**
+ * App Bar Layout - Styles
+ * ========================
+ */
+
+.app-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--lavender);
+    border-bottom: 1px solid var(--soft-gray);
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-bar-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.app-bar-icon {
+    font-size: 32px;
+}
+
+.app-bar-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--echo-blue);
+    margin: 0;
+}
+
+.app-bar-right {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.app-bar-button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background-color: var(--white);
+    border: 1px solid var(--soft-gray);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+    font-size: 14px;
+}
+
+.app-bar-button:hover {
+    background-color: var(--echo-blue);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}

@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: sugar_box -->
+    <asset>
+        <mesh name="sugar_box_mesh" file="textured.obj"/>
+        <texture name="sugar_box_tex" type="2d" file="texture_map.png"/>
+        <material name="sugar_box_mat" texture="sugar_box_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="sugar_box">
+            <geom type="mesh"
+                  mesh="sugar_box_mesh"
+                  material="sugar_box_mat"
+                  mass="0.5"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

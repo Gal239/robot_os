@@ -1,0 +1,13 @@
+<mujoco model="wall_panel">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="backwall_asset.xml"/>
+
+    <worldbody>
+        <body name="wall_panel" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="backwall_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

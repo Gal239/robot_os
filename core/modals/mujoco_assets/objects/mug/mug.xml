@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: mug -->
+    <asset>
+        <mesh name="mug_mesh" file="textured.obj"/>
+        <texture name="mug_tex" type="2d" file="texture_map.png"/>
+        <material name="mug_mat" texture="mug_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="mug">
+            <geom type="mesh"
+                  mesh="mug_mesh"
+                  material="mug_mat"
+                  mass="0.25"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.25" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

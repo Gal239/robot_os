@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: baseball -->
+    <asset>
+        <mesh name="baseball_mesh" file="textured.obj"/>
+        <texture name="baseball_tex" type="2d" file="texture_map.png"/>
+        <material name="baseball_mat" texture="baseball_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="baseball">
+            <geom type="mesh"
+                  mesh="baseball_mesh"
+                  material="baseball_mat"
+                  mass="0.15"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.15" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

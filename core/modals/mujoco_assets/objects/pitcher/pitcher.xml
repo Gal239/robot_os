@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: pitcher -->
+    <asset>
+        <mesh name="pitcher_mesh" file="textured.obj"/>
+        <texture name="pitcher_tex" type="2d" file="texture_map.png"/>
+        <material name="pitcher_mat" texture="pitcher_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="pitcher">
+            <geom type="mesh"
+                  mesh="pitcher_mesh"
+                  material="pitcher_mat"
+                  mass="0.5"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: True -->
+        </body>
+    </worldbody>
+</mujoco>

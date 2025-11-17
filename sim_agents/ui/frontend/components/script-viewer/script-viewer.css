@@ -1,0 +1,303 @@
+/**
+ * Dream Factory - Script Viewer Component
+ * Professional code viewer with syntax highlighting
+ */
+
+.script-viewer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-base);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+/* ========== Header ========== */
+.script-viewer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.script-viewer-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.script-viewer-title-icon {
+    font-size: var(--font-size-lg);
+}
+
+.script-viewer-title-text {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.script-viewer-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.script-viewer-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.script-viewer-button:hover {
+    background: var(--color-bg-elevated);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+}
+
+.script-viewer-button:active {
+    transform: translateY(0);
+}
+
+/* ========== Content ========== */
+.script-viewer-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+/* Fullscreen immersive mode (no header) */
+.script-viewer-content-fullscreen {
+    padding: 0;
+    height: 100%;
+    position: relative;
+}
+
+.script-viewer-code {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.script-viewer-code pre {
+    margin: 0;
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    overflow-x: auto;
+}
+
+/* Code lines with line numbers */
+.code-line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-md);
+    padding: 2px 0;
+    transition: background-color var(--transition-fast);
+}
+
+.code-line:hover {
+    background-color: var(--color-bg-subtle);
+}
+
+.line-number {
+    flex-shrink: 0;
+    width: 40px;
+    text-align: right;
+    color: var(--color-text-muted);
+    opacity: 0.6;
+    user-select: none;
+    font-size: var(--font-size-xs);
+}
+
+.line-content {
+    flex: 1;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+/* ========== Empty State ========== */
+.script-viewer-empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2xl);
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Lava lamp particles - smooth rising animation */
+@keyframes riseLavaParticle {
+    0% {
+        top: 110%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        top: -10%;
+        opacity: 0;
+    }
+}
+
+/* Smooth pulse animations - Random per particle */
+@keyframes lavaPulse1 {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse2 {
+    0%, 100% { opacity: 0.5; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.4; }
+}
+
+@keyframes lavaPulse3 {
+    0%, 100% { opacity: 0.4; }
+    40% { opacity: 0.7; }
+    80% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse4 {
+    0%, 100% { opacity: 0.6; }
+    25% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+    75% { opacity: 0.5; }
+}
+
+.script-viewer-empty-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+    position: relative;
+    z-index: 1;
+}
+
+.script-viewer-empty-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    z-index: 1;
+}
+
+.script-viewer-empty-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Animated Mode ========== */
+.script-viewer-animated {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    overflow-x: auto;
+    min-height: 200px;
+}
+
+/* ========== Syntax Highlighting (Theme-Aware PyCharm Style) ========== */
+.script-viewer-code .keyword {
+    color: #9333ea; /* Purple - keywords (light mode) */
+    font-weight: var(--font-weight-semibold);
+}
+
+.script-viewer-code .string {
+    color: #16a34a; /* Green - strings (light mode) */
+}
+
+.script-viewer-code .comment {
+    color: #94a3b8; /* Gray - comments (light mode) */
+    font-style: italic;
+}
+
+.script-viewer-code .function {
+    color: #0284c7; /* Blue - functions (light mode) */
+    font-weight: var(--font-weight-medium);
+}
+
+.script-viewer-code .number {
+    color: #ea580c; /* Orange - numbers (light mode) */
+}
+
+/* Dark mode syntax highlighting */
+[data-theme="dark"] .script-viewer-code .keyword {
+    color: #CC7832; /* Orange - keywords */
+}
+
+[data-theme="dark"] .script-viewer-code .string {
+    color: #6A8759; /* Green - strings */
+}
+
+[data-theme="dark"] .script-viewer-code .comment {
+    color: #808080; /* Gray - comments */
+}
+
+[data-theme="dark"] .script-viewer-code .function {
+    color: #FFC66D; /* Golden yellow - functions */
+}
+
+[data-theme="dark"] .script-viewer-code .number {
+    color: #6897BB; /* Blue - numbers */
+}
+
+/* ========== Copy Success Notification ========== */
+.script-viewer-copy-success {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    background: var(--color-success);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    box-shadow: var(--shadow-lg);
+    animation: fadeInOut 2s ease-in-out forwards;
+    z-index: 100;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    10%, 90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}

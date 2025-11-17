@@ -1,0 +1,66 @@
+/**
+ * Echo Robotics Lab - Theme Toggle Component
+ * Clean, minimal toggle button with smooth animations
+ */
+
+.theme-toggle-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.theme-toggle-button:hover {
+    background: var(--color-bg-elevated);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Dark mode LED glow effect */
+[data-theme="dark"] .theme-toggle-button {
+    background: #2B2B2B;
+    border-color: #00FF00;
+}
+
+[data-theme="dark"] .theme-toggle-button i {
+    color: #00FF00;
+}
+
+[data-theme="dark"] .theme-toggle-button:hover {
+    background: #003300;
+    border-color: #00FF00;
+    color: #00FF00;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.6),
+                0 0 24px rgba(0, 255, 0, 0.3);
+}
+
+.theme-toggle-button:active {
+    transform: translateY(0);
+}
+
+.theme-toggle-button i {
+    width: 16px;
+    height: 16px;
+    transition: transform var(--transition-base);
+}
+
+/* Smooth theme transition on all elements */
+html.theme-transitioning,
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+    transition: background-color 200ms ease-in-out,
+                color 200ms ease-in-out,
+                border-color 200ms ease-in-out,
+                box-shadow 200ms ease-in-out !important;
+}

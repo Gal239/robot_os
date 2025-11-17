@@ -1,0 +1,50 @@
+{
+  "tool_id": "discover_assets",
+  "description": "AUTO-DISCOVERY: Get all available assets from ASSETS.json. Returns furniture and objects with their types, sources, and available behaviors. Pure MOP - reads from source of truth!",
+  "type": "function_tool",
+  "parameters": {
+    "category": {
+      "type": "string",
+      "description": "Optional filter: 'furniture', 'object', or omit for all assets",
+      "required": false,
+      "default": null
+    }
+  },
+  "returns": {
+    "furniture": "array of furniture asset objects",
+    "objects": "array of object asset objects",
+    "summary": "object with counts"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "furniture": {"type": "array"},
+      "objects": {"type": "array"},
+      "summary": {"type": "object"}
+    }
+  },
+  "workflow_hints": {
+    "stage": "discovery",
+    "order": 1,
+    "when_to_use": "At the beginning to discover what furniture and objects are available before creating scenes",
+    "outputs_feed": ["create_scene_script"]
+  },
+  "examples": [
+    {
+      "description": "Get all assets",
+      "input": {},
+      "output_summary": "Returns ALL 71 assets (15 furniture + 56 objects) with their behaviors",
+      "use_case": "At the start of scene creation to see the full asset catalog"
+    },
+    {
+      "description": "Filter furniture only",
+      "input": {"category": "furniture"},
+      "output_summary": "Returns 15 furniture items (tables, chairs, cabinets, etc.)",
+      "use_case": "When you only need to see furniture options for scene planning"
+    }
+  ],
+  "best_practices": [
+    "Call this tool first before creating scenes to understand available assets",
+    "Use category filter to reduce cognitive load when you only need furniture or objects"
+  ]
+}

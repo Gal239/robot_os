@@ -1,0 +1,44 @@
+{
+  "name": "hinge_cabinet",
+  "category": "furniture",
+  "xml_file": "hinge_cabinet.xml",
+  "components": {
+    "hinge_cabinet": {
+      "name": "hinge_cabinet",
+      "geom_names": [
+        "cabinet_body",
+        "door_left_panel",
+        "door_right_panel"
+      ],
+      "joint_names": [
+        "door_left_joint",
+        "door_right_joint"
+      ],
+      "behaviors": [
+        "container",
+        "hinged"
+      ]
+    }
+  },
+  "behaviors": [
+    "container",
+    "hinged"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "ajar": 0.25,
+    "half_open": 0.5,
+    "open": 1.0
+  },
+  "joint_ranges": {
+    "leftdoorhinge": [
+      -1.57,
+      0.0
+    ],
+    "rightdoorhinge": [
+      0.0,
+      1.57
+    ]
+  },
+  "default_state": "closed"
+}

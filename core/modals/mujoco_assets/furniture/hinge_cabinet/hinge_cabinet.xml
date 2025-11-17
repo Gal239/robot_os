@@ -1,0 +1,13 @@
+<mujoco model="hinge_cabinet">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="hingecabinet_asset.xml"/>
+
+    <worldbody>
+        <body name="hinge_cabinet" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="hingecabinet_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

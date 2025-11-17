@@ -1,0 +1,40 @@
+{
+  "name": "door",
+  "category": "furniture",
+  "xml_file": "door.xml",
+  "components": {
+    "door": {
+      "name": "door",
+      "geom_names": [
+        "frame_left",
+        "frame_right",
+        "frame_top",
+        "door_panel",
+        "handle_knob",
+        "handle_stem"
+      ],
+      "joint_names": [
+        "door_hinge"
+      ],
+      "behaviors": [
+        "hinged"
+      ]
+    }
+  },
+  "behaviors": [
+    "hinged"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "ajar": 0.25,
+    "half_open": 0.5,
+    "open": 1.0
+  },
+  "joint_ranges": {
+    "door_hinge": [
+      0.0,
+      1.57
+    ]
+  },
+  "default_state": "closed"
+}

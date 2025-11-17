@@ -1,0 +1,43 @@
+{
+  "tool_id": "get_scene_examples",
+  "description": "AUTO-DISCOVERY: Get real working scene examples from demo_1_ai_generated_scenes.py. Returns actual runnable code for 6 different scene types (tower stacking, container filling, etc.). Pure MOP - reads from actual demo file!",
+  "type": "function_tool",
+  "parameters": {
+    "example_name": {
+      "type": "string",
+      "description": "Optional: Get specific example (e.g., 'tower_stacking'). Omit to get all examples.",
+      "required": false,
+      "default": null
+    }
+  },
+  "returns": {
+    "examples": "object mapping example names to their code and descriptions",
+    "summary": "object with example count and list of names"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "examples": {"type": "object"},
+      "summary": {"type": "object"}
+    },
+    "required": ["examples", "summary"]
+  },
+  "workflow_hints": {
+    "stage": "planning",
+    "order": 4,
+    "when_to_use": "After understanding available assets/behaviors/relations, look at real working examples to learn coding patterns",
+    "outputs_feed": ["create_scene_script"]
+  },
+  "examples": [
+    {
+      "description": "Get all examples",
+      "input": {},
+      "output_summary": "Returns 6 complete scene examples showing different techniques (stacking, containers, sorting, etc.)",
+      "use_case": "To learn ExperimentOps API patterns by seeing real working code"
+    }
+  ],
+  "best_practices": [
+    "Study these examples to understand proper scene creation patterns before writing your own scripts",
+    "Follow the code style and structure shown in examples"
+  ]
+}

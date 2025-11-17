@@ -1,0 +1,371 @@
+/*
+ * Animations & Transitions
+ */
+
+/* ========== Keyframe Animations ========== */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ========== Animation Classes ========== */
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.animate-fade-in-down {
+    animation: fadeInDown 0.4s ease-out;
+}
+
+.animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out;
+}
+
+.animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s infinite;
+}
+
+.animate-spin {
+    animation: spin 1s linear infinite;
+}
+
+.animate-bounce {
+    animation: bounce 1s ease-in-out infinite;
+}
+
+/* ========== Staggered Animations ========== */
+
+.stagger-fade-in > *:nth-child(1) {
+    animation: fadeInUp 0.4s ease-out 0s;
+}
+
+.stagger-fade-in > *:nth-child(2) {
+    animation: fadeInUp 0.4s ease-out 0.1s;
+}
+
+.stagger-fade-in > *:nth-child(3) {
+    animation: fadeInUp 0.4s ease-out 0.2s;
+}
+
+.stagger-fade-in > *:nth-child(4) {
+    animation: fadeInUp 0.4s ease-out 0.3s;
+}
+
+.stagger-fade-in > *:nth-child(5) {
+    animation: fadeInUp 0.4s ease-out 0.4s;
+}
+
+/* ========== Hover Effects ========== */
+
+.hover-lift {
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hover-scale {
+    transition: transform 0.2s ease-out;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+.hover-glow {
+    transition: box-shadow 0.3s ease-out;
+}
+
+.hover-glow:hover {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+/* ========== Loading States ========== */
+
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--color-light-dark) 25%,
+        var(--color-border) 50%,
+        var(--color-light-dark) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+    border-radius: var(--border-radius-md);
+}
+
+.skeleton-text {
+    height: 1em;
+    margin-bottom: 0.5em;
+}
+
+.skeleton-circle {
+    border-radius: 50%;
+}
+
+.skeleton-rect {
+    border-radius: var(--border-radius-md);
+}
+
+/* ========== Page Transitions ========== */
+
+.page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-exit {
+    opacity: 1;
+}
+
+.page-exit-active {
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+/* ========== Micro Interactions ========== */
+
+.ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Button Press */
+.press-effect {
+    transition: transform 0.1s ease-out;
+}
+
+.press-effect:active {
+    transform: scale(0.95);
+}
+
+/* ========== Special Effects ========== */
+
+.glow-effect {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    animation: pulseGlow 2s infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.8);
+    }
+}
+
+/* Confetti (for completion effects) */
+@keyframes confetti-fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-primary);
+    animation: confetti-fall 3s linear;
+    pointer-events: none;
+}
+
+/* ========== Sidebar Animations ========== */
+
+@keyframes sidebarExpand {
+    from {
+        transform: scale(0.98);
+        opacity: 0.95;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes sidebarCollapse {
+    from {
+        transform: scale(1.02);
+        opacity: 0.95;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes iconRotateIn {
+    from {
+        transform: rotate(-90deg) scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Sidebar animation classes */
+.sidebar-expanding {
+    animation: sidebarExpand 500ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.sidebar-collapsing {
+    animation: sidebarCollapse 500ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.icon-rotate-in {
+    animation: iconRotateIn 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Smooth width transition for resizable elements */
+.smooth-width-transition {
+    transition: width 400ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                min-width 400ms cubic-bezier(0.4, 0.0, 0.2, 1),
+                max-width 400ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* ========== Accessibility ========== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

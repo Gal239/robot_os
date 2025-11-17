@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: spoon -->
+    <asset>
+        <mesh name="spoon_mesh" file="textured.obj"/>
+        <texture name="spoon_tex" type="2d" file="texture_map.png"/>
+        <material name="spoon_mat" texture="spoon_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="spoon">
+            <geom type="mesh"
+                  mesh="spoon_mesh"
+                  material="spoon_mat"
+                  mass="0.03"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.03" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

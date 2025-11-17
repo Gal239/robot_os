@@ -1,0 +1,13 @@
+<mujoco model="storage_bin">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="bin_asset.xml"/>
+
+    <worldbody>
+        <body name="storage_bin" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="bin_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

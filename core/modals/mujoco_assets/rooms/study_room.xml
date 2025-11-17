@@ -1,0 +1,126 @@
+<mujoco model="room">
+<!-- Room assets and geometry -->
+  <asset>
+    <!-- Rich oak hardwood -->
+    <texture name="oak_floor" type="2d" builtin="checker"
+             rgb1="0.52 0.33 0.18" rgb2="0.48 0.29 0.15"
+             width="128" height="128"/>
+
+    <!-- Warm beige walls with wainscoting texture -->
+    <texture name="beige_walls" type="2d" builtin="flat"
+             rgb1="0.88 0.82 0.72" rgb2="0.85 0.79 0.69"
+             width="512" height="512"/>
+
+    <!-- Dark wood wainscoting -->
+    <texture name="dark_wood" type="2d" builtin="flat"
+             rgb1="0.35 0.22 0.12" rgb2="0.32 0.19 0.10"
+             width="256" height="256"/>
+
+    <!-- Persian rug -->
+    <texture name="persian_rug" type="2d" builtin="gradient"
+             rgb1="0.45 0.15 0.15" rgb2="0.35 0.25 0.35"
+             width="512" height="512"/>
+
+    <!-- Materials -->
+    <material name="oak_hardwood" texture="oak_floor"
+              texrepeat="25 20"
+              specular="0.6"
+              shininess="0.5"
+              reflectance="0.2"/>
+
+    <material name="warm_walls" texture="beige_walls"
+              texrepeat="2 2"
+              specular="0.15"
+              shininess="0.08"
+              reflectance="0.02"/>
+
+    <material name="wainscot" texture="dark_wood"
+              texrepeat="4 1"
+              specular="0.4"
+              shininess="0.3"
+              reflectance="0.1"/>
+
+    <material name="oriental_rug" texture="persian_rug"
+              texrepeat="3 2"
+              specular="0.02"
+              shininess="0.01"
+              reflectance="0.0"/>
+  </asset>
+
+  <worldbody>
+    <!-- Rich oak hardwood floor -->
+    <geom name="floor" type="plane"
+          size="5 4 0.1"
+          material="oak_hardwood"
+          friction="1.2 0.05 0.01"/>
+
+    <!-- Oriental rug -->
+    <geom name="rug" type="box"
+          size="2 1.5 0.005"
+          pos="0 0 0.005"
+          material="oriental_rug"
+          friction="1.8 0.1 0.1"/>
+
+    <!-- Warm beige walls -->
+    <geom name="wall_north" type="box"
+          size="5 0.15 2.7"
+          pos="0 4 1.35"
+          material="warm_walls"/>
+    <geom name="wall_south" type="box"
+          size="5 0.15 2.7"
+          pos="0 -4 1.35"
+          material="warm_walls"/>
+    <geom name="wall_east" type="box"
+          size="0.15 4 2.7"
+          pos="5 0 1.35"
+          material="warm_walls"/>
+    <geom name="wall_west" type="box"
+          size="0.15 4 2.7"
+          pos="-5 0 1.35"
+          material="warm_walls"/>
+
+    <!-- Wood wainscoting (lower wall panels) -->
+    <geom name="wainscot_north" type="box"
+          size="5 0.05 0.4"
+          pos="0 3.95 0.4"
+          material="wainscot"/>
+    <geom name="wainscot_east" type="box"
+          size="0.05 4 0.4"
+          pos="4.95 0 0.4"
+          material="wainscot"/>
+    <geom name="wainscot_west" type="box"
+          size="0.05 4 0.4"
+          pos="-4.95 0 0.4"
+          material="wainscot"/>
+
+    <!-- Large window with wooden frame -->
+    <geom name="window_frame" type="box"
+          size="1.6 0.1 1.3"
+          pos="0 -3.9 1.6"
+          material="wainscot"/>
+    <geom name="window_glass" type="box"
+          size="1.5 0.05 1.2"
+          pos="0 -3.85 1.6"
+          rgba="0.85 0.9 1.0 0.4"/>
+
+    <!-- Crown molding -->
+    <geom name="crown_molding" type="box"
+          size="5 0.05 0.05"
+          pos="0 3.95 2.65"
+          material="wainscot"/>
+
+    <!-- Baseboards -->
+    <geom name="baseboard_north" type="box"
+          size="5 0.05 0.05"
+          pos="0 3.95 0.05"
+          material="wainscot"/>
+    <geom name="baseboard_east" type="box"
+          size="0.05 4 0.05"
+          pos="4.95 0 0.05"
+          material="wainscot"/>
+    <geom name="baseboard_west" type="box"
+          size="0.05 4 0.05"
+          pos="-4.95 0 0.05"
+          material="wainscot"/>
+  </worldbody>
+</mujoco>

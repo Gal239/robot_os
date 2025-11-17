@@ -1,0 +1,37 @@
+{
+  "tool_id": "handoff",
+  "description": "Deliver final answer when task is COMPLETE. Use ask_master for questions/clarifications that need user response. Handoff marks task as done and returns control to parent.",
+  "type": "handoff",
+  "parameters": {
+    "handoff_type": {
+      "type": "string",
+      "description": "REQUIRED: Declare handoff intent. Options: 'normal_answer' (chat/acknowledgment, no execution) or 'script_edit' (scene building, executes script)",
+      "required": true,
+      "enum": ["normal_answer", "script_edit"]
+    },
+    "answer": {
+      "type": "object",
+      "description": "The final result of your task (can be any structured data) if you created files or you delegated and provided handoffs mention them in your final answer  ",
+      "required": true
+    },
+    "documents": {
+      "type": "array",
+      "description": "List of document paths from workspace you created and relevnt for the answer ",
+      "required": true
+    }
+  },
+  "returns": {
+    "status": "string",
+    "result": "object",
+    "documents": "array"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "result": {"type": "object"}
+    },
+    "required": ["answer","documents"]
+  }
+}
+
+

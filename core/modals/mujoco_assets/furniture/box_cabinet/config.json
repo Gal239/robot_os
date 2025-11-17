@@ -1,0 +1,42 @@
+{
+  "name": "box_cabinet",
+  "category": "furniture",
+  "xml_file": "box_cabinet.xml",
+  "components": {
+    "box_cabinet": {
+      "name": "box_cabinet",
+      "geom_names": [
+        "casegoods_bottom",
+        "casegoods_left",
+        "casegoods_right",
+        "casegoods_top_geom",
+        "drawer_body",
+        "drawer_handle"
+      ],
+      "joint_names": [
+        "drawer_joint"
+      ],
+      "behaviors": [
+        "container",
+        "sliding"
+      ]
+    }
+  },
+  "behaviors": [
+    "container",
+    "sliding"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "quarter": 0.25,
+    "half": 0.5,
+    "extended": 1.0
+  },
+  "joint_ranges": {
+    "boxdoorhinge": [
+      -1.57,
+      0.0
+    ]
+  },
+  "default_state": "closed"
+}

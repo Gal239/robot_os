@@ -1,0 +1,919 @@
+{
+  "add_asset": {
+    "signature": "ops.add_asset(asset_name: str, relative_to=None, relation: str = None, distance: float = None, surface_position: str = None, offset: tuple = None, orientation: Union[Tuple[float, float, float, float], str] = None, initial_state: Dict = None)",
+    "description": "Add asset to scene - SELF-EXPLANATORY + PURE MOP",
+    "parameters": {
+      "asset_name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "relative_to": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "relation": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "distance": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      },
+      "surface_position": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "offset": {
+        "type": "<class 'tuple'>",
+        "default": "None",
+        "required": false
+      },
+      "orientation": {
+        "type": "typing.Union[typing.Tuple[float, float, float, float], str]",
+        "default": "None",
+        "required": false
+      },
+      "initial_state": {
+        "type": "typing.Dict",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "add_debug_camera": {
+    "signature": "ops.add_debug_camera(camera_id: str, track_target: str = None, **kwargs)",
+    "description": "Add camera that auto-connects to running simulation - CONVENIENCE!",
+    "parameters": {
+      "camera_id": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "track_target": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "kwargs": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "add_free_camera": {
+    "signature": "ops.add_free_camera(camera_id: str = 'birds_eye', lookat: Tuple[float, float, float] = (0, 0, 0.5), distance: float = 5.0, azimuth: float = 90.0, elevation: float = -30.0, width: int = None, height: int = None, track_target: str = None, track_offset: Tuple[float, float, float] = (0, 0, 0)) -> Any",
+    "description": "Add virtual free camera (SIM ONLY!) - INTERACTIVE with tracking support",
+    "parameters": {
+      "camera_id": {
+        "type": "<class 'str'>",
+        "default": "birds_eye",
+        "required": false
+      },
+      "lookat": {
+        "type": "typing.Tuple[float, float, float]",
+        "default": "(0, 0, 0.5)",
+        "required": false
+      },
+      "distance": {
+        "type": "<class 'float'>",
+        "default": "5.0",
+        "required": false
+      },
+      "azimuth": {
+        "type": "<class 'float'>",
+        "default": "90.0",
+        "required": false
+      },
+      "elevation": {
+        "type": "<class 'float'>",
+        "default": "-30.0",
+        "required": false
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      },
+      "track_target": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "track_offset": {
+        "type": "typing.Tuple[float, float, float]",
+        "default": "(0, 0, 0)",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "add_object": {
+    "signature": "ops.add_object(asset_type: str = None, name: str = None, position: tuple = None, on_top: str = None, relative_to: str = None, offset: tuple = None, color: str = None, **kwargs)",
+    "description": "Add object to scene - backward compatibility wrapper",
+    "parameters": {
+      "asset_type": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "name": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "position": {
+        "type": "<class 'tuple'>",
+        "default": "None",
+        "required": false
+      },
+      "on_top": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "relative_to": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "offset": {
+        "type": "<class 'tuple'>",
+        "default": "None",
+        "required": false
+      },
+      "color": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "kwargs": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "add_overhead_camera": {
+    "signature": "ops.add_overhead_camera(camera_id: str = 'overhead_cam', width: int = None, height: int = None) -> Any",
+    "description": "Add overhead camera with MuJoCo viewer defaults - AUTO-CALCULATES based on room!",
+    "parameters": {
+      "camera_id": {
+        "type": "<class 'str'>",
+        "default": "overhead_cam",
+        "required": false
+      },
+      "width": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      },
+      "height": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "add_reward": {
+    "signature": "ops.add_reward(tracked_asset: str, behavior: str, target=None, reward: float = None, mode: str = None, id: str = None, requires=None, within=None, after=None, after_event=None, speed_bonus=None, spatial_target=None, tolerance_override: float = None, natural_range_override: float = None)",
+    "description": "Add reward condition - UNIFIED SYNTAX - TRUE MOP!",
+    "parameters": {
+      "tracked_asset": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "behavior": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "target": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "reward": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      },
+      "mode": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "id": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "requires": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "within": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "after": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "after_event": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "speed_bonus": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "spatial_target": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "tolerance_override": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      },
+      "natural_range_override": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "add_reward_composite": {
+    "signature": "ops.add_reward_composite(operator: str, conditions, reward: float, id: str, mode: str = None, requires=None, within=None, after=None, speed_bonus=None)",
+    "description": "Add composite reward (AND/OR/NOT) - SELF-DOCUMENTING API!",
+    "parameters": {
+      "operator": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "conditions": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      },
+      "reward": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "id": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "mode": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "requires": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "within": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "after": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "speed_bonus": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "add_robot": {
+    "signature": "ops.add_robot(robot_name: str, robot_id: str = None, position=None, sensors=None, task_hint=None, initial_state=None)",
+    "description": "Add robot to scene with optional sensor configuration",
+    "parameters": {
+      "robot_name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "robot_id": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "position": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "sensors": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "task_hint": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      },
+      "initial_state": {
+        "type": "Any",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "apply_action": {
+    "signature": "ops.apply_action(action: 'np.ndarray', actuators_active: Optional[List[str]] = None)",
+    "description": "Modals execute actions - PURE MOP (NO MANUAL MAPPING!)",
+    "parameters": {
+      "action": {
+        "type": "np.ndarray",
+        "default": "required",
+        "required": true
+      },
+      "actuators_active": {
+        "type": "typing.Optional[typing.List[str]]",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "check_termination": {
+    "signature": "ops.check_termination() -> bool",
+    "description": "RewardModals know when task complete - PURE MOP!",
+    "parameters": {},
+    "required": false
+  },
+  "close": {
+    "signature": "ops.close()",
+    "description": "Close ExperimentOps and finalize all resources (videos, files, etc.)",
+    "parameters": {},
+    "required": false
+  },
+  "compile": {
+    "signature": "ops.compile(enable_timeline: bool = True, settling_steps: int = None) -> Tuple[Any, Any]",
+    "description": "Compile scene to physics engine - SELF-EXPLANATORY",
+    "parameters": {
+      "enable_timeline": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      },
+      "settling_steps": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": true
+  },
+  "compose_behavior_tree": {
+    "signature": "ops.compose_behavior_tree(tree_spec: dict)",
+    "description": "Compose skill from behavior tree spec - LEGO COMPOSITION (STUB)",
+    "parameters": {
+      "tree_spec": {
+        "type": "<class 'dict'>",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "compose_manual": {
+    "signature": "ops.compose_manual(block_ids: list, name: str = None, description: str = '')",
+    "description": "Compose skill manually from ActionBlock IDs - LEGO COMPOSITION",
+    "parameters": {
+      "block_ids": {
+        "type": "<class 'list'>",
+        "default": "required",
+        "required": true
+      },
+      "name": {
+        "type": "<class 'str'>",
+        "default": "None",
+        "required": false
+      },
+      "description": {
+        "type": "<class 'str'>",
+        "default": "",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "compose_text": {
+    "signature": "ops.compose_text(text: str, available_blocks: list = None)",
+    "description": "Compose skill from text using AI Orchestrator - LEGO COMPOSITION",
+    "parameters": {
+      "text": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "available_blocks": {
+        "type": "<class 'list'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "compose_vision": {
+    "signature": "ops.compose_vision(image, goal: str)",
+    "description": "Compose skill from vision using VLM - LEGO COMPOSITION (STUB)",
+    "parameters": {
+      "image": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      },
+      "goal": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "create": {
+    "signature": "ops.create(name: str, width: float, length: float, height: float, **kwargs) -> core.modals.scene_modal.Scene",
+    "description": "Alias for create_scene (backward compatibility)",
+    "parameters": {
+      "name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "width": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "length": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "height": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "kwargs": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "create_scene": {
+    "signature": "ops.create_scene(name: str, width: float, length: float, height: float, floor_texture: str = 'wood_floor', wall_texture: str = 'gray_wall', ceiling_texture: str = 'ceiling_tiles') -> core.modals.scene_modal.Scene",
+    "description": "Create scene with room - NICE DEFAULTS (wood parquet floor!)",
+    "parameters": {
+      "name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "width": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "length": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "height": {
+        "type": "<class 'float'>",
+        "default": "required",
+        "required": true
+      },
+      "floor_texture": {
+        "type": "<class 'str'>",
+        "default": "wood_floor",
+        "required": false
+      },
+      "wall_texture": {
+        "type": "<class 'str'>",
+        "default": "gray_wall",
+        "required": false
+      },
+      "ceiling_texture": {
+        "type": "<class 'str'>",
+        "default": "ceiling_tiles",
+        "required": false
+      }
+    },
+    "required": true
+  },
+  "evaluate_rewards": {
+    "signature": "ops.evaluate_rewards() -> Tuple[float, Dict[str, Any]]",
+    "description": "RewardModals compute their own rewards - PURE MOP!",
+    "parameters": {},
+    "required": false
+  },
+  "get_action_space": {
+    "signature": "ops.get_action_space(actuators_group: str = 'full')",
+    "description": "Get action space - PURE MOP! Delegates to modals (no reconstruction!)",
+    "parameters": {
+      "actuators_group": {
+        "type": "<class 'str'>",
+        "default": "full",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "get_all_bodies": {
+    "signature": "ops.get_all_bodies() -> Dict[str, int]",
+    "description": "Get all bodies in simulation with their IDs - MOP STYLE!",
+    "parameters": {},
+    "required": false
+  },
+  "get_current_state_for_rewards": {
+    "signature": "ops.get_current_state_for_rewards() -> Dict[str, Any]",
+    "description": "Get state (old API compatibility)",
+    "parameters": {},
+    "required": false
+  },
+  "get_frame_count": {
+    "signature": "ops.get_frame_count() -> int",
+    "description": "Get number of available frames - TIME MACHINE!",
+    "parameters": {},
+    "required": false
+  },
+  "get_positions": {
+    "signature": "ops.get_positions(objects: List[str], print_summary: bool = True) -> Dict[str, Tuple[float, float, float]]",
+    "description": "Get positions of multiple objects - MOP!",
+    "parameters": {
+      "objects": {
+        "type": "typing.List[str]",
+        "default": "required",
+        "required": true
+      },
+      "print_summary": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "get_reward": {
+    "signature": "ops.get_reward() -> float",
+    "description": "Get current reward delta (per-step) - SELF-EXPLANATORY",
+    "parameters": {},
+    "required": false
+  },
+  "get_reward_timeline": {
+    "signature": "ops.get_reward_timeline(format: str = 'dict')",
+    "description": "Get reward timeline - MOP delegation to RewardModal!",
+    "parameters": {
+      "format": {
+        "type": "<class 'str'>",
+        "default": "dict",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "get_state": {
+    "signature": "ops.get_state() -> Dict[str, Any]",
+    "description": "Get current state - SELF-SYNCING (MOP Principle #2)",
+    "parameters": {},
+    "required": false
+  },
+  "get_total_reward": {
+    "signature": "ops.get_total_reward(current_time: float = None) -> float",
+    "description": "Get reward - OFFENSIVE & ACTUALLY COMPUTES!",
+    "parameters": {
+      "current_time": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "get_view": {
+    "signature": "ops.get_view(view_name: str)",
+    "description": "Get view - THIN MOP WRAPPER (delegates to ViewAggregator)",
+    "parameters": {
+      "view_name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "hot_compile": {
+    "signature": "ops.hot_compile(script: str = '') -> Tuple[Any, Any]",
+    "description": "Lightweight compile for scene building (no timeline recording)",
+    "parameters": {
+      "script": {
+        "type": "<class 'str'>",
+        "default": "",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "hot_reload": {
+    "signature": "ops.hot_reload()",
+    "description": "Recompile scene while preserving robot state - MOP STYLE!",
+    "parameters": {},
+    "required": false
+  },
+  "load_frame": {
+    "signature": "ops.load_frame(frame_num: int)",
+    "description": "Load and apply specific frame state - TIME MACHINE!",
+    "parameters": {
+      "frame_num": {
+        "type": "<class 'int'>",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "load_skills": {
+    "signature": "ops.load_skills() -> Dict[str, Any]",
+    "description": "Load all skills from SKILLS_REGISTRY.json - PURE MOP",
+    "parameters": {},
+    "required": false
+  },
+  "replay_frames": {
+    "signature": "ops.replay_frames(start_frame: int = 0, end_frame: int = None, fps: float = 30, loop: bool = False)",
+    "description": "Replay saved frames in viewer - TIME MACHINE!",
+    "parameters": {
+      "start_frame": {
+        "type": "<class 'int'>",
+        "default": "0",
+        "required": false
+      },
+      "end_frame": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      },
+      "fps": {
+        "type": "<class 'float'>",
+        "default": "30",
+        "required": false
+      },
+      "loop": {
+        "type": "<class 'bool'>",
+        "default": "False",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "reset": {
+    "signature": "ops.reset()",
+    "description": "Reset episode without recompile - PURE MOP!",
+    "parameters": {},
+    "required": false
+  },
+  "run": {
+    "signature": "ops.run(steps: int = None)",
+    "description": "Run simulation for N steps - SELF-EXPLANATORY",
+    "parameters": {
+      "steps": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "save_all_screenshots": {
+    "signature": "ops.save_all_screenshots(cameras: List[str] = None, frame: int = None, subdir: str = 'screenshots', print_summary: bool = True) -> Dict[str, str]",
+    "description": "Save screenshots from all/specified cameras - MOP!",
+    "parameters": {
+      "cameras": {
+        "type": "typing.List[str]",
+        "default": "None",
+        "required": false
+      },
+      "frame": {
+        "type": "<class 'int'>",
+        "default": "None",
+        "required": false
+      },
+      "subdir": {
+        "type": "<class 'str'>",
+        "default": "screenshots",
+        "required": false
+      },
+      "print_summary": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "set_camera_angle": {
+    "signature": "ops.set_camera_angle(camera_id: str, lookat: Tuple[float, float, float] = None, distance: float = None, azimuth: float = None, elevation: float = None)",
+    "description": "Change free camera angle during simulation - INTERACTIVE!",
+    "parameters": {
+      "camera_id": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "lookat": {
+        "type": "typing.Tuple[float, float, float]",
+        "default": "None",
+        "required": false
+      },
+      "distance": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      },
+      "azimuth": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      },
+      "elevation": {
+        "type": "<class 'float'>",
+        "default": "None",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "step": {
+    "signature": "ops.step() -> Dict[str, Any]",
+    "description": "Execute one simulation step - SELF-EXPLANATORY",
+    "parameters": {},
+    "required": false
+  },
+  "submit_action": {
+    "signature": "ops.submit_action(action)",
+    "description": "Submit single action for execution - CONVENIENCE METHOD",
+    "parameters": {
+      "action": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "submit_block": {
+    "signature": "ops.submit_block(action_block)",
+    "description": "Submit action block for execution - SELF-EXPLANATORY",
+    "parameters": {
+      "action_block": {
+        "type": "Any",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "sync_from_mujoco": {
+    "signature": "ops.sync_from_mujoco()",
+    "description": "Sync all state from MuJoCo - EDUCATIONAL API",
+    "parameters": {},
+    "required": false
+  },
+  "teleport_object": {
+    "signature": "ops.teleport_object(name: str, position: tuple)",
+    "description": "Teleport object to new position - CLEAN API!",
+    "parameters": {
+      "name": {
+        "type": "<class 'str'>",
+        "default": "required",
+        "required": true
+      },
+      "position": {
+        "type": "<class 'tuple'>",
+        "default": "required",
+        "required": true
+      }
+    },
+    "required": false
+  },
+  "to_experiment_modal": {
+    "signature": "ops.to_experiment_modal()",
+    "description": "Export to GOD MODAL - PURE MOP!",
+    "parameters": {},
+    "required": false
+  },
+  "validate_positions": {
+    "signature": "ops.validate_positions(expected: Dict[str, Union[Tuple[float, float, float], Dict[str, Any]]], tolerance: float = 0.01, print_summary: bool = True) -> Dict[str, Any]",
+    "description": "Validate positions against expected values - MOP!",
+    "parameters": {
+      "expected": {
+        "type": "typing.Dict[str, typing.Union[typing.Tuple[float, float, float], typing.Dict[str, typing.Any]]]",
+        "default": "required",
+        "required": true
+      },
+      "tolerance": {
+        "type": "<class 'float'>",
+        "default": "0.01",
+        "required": false
+      },
+      "print_summary": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "validate_semantics": {
+    "signature": "ops.validate_semantics(expected_on_table: List[str] = None, expected_on_floor: List[str] = None, print_summary: bool = True) -> Dict[str, Any]",
+    "description": "Validate semantic relationships (stacking, contact) - MOP!",
+    "parameters": {
+      "expected_on_table": {
+        "type": "typing.List[str]",
+        "default": "None",
+        "required": false
+      },
+      "expected_on_floor": {
+        "type": "typing.List[str]",
+        "default": "None",
+        "required": false
+      },
+      "print_summary": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "validate_video_files": {
+    "signature": "ops.validate_video_files(cameras: List[str] = None, print_summary: bool = True) -> Dict[str, Any]",
+    "description": "Validate all video files exist and are valid - MOP!",
+    "parameters": {
+      "cameras": {
+        "type": "typing.List[str]",
+        "default": "None",
+        "required": false
+      },
+      "print_summary": {
+        "type": "<class 'bool'>",
+        "default": "True",
+        "required": false
+      }
+    },
+    "required": false
+  },
+  "validate_videos": {
+    "signature": "ops.validate_videos(timeout: float = 180)",
+    "description": "Validate that ALL videos were converted successfully - MOP!",
+    "parameters": {
+      "timeout": {
+        "type": "<class 'float'>",
+        "default": "180",
+        "required": false
+      }
+    },
+    "required": false
+  }
+}

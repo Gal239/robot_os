@@ -1,0 +1,13 @@
+<mujoco model="oven">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="oven_asset.xml"/>
+
+    <worldbody>
+        <body name="oven" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="oven_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

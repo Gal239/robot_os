@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: peach -->
+    <asset>
+        <mesh name="peach_mesh" file="textured.obj"/>
+        <texture name="peach_tex" type="2d" file="texture_map.png"/>
+        <material name="peach_mat" texture="peach_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="peach">
+            <geom type="mesh"
+                  mesh="peach_mesh"
+                  material="peach_mat"
+                  mass="0.15"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.15" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: True -->
+        </body>
+    </worldbody>
+</mujoco>

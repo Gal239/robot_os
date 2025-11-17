@@ -1,0 +1,26 @@
+{
+  "name": "storage_bin",
+  "category": "furniture",
+  "xml_file": "storage_bin.xml",
+  "components": {
+    "storage_bin": {
+      "name": "storage_bin",
+      "geom_names": [
+        "bin_body",
+        "bin_bottom"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "container"
+      ]
+    }
+  },
+  "behaviors": [
+    "container"
+  ],
+  "variants": [
+    "bin_body",
+    "busbin1_body",
+    "busbin2_body"
+  ]
+}

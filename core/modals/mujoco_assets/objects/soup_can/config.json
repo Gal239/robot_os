@@ -1,0 +1,20 @@
+{
+  "name": "soup_can",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/soup_can/soup_can.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

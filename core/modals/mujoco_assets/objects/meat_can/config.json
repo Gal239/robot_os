@@ -1,0 +1,20 @@
+{
+  "name": "meat_can",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/meat_can/meat_can.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

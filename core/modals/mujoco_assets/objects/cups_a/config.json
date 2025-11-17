@@ -1,0 +1,24 @@
+{
+  "name": "cups_a",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/cups_a/cups_a.xml",
+  "behaviors": [
+    "graspable",
+    "fragile",
+    "container",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "fragile",
+        "container",
+        "stackable"
+      ]
+    }
+  }
+}

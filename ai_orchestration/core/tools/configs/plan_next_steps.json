@@ -1,0 +1,15 @@
+{
+  "tool_id": "plan_next_steps",
+  "description": "Plan your approach before executing. Your plan is logged to track your strategy and decision-making process.",
+  "type": "non_function_tool",
+  "parameters": {
+    "plan": {
+      "type": "string",
+      "description": "Your step-by-step plan or strategy for completing the task",
+      "required": true
+    }
+  },
+  "returns": {
+    "logged": "boolean"
+  }
+}

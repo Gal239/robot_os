@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: foam_brick -->
+    <asset>
+        <mesh name="foam_brick_mesh" file="textured.obj"/>
+        <texture name="foam_brick_tex" type="2d" file="texture_map.png"/>
+        <material name="foam_brick_mat" texture="foam_brick_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="foam_brick">
+            <geom type="mesh"
+                  mesh="foam_brick_mesh"
+                  material="foam_brick_mat"
+                  mass="0.03"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.03" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

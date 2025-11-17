@@ -1,0 +1,58 @@
+{
+  "tool_id": "create_scene_script",
+  "description": "Create a Python script for scene generation using ExperimentOps API. The script will be saved to the workspace and can be executed to create the simulation scene.",
+  "type": "function_tool",
+  "parameters": {
+    "scene_name": {
+      "type": "string",
+      "description": "Descriptive name for the scene (e.g., 'kitchen', 'warehouse', 'breakfast_table'). Used for the filename.",
+      "required": true
+    },
+    "scene_description": {
+      "type": "string",
+      "description": "Brief description of what the scene contains and its purpose.",
+      "required": true
+    },
+    "script_code": {
+      "type": "string",
+      "description": "The Python code for scene creation. Should include only the ExperimentOps calls from ops.create_scene() through ops.compile(). Do NOT include imports, function definitions, or if __name__ == '__main__' blocks - these will be added automatically.",
+      "required": true
+    }
+  },
+  "returns": {
+    "success": "boolean",
+    "filename": "string",
+    "path": "string",
+    "message": "string"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "success": {"type": "boolean"},
+      "filename": {"type": "string"},
+      "path": {"type": "string"},
+      "message": {"type": "string"}
+    },
+    "required": ["success", "filename", "path", "message"]
+  },
+  "workflow_hints": {
+    "stage": "action",
+    "order": 6,
+    "when_to_use": "After discovering assets/behaviors/relations and reviewing examples/API docs, create your scene script",
+    "dependencies": ["discover_assets", "discover_behaviors", "discover_relations"]
+  },
+  "constraints": [
+    "Script must end with ops.compile()",
+    "Do NOT include imports - they are added automatically",
+    "Do NOT include function definitions or if __name__ == '__main__' blocks",
+    "Only include ops.create_scene() through ops.compile() calls",
+    "Use proper indentation (4 spaces per level)"
+  ],
+  "best_practices": [
+    "ALWAYS use discovery tools before creating scripts to understand available assets",
+    "Follow the patterns you find in get_scene_examples",
+    "Use the NEW beautiful API when possible: ops.assets.apple.position",
+    "Add comments to explain complex placements",
+    "Use meaningful variable names if needed"
+  ]
+}

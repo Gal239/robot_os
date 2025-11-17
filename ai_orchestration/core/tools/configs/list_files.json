@@ -1,0 +1,23 @@
+{
+  "tool_id": "list_files",
+  "description": "List files in workspace with optional glob pattern.",
+  "type": "function_tool",
+  "parameters": {
+    "pattern": {
+      "type": "string",
+      "description": "Glob pattern (e.g., *.md for markdown files)",
+      "required": false,
+      "default": "*"
+    }
+  },
+  "returns": {
+    "files": "array"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "files": {"type": "array"}
+    },
+    "required": ["files"]
+  }
+}

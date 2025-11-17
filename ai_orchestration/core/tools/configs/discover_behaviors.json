@@ -1,0 +1,35 @@
+{
+  "tool_id": "discover_behaviors",
+  "description": "AUTO-DISCOVERY: Get all available reward behaviors from BEHAVIORS.json. Returns all behavior types (hinged, graspable, stackable, etc.) with their properties, descriptions, and units. Pure MOP - reads from source of truth!",
+  "type": "function_tool",
+  "parameters": {},
+  "returns": {
+    "behaviors": "object mapping behavior names to their property definitions",
+    "summary": "object with behavior counts and categories"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "behaviors": {"type": "object"},
+      "summary": {"type": "object"}
+    },
+    "required": ["behaviors", "summary"]
+  },
+  "workflow_hints": {
+    "stage": "discovery",
+    "order": 2,
+    "when_to_use": "After discovering assets, learn what reward behaviors can be tracked (stackable, stable, hinged, etc.)",
+    "outputs_feed": ["create_scene_script"]
+  },
+  "examples": [
+    {
+      "description": "Get all behaviors",
+      "input": {},
+      "output_summary": "Returns 18 behaviors split into object behaviors (hinged, graspable, etc.) and robot behaviors (vision, tactile, etc.)",
+      "use_case": "To understand what properties can be tracked with ops.add_reward()"
+    }
+  ],
+  "best_practices": [
+    "Use this to understand what reward behaviors are available before adding rewards to scenes"
+  ]
+}

@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: cracker_box -->
+    <asset>
+        <mesh name="cracker_box_mesh" file="textured.obj"/>
+        <texture name="cracker_box_tex" type="2d" file="texture_map.png"/>
+        <material name="cracker_box_mat" texture="cracker_box_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="cracker_box">
+            <geom type="mesh"
+                  mesh="cracker_box_mesh"
+                  material="cracker_box_mat"
+                  mass="0.25"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.25" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

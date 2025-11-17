@@ -1,0 +1,16 @@
+{
+  "arm": 0.002196198739876143,
+  "lift": 0.015,
+  "gripper": 0.041688023000716425,
+  "wrist_yaw": 0.0026358394626068778,
+  "wrist_pitch": 0.006089320948485022,
+  "wrist_roll": 0.0063301749567648,
+  "head_pan": 0.00013295645665345468,
+  "head_tilt": 0.00789019915616379,
+  "left_wheel_vel": 0.0,
+  "right_wheel_vel": 0.0,
+  "imu_rotation": 0.0349,
+  "odometry_rotation": 0.0349,
+  "odometry_distance": 0.02,
+  "position_z": 0.01
+}

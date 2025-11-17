@@ -1,0 +1,13 @@
+<mujoco model="slide_cabinet">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="slidecabinet_asset.xml"/>
+
+    <worldbody>
+        <body name="slide_cabinet" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="slidecabinet_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: wrench -->
+    <asset>
+        <mesh name="wrench_mesh" file="textured.obj"/>
+        <texture name="wrench_tex" type="2d" file="texture_map.png"/>
+        <material name="wrench_mat" texture="wrench_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="wrench">
+            <geom type="mesh"
+                  mesh="wrench_mesh"
+                  material="wrench_mat"
+                  mass="0.3"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.3" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

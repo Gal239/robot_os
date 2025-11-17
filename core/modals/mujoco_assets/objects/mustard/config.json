@@ -1,0 +1,22 @@
+{
+  "name": "mustard",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/mustard/mustard.xml",
+  "behaviors": [
+    "graspable",
+    "pourable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "pourable",
+        "stackable"
+      ]
+    }
+  }
+}

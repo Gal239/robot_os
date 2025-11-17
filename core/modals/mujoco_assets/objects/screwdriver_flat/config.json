@@ -1,0 +1,20 @@
+{
+  "name": "screwdriver_flat",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/screwdriver_flat/screwdriver_flat.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

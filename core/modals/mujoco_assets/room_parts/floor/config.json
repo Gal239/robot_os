@@ -1,0 +1,15 @@
+{
+  "name": "floor",
+  "category": "room_parts",
+  "behaviors": ["surface"],
+  "semantic_properties": {
+    "contact_with": {
+      "type": "contact",
+      "description": "Object touching floor - detects drops/landings"
+    },
+    "contact_force": {
+      "type": "contact",
+      "description": "Force magnitude of floor contact"
+    }
+  }
+}

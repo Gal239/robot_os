@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: softball -->
+    <asset>
+        <mesh name="softball_mesh" file="textured.obj"/>
+        <texture name="softball_tex" type="2d" file="texture_map.png"/>
+        <material name="softball_mat" texture="softball_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="softball">
+            <geom type="mesh"
+                  mesh="softball_mesh"
+                  material="softball_mat"
+                  mass="0.18"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.18" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

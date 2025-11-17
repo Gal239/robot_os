@@ -1,0 +1,13 @@
+<mujoco model="light_switches">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="lightButtons_assets.xml"/>
+
+    <worldbody>
+        <body name="light_switches" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="buttons_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

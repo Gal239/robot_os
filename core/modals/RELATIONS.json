@@ -1,0 +1,91 @@
+{
+  "on_top": {
+    "name": "on_top",
+    "description": "Place object on surface with optional surface_position",
+    "dimension_aware": true,
+    "requires_dimensions": false,
+    "parameters": [
+      "surface_position",
+      "offset",
+      "distance"
+    ],
+    "offset_direction": "+Z",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"on_top\")"
+  },
+  "stack_on": {
+    "name": "stack_on",
+    "description": "Vertically stack objects (center-aligned, uses real dimensions)",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "distance"
+    ],
+    "offset_direction": "+Z",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"stack_on\")"
+  },
+  "inside": {
+    "name": "inside",
+    "description": "Place object inside container",
+    "dimension_aware": true,
+    "requires_dimensions": false,
+    "parameters": [],
+    "offset_direction": null,
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"inside\")"
+  },
+  "next_to": {
+    "name": "next_to",
+    "description": "Place object adjacent on same surface",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "spacing",
+      "distance"
+    ],
+    "offset_direction": "+X",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"next_to\")"
+  },
+  "front": {
+    "name": "front",
+    "description": "In front of object (+Y axis)",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "distance"
+    ],
+    "offset_direction": "+Y",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"front\")"
+  },
+  "back": {
+    "name": "back",
+    "description": "Behind object (-Y axis)",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "distance"
+    ],
+    "offset_direction": "-Y",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"back\")"
+  },
+  "left": {
+    "name": "left",
+    "description": "Left of object (-X axis)",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "distance"
+    ],
+    "offset_direction": "-X",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"left\")"
+  },
+  "right": {
+    "name": "right",
+    "description": "Right of object (+X axis)",
+    "dimension_aware": true,
+    "requires_dimensions": true,
+    "parameters": [
+      "distance"
+    ],
+    "offset_direction": "+X",
+    "example": "ops.add_asset(\"object\", relative_to=\"base\", relation=\"right\")"
+  }
+}

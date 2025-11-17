@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: skillet_lid -->
+    <asset>
+        <mesh name="skillet_lid_mesh" file="textured.obj"/>
+        <texture name="skillet_lid_tex" type="2d" file="texture_map.png"/>
+        <material name="skillet_lid_mat" texture="skillet_lid_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="skillet_lid">
+            <geom type="mesh"
+                  mesh="skillet_lid_mesh"
+                  material="skillet_lid_mat"
+                  mass="0.35"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.35" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

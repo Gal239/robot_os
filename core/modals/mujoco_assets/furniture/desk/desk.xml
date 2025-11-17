@@ -1,0 +1,13 @@
+<mujoco model="desk">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="studyTable_asset.xml"/>
+
+    <worldbody>
+        <body name="desk" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="studyTable_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

@@ -1,0 +1,48 @@
+{
+  "tool_id": "edit_file_block",
+  "description": "Edit file blocks with multiple operations (update, add, replace, delete).",
+  "type": "function_tool",
+  "parameters": {
+    "path": {
+      "type": "string",
+      "description": "File path in workspace",
+      "required": true
+    },
+    "operation": {
+      "type": "string",
+      "description": "Operation to perform: update, add, replace, or delete",
+      "required": true
+    },
+    "block_id": {
+      "type": "string",
+      "description": "Block ID to edit/delete/replace (required for update/delete/replace)",
+      "required": false,
+      "default": null
+    },
+    "block_type": {
+      "type": "string",
+      "description": "Block type (required for add)",
+      "required": false,
+      "default": null
+    },
+    "new_data": {
+      "type": "object",
+      "description": "New data for block (required for update/add/replace)",
+      "required": false,
+      "default": null
+    }
+  },
+  "returns": {
+    "success": "boolean",
+    "operation": "string",
+    "block_id": "string",
+    "error": "string"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "success": {"type": "boolean"}
+    },
+    "required": ["success"]
+  }
+}

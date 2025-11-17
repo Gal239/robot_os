@@ -1,0 +1,13 @@
+<mujoco model="kettle">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="kettle_asset.xml"/>
+
+    <worldbody>
+        <body name="kettle" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="kettle_body0.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

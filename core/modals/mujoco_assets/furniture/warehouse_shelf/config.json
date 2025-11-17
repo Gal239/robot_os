@@ -1,0 +1,29 @@
+{
+  "name": "warehouse_shelf",
+  "category": "furniture",
+  "xml_file": "warehouse_shelf.xml",
+  "components": {
+    "warehouse_shelf": {
+      "name": "warehouse_shelf",
+      "geom_names": [
+        "post_fl",
+        "post_fr",
+        "post_bl",
+        "post_br",
+        "shelf1",
+        "shelf2",
+        "shelf3",
+        "shelf4"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "surface",
+        "stackable"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface",
+    "stackable"
+  ]
+}

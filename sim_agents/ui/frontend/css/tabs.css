@@ -1,0 +1,133 @@
+/**
+ * Echo Robotics Lab - Professional Tabs
+ * Light theme with icon support
+ */
+
+.tabs-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ========== Tab Navigation ========== */
+.tab-nav {
+    display: flex;
+    gap: var(--spacing-xs);
+    height: 44px;
+    padding: 0 var(--spacing-lg);
+    background-color: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
+    align-items: center;
+}
+
+.tab-button {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: transparent;
+    border: none;
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+}
+
+.tab-button i {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.tab-button:hover {
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text-primary);
+}
+
+.tab-button.active {
+    color: var(--color-primary-dark);
+    background-color: var(--color-primary-bg);
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+}
+
+/* ========== Tab Content ========== */
+.tab-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-pane {
+    display: none;
+    height: 100%;
+    animation: fadeIn var(--transition-base);
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========== Tab Content Sections ========== */
+.tab-section {
+    padding: var(--spacing-lg);
+}
+
+.tab-section-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.tab-section-description {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* ========== Dark Mode ========== */
+[data-theme="dark"] .tab-nav {
+    background-color: #2B2B2B;
+    border-bottom-color: #555555;
+}
+
+[data-theme="dark"] .tab-button {
+    color: #A9B7C6;
+}
+
+[data-theme="dark"] .tab-button:hover {
+    background-color: #3C3F41;
+    color: #BABABA;
+}
+
+[data-theme="dark"] .tab-button.active {
+    color: #6ee7b7;
+    background-color: rgba(52, 211, 153, 0.15);
+}
+
+[data-theme="dark"] .tab-button.active::after {
+    background-color: #34d399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.4);
+}

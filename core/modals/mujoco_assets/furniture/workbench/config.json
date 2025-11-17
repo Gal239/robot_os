@@ -1,0 +1,21 @@
+{
+  "name": "workbench",
+  "category": "furniture",
+  "xml_file": "workbench.xml",
+  "components": {
+    "workbench": {
+      "name": "workbench",
+      "geom_names": [
+        "workbench_surface",
+        "workbench_frame"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "surface"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface"
+  ]
+}

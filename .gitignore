@@ -1,0 +1,36 @@
+# Secrets
+**/secrets.json
+common/secrets.json
+*.env
+.env*
+*credentials*
+*api_key*
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Database - all run sessions
+database/
+**/databases/runs/
+ai_orchestration/databases/
+
+# Logs
+*.log
+MUJOCO_LOG.TXT

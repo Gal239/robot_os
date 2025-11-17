@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: plum -->
+    <asset>
+        <mesh name="plum_mesh" file="textured.obj"/>
+        <texture name="plum_tex" type="2d" file="texture_map.png"/>
+        <material name="plum_mat" texture="plum_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="plum">
+            <geom type="mesh"
+                  mesh="plum_mesh"
+                  material="plum_mat"
+                  mass="0.08"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.08" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: True -->
+        </body>
+    </worldbody>
+</mujoco>

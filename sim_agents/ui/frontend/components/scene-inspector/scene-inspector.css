@@ -1,0 +1,238 @@
+/**
+ * Dream Factory - Scene Inspector Component
+ * Professional tree view for scene metadata
+ */
+
+.scene-inspector {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-base);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+}
+
+/* ========== Header ========== */
+.scene-inspector-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: var(--color-bg-elevated);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.scene-inspector-title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.scene-inspector-title-icon {
+    font-size: var(--font-size-lg);
+}
+
+.scene-inspector-title-text {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+/* ========== Content ========== */
+.scene-inspector-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+}
+
+/* Fullscreen immersive mode (no header) */
+.scene-inspector-content-fullscreen {
+    padding: var(--spacing-lg);
+    height: 100%;
+    position: relative;
+}
+
+.scene-inspector-fullscreen {
+    position: relative;
+}
+
+/* ========== Data List ========== */
+.scene-inspector-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.scene-inspector-item {
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    transition: all var(--transition-base);
+}
+
+.scene-inspector-item:hover {
+    border-color: var(--color-border-strong);
+    transform: translateX(4px);
+}
+
+.scene-inspector-item-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-sm);
+}
+
+.scene-inspector-item-key {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-secondary);
+    font-family: var(--font-mono);
+}
+
+.scene-inspector-item-type {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    padding: 2px var(--spacing-xs);
+    background: var(--color-bg-subtle);
+    border-radius: var(--border-radius-sm);
+    font-family: var(--font-mono);
+}
+
+.scene-inspector-item-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    font-family: var(--font-mono);
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+/* ========== Nested Objects ========== */
+.scene-inspector-nested {
+    margin-top: var(--spacing-sm);
+    padding-left: var(--spacing-md);
+    border-left: 2px solid var(--color-border);
+}
+
+.scene-inspector-nested-item {
+    padding: var(--spacing-xs) 0;
+}
+
+.scene-inspector-nested-key {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-medium);
+}
+
+.scene-inspector-nested-value {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    margin-top: 2px;
+}
+
+/* ========== Empty State ========== */
+.scene-inspector-empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2xl);
+    text-align: center;
+    overflow: hidden;
+}
+
+/* Lava lamp particles - smooth rising animation */
+@keyframes riseLavaParticle {
+    0% {
+        top: 110%;
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.7;
+    }
+    100% {
+        top: -10%;
+        opacity: 0;
+    }
+}
+
+/* Smooth pulse animations - Random per particle */
+@keyframes lavaPulse1 {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse2 {
+    0%, 100% { opacity: 0.5; }
+    30% { opacity: 0.8; }
+    70% { opacity: 0.4; }
+}
+
+@keyframes lavaPulse3 {
+    0%, 100% { opacity: 0.4; }
+    40% { opacity: 0.7; }
+    80% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse4 {
+    0%, 100% { opacity: 0.6; }
+    25% { opacity: 0.3; }
+    50% { opacity: 0.9; }
+    75% { opacity: 0.5; }
+}
+
+.scene-inspector-empty-icon {
+    font-size: 48px;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+    position: relative;
+    z-index: 1;
+}
+
+.scene-inspector-empty-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-sm);
+    position: relative;
+    z-index: 1;
+}
+
+.scene-inspector-empty-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Value Types (colored) ========== */
+.scene-inspector-value.string {
+    color: var(--color-success-light);
+}
+
+.scene-inspector-value.number {
+    color: var(--color-accent-light);
+}
+
+.scene-inspector-value.boolean {
+    color: var(--color-primary-light);
+}
+
+.scene-inspector-value.null {
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
+.scene-inspector-value.array,
+.scene-inspector-value.object {
+    color: var(--color-secondary-light);
+}

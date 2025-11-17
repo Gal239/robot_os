@@ -1,0 +1,20 @@
+{
+  "name": "foam_brick",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/foam_brick/foam_brick.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

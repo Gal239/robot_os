@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: mustard -->
+    <asset>
+        <mesh name="mustard_mesh" file="textured.obj"/>
+        <texture name="mustard_tex" type="2d" file="texture_map.png"/>
+        <material name="mustard_mat" texture="mustard_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="mustard">
+            <geom type="mesh"
+                  mesh="mustard_mesh"
+                  material="mustard_mat"
+                  mass="0.35"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.35" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

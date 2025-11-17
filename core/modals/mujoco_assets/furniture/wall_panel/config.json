@@ -1,0 +1,24 @@
+{
+  "name": "wall_panel",
+  "category": "furniture",
+  "xml_file": "wall_panel.xml",
+  "components": {
+    "wall_panel": {
+      "name": "wall_panel",
+      "geom_names": [
+        "wall_body"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "surface"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface"
+  ],
+  "variants": [
+    "backwall_body",
+    "sidewall_body"
+  ]
+}

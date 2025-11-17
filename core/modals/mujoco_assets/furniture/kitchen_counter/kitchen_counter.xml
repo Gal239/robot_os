@@ -1,0 +1,13 @@
+<mujoco model="kitchen_counter">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="counters_asset.xml"/>
+
+    <worldbody>
+        <body name="kitchen_counter" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="sink_counter_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

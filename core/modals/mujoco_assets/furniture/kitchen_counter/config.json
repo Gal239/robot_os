@@ -1,0 +1,34 @@
+{
+  "name": "kitchen_counter",
+  "category": "furniture",
+  "xml_file": "kitchen_counter.xml",
+  "components": {
+    "kitchen_counter": {
+      "name": "kitchen_counter",
+      "geom_names": [
+        "counter_top",
+        "counter_body",
+        "drawer1_body",
+        "drawer2_body",
+        "cabinet_door_panel"
+      ],
+      "joint_names": [
+        "drawer1_joint",
+        "drawer2_joint",
+        "cabinet_door_joint"
+      ],
+      "behaviors": [
+        "surface",
+        "container",
+        "hinged",
+        "sliding"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface",
+    "container",
+    "hinged",
+    "sliding"
+  ]
+}

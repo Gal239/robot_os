@@ -1,0 +1,42 @@
+{
+  "name": "dishwasher",
+  "category": "furniture",
+  "xml_file": "dishwasher.xml",
+  "components": {
+    "dishwasher": {
+      "name": "dishwasher",
+      "geom_names": [
+        "dishwasher_body",
+        "door_panel"
+      ],
+      "joint_names": [
+        "door_joint"
+      ],
+      "behaviors": [
+        "container",
+        "hinged"
+      ]
+    }
+  },
+  "behaviors": [
+    "container",
+    "hinged"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "ajar": 0.25,
+    "half_open": 0.5,
+    "open": 1.0
+  },
+  "joint_ranges": {
+    "top_rack": [
+      0.0,
+      0.274
+    ],
+    "door": [
+      -1.5,
+      0.0
+    ]
+  },
+  "default_state": "closed"
+}

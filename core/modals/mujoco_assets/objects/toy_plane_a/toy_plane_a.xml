@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: toy_plane_a -->
+    <asset>
+        <mesh name="toy_plane_a_mesh" file="textured.obj"/>
+        <texture name="toy_plane_a_tex" type="2d" file="texture_map.png"/>
+        <material name="toy_plane_a_mat" texture="toy_plane_a_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="toy_plane_a">
+            <geom type="mesh"
+                  mesh="toy_plane_a_mesh"
+                  material="toy_plane_a_mat"
+                  mass="0.15"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.15" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

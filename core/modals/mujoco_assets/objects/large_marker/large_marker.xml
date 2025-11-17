@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: large_marker -->
+    <asset>
+        <mesh name="large_marker_mesh" file="textured.obj"/>
+        <texture name="large_marker_tex" type="2d" file="texture_map.png"/>
+        <material name="large_marker_mat" texture="large_marker_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="large_marker">
+            <geom type="mesh"
+                  mesh="large_marker_mesh"
+                  material="large_marker_mat"
+                  mass="0.03"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.03" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

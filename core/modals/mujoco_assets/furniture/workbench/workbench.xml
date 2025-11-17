@@ -1,0 +1,13 @@
+<mujoco model="workbench">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="ventionTable_asset.xml"/>
+
+    <worldbody>
+        <body name="workbench" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="ventionTable_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

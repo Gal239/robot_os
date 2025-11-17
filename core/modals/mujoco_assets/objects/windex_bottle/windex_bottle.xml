@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: windex_bottle -->
+    <asset>
+        <mesh name="windex_bottle_mesh" file="textured.obj"/>
+        <texture name="windex_bottle_tex" type="2d" file="texture_map.png"/>
+        <material name="windex_bottle_mat" texture="windex_bottle_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="windex_bottle">
+            <geom type="mesh"
+                  mesh="windex_bottle_mesh"
+                  material="windex_bottle_mat"
+                  mass="0.75"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.75" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: True -->
+        </body>
+    </worldbody>
+</mujoco>

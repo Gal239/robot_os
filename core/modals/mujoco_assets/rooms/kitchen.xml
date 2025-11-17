@@ -1,0 +1,80 @@
+<mujoco model="room">
+<!-- Room assets and geometry -->
+  <asset>
+    <!-- Luxury marble floor -->
+    <texture name="marble_floor" type="2d" builtin="gradient"
+             rgb1="0.95 0.95 0.92" rgb2="0.88 0.88 0.85"
+             width="512" height="512"/>
+
+    <!-- Cream painted walls -->
+    <texture name="cream_walls" type="2d" builtin="flat"
+             rgb1="0.96 0.94 0.88" rgb2="0.94 0.92 0.86"
+             width="1024" height="1024"/>
+
+    <!-- Stainless steel accents -->
+    <texture name="steel" type="2d" builtin="gradient"
+             rgb1="0.8 0.82 0.85" rgb2="0.75 0.77 0.8"
+             width="256" height="256"/>
+
+    <!-- Materials -->
+    <material name="marble" texture="marble_floor"
+              texrepeat="8 8"
+              specular="0.9"
+              shininess="0.8"
+              reflectance="0.4"/>
+
+    <material name="cream_paint" texture="cream_walls"
+              texrepeat="2 2"
+              specular="0.2"
+              shininess="0.1"
+              reflectance="0.05"/>
+
+    <material name="stainless" texture="steel"
+              texrepeat="4 4"
+              specular="0.95"
+              shininess="0.9"
+              reflectance="0.7"/>
+  </asset>
+
+  <worldbody>
+    <!-- Marble floor -->
+    <geom name="floor" type="plane"
+          size="4 5 0.1"
+          material="marble"
+          friction="0.8 0.02 0.01"/>
+
+    <!-- Cream walls -->
+    <geom name="wall_north" type="box"
+          size="4 0.15 3"
+          pos="0 5 1.5"
+          material="cream_paint"/>
+    <geom name="wall_south" type="box"
+          size="4 0.15 3"
+          pos="0 -5 1.5"
+          material="cream_paint"/>
+    <geom name="wall_east" type="box"
+          size="0.15 5 3"
+          pos="4 0 1.5"
+          material="cream_paint"/>
+    <geom name="wall_west" type="box"
+          size="0.15 5 3"
+          pos="-4 0 1.5"
+          material="cream_paint"/>
+
+    <!-- Window -->
+    <geom name="window_frame" type="box"
+          size="1.5 0.1 1.2"
+          pos="0 -4.95 1.8"
+          material="stainless"/>
+    <geom name="window_glass" type="box"
+          size="1.4 0.05 1.1"
+          pos="0 -4.9 1.8"
+          rgba="0.8 0.9 1.0 0.3"/>
+
+    <!-- Ceiling -->
+    <geom name="ceiling" type="box"
+          size="4 5 0.1"
+          pos="0 0 3"
+          rgba="0.98 0.98 0.96 1"/>
+  </worldbody>
+</mujoco>

@@ -1,0 +1,108 @@
+/**
+ * Echo Robotics Lab - Premium Robot Icon
+ * Subtle, minimalist robot with blinking eyes
+ */
+
+.robot-icon {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+/* Robot Head Container */
+.robot-head {
+    width: 32px;
+    height: 32px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    border: 2px solid var(--color-primary-dark);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Robot Antenna */
+.robot-head::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 6px;
+    background: var(--color-primary-dark);
+    border-radius: 1px;
+}
+
+/* Antenna Tip */
+.robot-head::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--color-primary-dark);
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(16, 185, 129, 0.4);
+}
+
+/* Robot Eyes Container */
+.robot-eyes {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Individual Eye */
+.robot-eye {
+    width: 5px;
+    height: 8px;
+    background: var(--color-bg-elevated);
+    border-radius: 1px;
+    transition: transform 0.1s ease-out, height 0.1s ease-out;
+    position: relative;
+}
+
+/* Blinking Animation */
+.robot-eye.blinking {
+    height: 1px;
+}
+
+/* Robot Title */
+.robot-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    letter-spacing: -0.02em;
+}
+
+/* Dark Mode */
+[data-theme="dark"] .robot-head {
+    background: #10b981;
+    border-color: #059669;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .robot-head::before {
+    background: #059669;
+}
+
+[data-theme="dark"] .robot-head::after {
+    background: #00FF00;
+    box-shadow: 0 0 6px rgba(0, 255, 0, 0.6);
+}
+
+[data-theme="dark"] .robot-eye {
+    background: #2B2B2B;
+}
+
+[data-theme="dark"] .robot-title {
+    color: #BABABA;
+}

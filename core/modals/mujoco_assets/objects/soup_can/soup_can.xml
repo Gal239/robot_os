@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: soup_can -->
+    <asset>
+        <mesh name="soup_can_mesh" file="textured.obj"/>
+        <texture name="soup_can_tex" type="2d" file="texture_map.png"/>
+        <material name="soup_can_mat" texture="soup_can_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="soup_can">
+            <geom type="mesh"
+                  mesh="soup_can_mesh"
+                  material="soup_can_mat"
+                  mass="0.35"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.35" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

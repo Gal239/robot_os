@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Orchestration Dashboard</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- D3.js -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- Frappe Gantt -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.1/dist/frappe-gantt.min.js"></script>
+
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/navbar.css">
+    <link rel="stylesheet" href="/static/css/cards.css">
+    <link rel="stylesheet" href="/static/css/graph.css">
+    <link rel="stylesheet" href="/static/css/sidebar.css">
+    <link rel="stylesheet" href="/static/css/logs.css">
+    <link rel="stylesheet" href="/static/css/modal.css">
+    <link rel="stylesheet" href="/static/css/gantt.css">
+    <link rel="stylesheet" href="/static/css/workspace.css">
+    <link rel="stylesheet" href="/static/css/animations.css">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-left">
+                <div class="logo">
+                    <i data-lucide="zap"></i>
+                    <span>AI Orchestration</span>
+                </div>
+                <select id="sessionSelector" class="session-selector">
+                    <option value="">Loading sessions...</option>
+                </select>
+            </div>
+
+            <div class="navbar-right">
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot"></div>
+                    <span id="statusText">Connecting...</span>
+                </div>
+                <button class="icon-button" id="refreshBtn" title="Refresh">
+                    <i data-lucide="refresh-cw"></i>
+                </button>
+                <button class="icon-button" id="settingsBtn" title="Settings">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-container">
+
+        <!-- Overview Section - Metric Cards -->
+        <section class="overview-section">
+            <div class="metric-cards">
+
+                <!-- Card 1: Task Statistics -->
+                <div class="metric-card" id="taskStatsCard">
+                    <div class="card-header">
+                        <h3>Task Statistics</h3>
+                        <i data-lucide="layers"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="main-metric">
+                            <span class="metric-value" id="totalTasks">0</span>
+                            <span class="metric-label">Total Tasks</span>
+                        </div>
+                        <div class="metric-breakdown">
+                            <div class="metric-item">
+                                <span class="badge badge-success" id="completedTasks">0</span>
+                                <span>Completed</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="badge badge-info" id="runningTasks">0</span>
+                                <span>Running</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="badge badge-warning" id="waitingTasks">0</span>
+                                <span>Waiting</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="badge badge-gray" id="readyTasks">0</span>
+                                <span>Ready</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="taskProgress" style="width: 0%"></div>
+                        </div>
+                        <div class="session-metrics">
+                            <div class="session-metric-item">
+                                <span class="session-metric-label">Duration:</span>
+                                <span class="session-metric-value" id="sessionDurationCompact">-</span>
+                            </div>
+                            <div class="session-metric-item">
+                                <span class="session-metric-label">Tools:</span>
+                                <span class="session-metric-value" id="totalToolCallsCompact">0</span>
+                            </div>
+                            <div class="session-metric-item">
+                                <span class="session-metric-label">Avg Task:</span>
+                                <span class="session-metric-value" id="avgTaskTimeCompact">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Agent Activity -->
+                <div class="metric-card" id="agentActivityCard">
+                    <div class="card-header">
+                        <h3>Agent Activity</h3>
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="main-metric">
+                            <span class="metric-value" id="totalAgents">0</span>
+                            <span class="metric-label">Active Agents</span>
+                        </div>
+                        <div class="agent-list" id="agentList">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Tool Usage Breakdown -->
+                <div class="metric-card" id="toolUsageCard">
+                    <div class="card-header">
+                        <h3>Tool Usage</h3>
+                        <i data-lucide="wrench"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="tool-usage-list" id="toolUsageList">
+                            <!-- Dynamically populated -->
+                            <p class="text-muted">No tool usage data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Recent Events -->
+                <div class="metric-card" id="recentEventsCard">
+                    <div class="card-header">
+                        <h3>Recent Events</h3>
+                        <i data-lucide="activity"></i>
+                    </div>
+                    <div class="card-content">
+                        <div class="events-list" id="recentEventsList">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- View Tabs -->
+        <section class="view-tabs-section">
+            <div class="view-tabs" id="viewTabs">
+                <button class="view-tab-btn active" data-view="graph">
+                    <i data-lucide="git-branch"></i>
+                    <span>Graph View</span>
+                </button>
+                <button class="view-tab-btn" data-view="timeline">
+                    <i data-lucide="clock"></i>
+                    <span>Timeline View</span>
+                </button>
+                <button class="view-tab-btn" data-view="gantt">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Gantt View</span>
+                </button>
+                <button class="view-tab-btn" data-view="master-log">
+                    <i data-lucide="file-text"></i>
+                    <span>Master Log</span>
+                </button>
+                <button class="view-tab-btn" data-view="meta-log">
+                    <i data-lucide="layers"></i>
+                    <span>Meta Log</span>
+                </button>
+                <button class="view-tab-btn" data-view="workspace">
+                    <i data-lucide="folder"></i>
+                    <span>Workspace</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Content Area - Split Layout -->
+        <section class="content-section">
+
+            <!-- Graph View -->
+            <div class="view-container active" id="graphView">
+                <div class="content-grid">
+                    <!-- Left Side: Node Graph -->
+                    <div class="graph-container">
+                        <div class="graph-header">
+                            <h2>Task Graph</h2>
+                            <div class="graph-controls">
+                                <button class="control-btn" id="graphStatsBtn" title="Graph Statistics">
+                                    <i data-lucide="bar-chart-2"></i>
+                                </button>
+                                <button class="control-btn" id="fitScreenBtn" title="Fit to Screen">
+                                    <i data-lucide="maximize-2"></i>
+                                </button>
+                                <button class="control-btn" id="zoomInBtn" title="Zoom In">
+                                    <i data-lucide="zoom-in"></i>
+                                </button>
+                                <button class="control-btn" id="zoomOutBtn" title="Zoom Out">
+                                    <i data-lucide="zoom-out"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="graphCanvas" class="graph-canvas">
+                            <!-- D3.js renders here -->
+                            <div class="graph-empty-state" id="graphEmptyState">
+                                <i data-lucide="git-branch"></i>
+                                <p>Select a session to view the task graph</p>
+                            </div>
+                        </div>
+                        <div class="graph-minimap" id="graphMinimap"></div>
+                    </div>
+
+                    <!-- Right Side: Detail Sidebar -->
+                    <div class="sidebar" id="detailSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="info"></i>
+                            <p>Click on a node to view details</p>
+                        </div>
+                        <!-- Content loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline View -->
+            <div class="view-container" id="timelineView">
+                <div class="content-grid">
+                    <div class="timeline-container">
+                        <div class="timeline-header">
+                            <h2>Timeline View</h2>
+                        </div>
+                        <div id="timelineContent" class="timeline-content">
+                            <div class="view-empty-state">
+                                <i data-lucide="clock"></i>
+                                <p>Loading timeline...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline Sidebar -->
+                    <div class="sidebar" id="timelineSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="info"></i>
+                            <p>Click on a timeline item to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gantt View -->
+            <div class="view-container" id="ganttView">
+                <div class="content-grid">
+                    <div class="gantt-container">
+                        <div class="gantt-header">
+                            <h2>Gantt Chart</h2>
+                            <div class="gantt-controls">
+                                <button class="control-btn" id="ganttFitBtn" title="Fit to Screen">
+                                    <i data-lucide="maximize-2"></i>
+                                </button>
+                                <button class="control-btn" id="ganttExportBtn" title="Export">
+                                    <i data-lucide="download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="ganttChart" class="gantt-chart">
+                            <div class="view-empty-state">
+                                <i data-lucide="bar-chart-3"></i>
+                                <p>Select a session to view the Gantt chart</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gantt Sidebar -->
+                    <div class="sidebar" id="ganttSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="info"></i>
+                            <p>Click on a task bar to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Master Log View -->
+            <div class="view-container" id="masterLogView">
+                <div class="content-grid">
+                    <div class="logs-container">
+                        <div class="logs-header">
+                            <h2>Master Log</h2>
+                            <div class="logs-controls">
+                                <input type="text" id="masterLogSearch" class="search-input" placeholder="Search logs...">
+                                <button class="control-btn" id="exportMasterLogBtn" title="Export Logs">
+                                    <i data-lucide="download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="logs-content" id="masterLogContent">
+                            <div class="view-empty-state">
+                                <i data-lucide="file-text"></i>
+                                <p>Loading master log...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Master Log Sidebar -->
+                    <div class="sidebar" id="masterLogSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="info"></i>
+                            <p>Click on a log entry to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meta Log View -->
+            <div class="view-container" id="metaLogView">
+                <div class="content-grid">
+                    <div class="logs-container">
+                        <div class="logs-header">
+                            <h2>Meta Log (Orchestration Events)</h2>
+                            <div class="logs-controls">
+                                <input type="text" id="metaLogSearch" class="search-input" placeholder="Search logs...">
+                                <button class="control-btn" id="exportMetaLogBtn" title="Export Logs">
+                                    <i data-lucide="download"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="logs-content" id="metaLogContent">
+                            <div class="view-empty-state">
+                                <i data-lucide="layers"></i>
+                                <p>Loading meta log...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meta Log Sidebar -->
+                    <div class="sidebar" id="metaLogSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="info"></i>
+                            <p>Click on a log entry to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workspace View -->
+            <div class="view-container" id="workspaceView">
+                <div class="content-grid">
+                    <!-- Left: File Cards Grid -->
+                    <div class="files-container">
+                        <div class="files-header">
+                            <h2>Workspace Files</h2>
+                            <div class="files-controls">
+                                <button class="control-btn" id="refreshWorkspaceBtn" title="Refresh">
+                                    <i data-lucide="refresh-cw"></i>
+                                </button>
+                                <input type="text" id="workspaceSearch" class="search-input" placeholder="Search files...">
+                            </div>
+                        </div>
+                        <div class="metric-cards" id="workspaceFilesGrid">
+                            <!-- File cards rendered here -->
+                            <div class="workspace-empty-state">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <h3>Loading Workspace</h3>
+                                <p>Fetching workspace files...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Sidebar for File Preview -->
+                    <div class="sidebar" id="workspaceSidebar">
+                        <div class="sidebar-empty">
+                            <i data-lucide="file"></i>
+                            <p>Click a file to preview</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+    </main>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Loading session data...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Graph Statistics Modal -->
+    <div class="log-modal hidden" id="graphStatsModal">
+        <div class="log-modal-overlay" onclick="closeGraphStatsModal()"></div>
+        <div class="log-modal-container">
+            <div class="log-modal-header">
+                <div class="log-modal-title">
+                    <i data-lucide="bar-chart-2"></i>
+                    <h2>Graph Statistics</h2>
+                </div>
+                <div class="log-modal-controls">
+                    <button class="control-btn" onclick="closeGraphStatsModal()" title="Close">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="log-modal-content" id="graphStatsContent">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workspace File Modal -->
+    <div class="log-modal hidden" id="workspaceFileModal">
+        <div class="log-modal-overlay" onclick="window.workspaceViewInstance && window.workspaceViewInstance.closeFileModal()"></div>
+        <div class="log-modal-container">
+            <div class="log-modal-header">
+                <div class="log-modal-title">
+                    <i data-lucide="file-text"></i>
+                    <h2 id="workspaceModalTitle">Document</h2>
+                </div>
+                <div class="log-modal-controls">
+                    <button class="control-btn" id="downloadFromModalBtn" title="Download">
+                        <i data-lucide="download"></i>
+                    </button>
+                    <button class="control-btn" onclick="window.workspaceViewInstance && window.workspaceViewInstance.closeFileModal()" title="Close">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="log-modal-content" id="workspaceModalContent">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading document...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/utils.js"></script>
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/cards.js"></script>
+    <script src="/static/js/sidebar.js"></script>
+    <script src="/static/js/graph.js"></script>
+    <script src="/static/js/graph-stats.js"></script>
+    <script src="/static/js/gantt.js"></script>
+    <script src="/static/js/workspace.js"></script>
+    <script src="/static/js/main.js"></script>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+
+</body>
+</html>

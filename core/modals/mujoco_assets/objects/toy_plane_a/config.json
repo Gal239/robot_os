@@ -1,0 +1,20 @@
+{
+  "name": "toy_plane_a",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/toy_plane_a/toy_plane_a.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

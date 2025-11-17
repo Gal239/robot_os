@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: sponge -->
+    <asset>
+        <mesh name="sponge_mesh" file="textured.obj"/>
+        <texture name="sponge_tex" type="2d" file="texture_map.png"/>
+        <material name="sponge_mat" texture="sponge_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="sponge">
+            <geom type="mesh"
+                  mesh="sponge_mesh"
+                  material="sponge_mat"
+                  mass="0.01"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.01" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

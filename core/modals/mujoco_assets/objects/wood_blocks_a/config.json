@@ -1,0 +1,20 @@
+{
+  "name": "wood_blocks_a",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/wood_blocks_a/wood_blocks_a.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

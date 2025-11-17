@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: rubiks_cube -->
+    <asset>
+        <mesh name="rubiks_cube_mesh" file="textured.obj"/>
+        <texture name="rubiks_cube_tex" type="2d" file="texture_map.png"/>
+        <material name="rubiks_cube_mat" texture="rubiks_cube_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="rubiks_cube">
+            <geom type="mesh"
+                  mesh="rubiks_cube_mesh"
+                  material="rubiks_cube_mat"
+                  mass="0.1"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

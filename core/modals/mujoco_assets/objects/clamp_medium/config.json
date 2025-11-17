@@ -1,0 +1,20 @@
+{
+  "name": "clamp_medium",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/clamp_medium/clamp_medium.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

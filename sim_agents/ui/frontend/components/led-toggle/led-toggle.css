@@ -1,0 +1,179 @@
+/**
+ * Echo Robotics Lab - LED Toggle Button Component
+ * Hardware-style LED indicator buttons for tab navigation
+ */
+
+/* ========== Container ========== */
+.led-toggle-nav {
+    display: flex;
+    gap: var(--spacing-sm);
+    height: 60px;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-bg-elevated);
+    border-top: 2px solid var(--color-border-strong);
+    border-bottom: 2px solid var(--color-border-strong);
+    align-items: center;
+}
+
+/* ========== LED Toggle Button ========== */
+.led-toggle {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 6px var(--spacing-md);
+    background: linear-gradient(to bottom, #f8f9fc, #e8eaf0);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    border: 1px solid #cbd5e1;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+                0 1px 2px rgba(0, 0, 0, 0.06),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    position: relative;
+}
+
+.led-toggle:hover {
+    background: linear-gradient(to bottom, #ffffff, #f0f1f5);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12),
+                0 2px 4px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.led-toggle:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1),
+                inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ========== LED Indicator Dot ========== */
+.led-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #fbbf24, #f59e0b 60%, #d97706);
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.5),
+                0 0 8px rgba(245, 158, 11, 0.3),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    transition: all var(--transition-base);
+    flex-shrink: 0;
+    margin-right: 2px;
+}
+
+/* ========== LED Label ========== */
+.led-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-secondary);
+    transition: color var(--transition-base);
+}
+
+/* ========== Active State (Light Mode) ========== */
+.led-toggle.active {
+    background: #ecfdf5;
+    border-color: #10b981;
+}
+
+.led-toggle.active .led-indicator {
+    background: radial-gradient(circle at 30% 30%, #6ee7b7, #10b981 60%, #059669);
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.6),
+                0 0 12px rgba(16, 185, 129, 0.3),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    animation: ledPulse 2s ease-in-out infinite;
+}
+
+.led-toggle.active .led-label {
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* ========== LED Pulse Animation ========== */
+@keyframes ledPulse {
+    0%, 100% {
+        box-shadow: 0 0 6px rgba(16, 185, 129, 0.6),
+                    0 0 12px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.8),
+                    0 0 16px rgba(16, 185, 129, 0.4);
+    }
+}
+
+/* ========== Dark Mode ========== */
+[data-theme="dark"] .led-toggle-nav {
+    background-color: #2B2B2B;
+    border-top-color: #555555;
+    border-bottom-color: #555555;
+}
+
+[data-theme="dark"] .led-toggle {
+    background: linear-gradient(to bottom, #3C3F41, #2B2B2B);
+    border-color: #555555;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4),
+                0 1px 2px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] .led-toggle:hover {
+    background: linear-gradient(to bottom, #4A4E51, #3C3F41);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.5),
+                0 2px 4px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="dark"] .led-toggle:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5),
+                inset 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .led-indicator {
+    background: radial-gradient(circle at 30% 30%, #fdba74, #fb923c 60%, #ea580c);
+    box-shadow: 0 0 6px rgba(251, 146, 60, 0.7),
+                0 0 12px rgba(251, 146, 60, 0.4),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+[data-theme="dark"] .led-label {
+    color: #A9B7C6;
+}
+
+/* ========== Dark Mode Active State ========== */
+[data-theme="dark"] .led-toggle.active {
+    background: #003300;
+    border-color: #00FF00;
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.3),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .led-toggle.active .led-indicator {
+    background: radial-gradient(circle at 30% 30%, #7FFF7F, #00FF00 60%, #00CC00);
+    box-shadow: 0 0 8px rgba(0, 255, 0, 0.8),
+                0 0 16px rgba(0, 255, 0, 0.4),
+                inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+[data-theme="dark"] .led-toggle.active .led-label {
+    color: #BABABA;
+}
+
+/* ========== Dark Mode LED Pulse ========== */
+@keyframes ledPulseDark {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(0, 255, 0, 0.8),
+                    0 0 16px rgba(0, 255, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 0 12px rgba(0, 255, 0, 1),
+                    0 0 24px rgba(0, 255, 0, 0.6);
+    }
+}
+
+[data-theme="dark"] .led-toggle.active .led-indicator {
+    animation: ledPulseDark 2s ease-in-out infinite;
+}

@@ -1,0 +1,149 @@
+<mujoco model="warehouse_shelf">
+  <asset>
+    <!-- Professional metal textures -->
+    <texture name="steel_frame" type="2d"
+             file="../desk/textures/metal2.png"/>
+    <texture name="perforated_metal" type="2d"
+             file="../desk/textures/metal4.png"/>
+
+    <!-- Materials -->
+    <material name="steel_structure" texture="steel_frame"
+              texrepeat="2 4"
+              specular="0.8"
+              shininess="0.7"
+              reflectance="0.4"/>
+    <material name="mesh_shelf" texture="perforated_metal"
+              texrepeat="8 4"
+              specular="0.7"
+              shininess="0.6"
+              reflectance="0.3"/>
+  </asset>
+
+  <worldbody>
+    <body name="warehouse_shelf">
+      <!-- Heavy-duty industrial shelving unit 2m wide, 0.6m deep, 3m tall -->
+
+      <!-- Vertical posts (4 corners) -->
+      <geom name="post_fl" type="cylinder"
+            size="0.03 1.5"
+            pos="-0.97 -0.27 1.5"
+            material="steel_structure"
+            mass="8"/>
+      <geom name="post_fr" type="cylinder"
+            size="0.03 1.5"
+            pos="0.97 -0.27 1.5"
+            material="steel_structure"
+            mass="8"/>
+      <geom name="post_bl" type="cylinder"
+            size="0.03 1.5"
+            pos="-0.97 0.27 1.5"
+            material="steel_structure"
+            mass="8"/>
+      <geom name="post_br" type="cylinder"
+            size="0.03 1.5"
+            pos="0.97 0.27 1.5"
+            material="steel_structure"
+            mass="8"/>
+
+      <!-- Steel mesh shelves (5 levels) -->
+      <!-- Bottom shelf -->
+      <geom name="shelf_0" type="box"
+            size="1.0 0.3 0.01"
+            pos="0 0 0.2"
+            material="mesh_shelf"
+            mass="6"
+            friction="1.5 0.1 0.1"/>
+
+      <!-- Shelf supports -->
+      <geom name="support_0_f" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 -0.28 0.2"
+            material="steel_structure"/>
+      <geom name="support_0_b" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 0.28 0.2"
+            material="steel_structure"/>
+
+      <!-- Level 1 shelf -->
+      <geom name="shelf_1" type="box"
+            size="1.0 0.3 0.01"
+            pos="0 0 0.7"
+            material="mesh_shelf"
+            mass="6"
+            friction="1.5 0.1 0.1"/>
+      <geom name="support_1_f" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 -0.28 0.7"
+            material="steel_structure"/>
+      <geom name="support_1_b" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 0.28 0.7"
+            material="steel_structure"/>
+
+      <!-- Level 2 shelf -->
+      <geom name="shelf_2" type="box"
+            size="1.0 0.3 0.01"
+            pos="0 0 1.2"
+            material="mesh_shelf"
+            mass="6"
+            friction="1.5 0.1 0.1"/>
+      <geom name="support_2_f" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 -0.28 1.2"
+            material="steel_structure"/>
+      <geom name="support_2_b" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 0.28 1.2"
+            material="steel_structure"/>
+
+      <!-- Level 3 shelf -->
+      <geom name="shelf_3" type="box"
+            size="1.0 0.3 0.01"
+            pos="0 0 1.7"
+            material="mesh_shelf"
+            mass="6"
+            friction="1.5 0.1 0.1"/>
+      <geom name="support_3_f" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 -0.28 1.7"
+            material="steel_structure"/>
+      <geom name="support_3_b" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 0.28 1.7"
+            material="steel_structure"/>
+
+      <!-- Top shelf -->
+      <geom name="shelf_4" type="box"
+            size="1.0 0.3 0.01"
+            pos="0 0 2.2"
+            material="mesh_shelf"
+            mass="6"
+            friction="1.5 0.1 0.1"/>
+      <geom name="support_4_f" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 -0.28 2.2"
+            material="steel_structure"/>
+      <geom name="support_4_b" type="box"
+            size="0.97 0.02 0.05"
+            pos="0 0.28 2.2"
+            material="steel_structure"/>
+
+      <!-- Cross bracing for stability -->
+      <geom name="brace_1" type="box"
+            size="1.4 0.01 0.02"
+            pos="0 0 0.5"
+            euler="0 0 0"
+            material="steel_structure"/>
+      <geom name="brace_2" type="box"
+            size="1.4 0.01 0.02"
+            pos="0 0 1.0"
+            euler="0 0 0"
+            material="steel_structure"/>
+      <geom name="brace_3" type="box"
+            size="1.4 0.01 0.02"
+            pos="0 0 1.5"
+            euler="0 0 0"
+            material="steel_structure"/>
+    </body>
+  </worldbody>
+</mujoco>

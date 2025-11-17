@@ -1,0 +1,17 @@
+{
+  "name": "test_refactor_room",
+  "width": 6.0,
+  "length": 5.0,
+  "height": 3.5,
+  "floor_texture": "wood_floor",
+  "wall_texture": "gray_wall",
+  "ceiling_texture": null,
+  "openings": [
+    {
+      "wall": "north",
+      "width_m": 0.9,
+      "height_m": 2.0,
+      "state": "closed"
+    }
+  ]
+}

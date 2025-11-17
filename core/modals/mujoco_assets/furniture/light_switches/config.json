@@ -1,0 +1,27 @@
+{
+  "name": "light_switches",
+  "category": "furniture",
+  "xml_file": "light_switches.xml",
+  "components": {
+    "light_switches": {
+      "name": "light_switches",
+      "geom_names": [
+        "panel",
+        "switch1_button",
+        "switch2_button",
+        "switch3_button"
+      ],
+      "joint_names": [
+        "switch1_joint",
+        "switch2_joint",
+        "switch3_joint"
+      ],
+      "behaviors": [
+        "pressable"
+      ]
+    }
+  },
+  "behaviors": [
+    "pressable"
+  ]
+}

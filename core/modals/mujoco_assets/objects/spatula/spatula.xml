@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: spatula -->
+    <asset>
+        <mesh name="spatula_mesh" file="textured.obj"/>
+        <texture name="spatula_tex" type="2d" file="texture_map.png"/>
+        <material name="spatula_mat" texture="spatula_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="spatula">
+            <geom type="mesh"
+                  mesh="spatula_mesh"
+                  material="spatula_mat"
+                  mass="0.05"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.05" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

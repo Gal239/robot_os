@@ -1,0 +1,48 @@
+{
+  "name": "desk",
+  "category": "furniture",
+  "xml_file": "desk.xml",
+  "components": {
+    "desk": {
+      "name": "desk",
+      "geom_names": [
+        "studyTable_Main",
+        "drawer_l_geom",
+        "drawer_l_handle",
+        "drawer_r_geom",
+        "drawer_r_handle"
+      ],
+      "joint_names": [
+        "drawer_l_joint",
+        "drawer_r_joint"
+      ],
+      "behaviors": [
+        "surface",
+        "container",
+        "sliding"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface",
+    "container",
+    "sliding"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "quarter": 0.25,
+    "half": 0.5,
+    "extended": 1.0
+  },
+  "joint_ranges": {
+    "studyTable_Drawer_Joint": [
+      -0.48,
+      0.0
+    ],
+    "studyTable_Slide_Joint": [
+      0.0,
+      0.6
+    ]
+  },
+  "default_state": "closed"
+}

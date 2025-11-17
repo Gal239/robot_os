@@ -1,0 +1,20 @@
+{
+  "name": "large_marker",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/large_marker/large_marker.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<mujoco model="test_room2">
+  <compiler angle="radian"/>
+  <visual>
+  <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+  <rgba haze="0.15 0.25 0.35 1"/>
+</visual>
+
+<asset>
+  <texture name="marble_blue_white" type="2d" file="../textures/marble_blue_white.png"/>
+  <material name="floor_material" texture="marble_blue_white" texrepeat="8 8" specular="0.3" shininess="0.2"/>
+  <texture name="concrete" type="2d" file="../textures/concrete.png"/>
+  <material name="wall_material" texture="concrete" texrepeat="4 4" specular="0.05" shininess="0.01"/>
+</asset>
+
+<worldbody>
+  <geom name="floor" type="plane" size="5.0 6.0 0.1" pos="0 0 0" material="floor_material" friction="1.0 0.05 0.01"/>
+  <geom name="wall_north" type="box" size="5.0 0.15 1.75" pos="0 6.0 1.75" material="wall_material"/>
+  <geom name="wall_south" type="box" size="5.0 0.15 1.75" pos="0 -6.0 1.75" material="wall_material"/>
+  <geom name="wall_east" type="box" size="0.15 6.0 1.75" pos="5.0 0 1.75" material="wall_material"/>
+  <geom name="wall_west" type="box" size="0.15 6.0 1.75" pos="-5.0 0 1.75" material="wall_material"/>
+  <geom name="ceiling" type="box" size="5.0 6.0 0.1" pos="0 0 3.5" rgba="0.95 0.95 0.95 1"/>
+</worldbody>
+</mujoco>

@@ -1,0 +1,22 @@
+<mujoco model="combined_scene">
+  <include file="robot.xml"/>
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="-120" elevation="-20" />
+  </visual>
+  <asset>
+    <texture name="wood_floor" type="2d" file="/home/gal-labs/PycharmProjects/echo_robot/stretch_mujoco/simulation_center/core/modals/mujoco_assets/rooms/../common/textures/wood_floor.png" />
+    <texture name="white_wall" type="2d" file="/home/gal-labs/PycharmProjects/echo_robot/stretch_mujoco/simulation_center/core/modals/mujoco_assets/rooms/../common/textures/gray_wall_real.png" />
+    <material name="floor_material" texture="wood_floor" texrepeat="8 8" specular="0.3" shininess="0.2" reflectance="0.1" />
+    <material name="wall_material" texture="white_wall" texrepeat="4 4" specular="0.05" shininess="0.01" reflectance="0.02" />
+  </asset>
+  <worldbody>
+    <geom name="floor" type="plane" size="5 5 0.1" pos="0 0 0" material="floor_material" friction="1.0 0.05 0.01" />
+    <geom name="wall_north" type="box" size="5 0.15 3" pos="0 5 1.5" material="wall_material" />
+    <geom name="wall_south" type="box" size="5 0.15 3" pos="0 -5 1.5" material="wall_material" />
+    <geom name="wall_east" type="box" size="0.15 5 3" pos="5 0 1.5" material="wall_material" />
+    <geom name="wall_west" type="box" size="0.15 5 3" pos="-5 0 1.5" material="wall_material" />
+    <geom name="ceiling" type="box" size="5 5 0.1" pos="0 0 3" rgba="0.95 0.95 0.95 1" />
+  </worldbody>
+</mujoco>

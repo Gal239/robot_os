@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: hammer -->
+    <asset>
+        <mesh name="hammer_mesh" file="textured.obj"/>
+        <texture name="hammer_tex" type="2d" file="texture_map.png"/>
+        <material name="hammer_mat" texture="hammer_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="hammer">
+            <geom type="mesh"
+                  mesh="hammer_mesh"
+                  material="hammer_mat"
+                  mass="0.5"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.5" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

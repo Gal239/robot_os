@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: clamp_xl -->
+    <asset>
+        <mesh name="clamp_xl_mesh" file="textured.obj"/>
+        <texture name="clamp_xl_tex" type="2d" file="texture_map.png"/>
+        <material name="clamp_xl_mat" texture="clamp_xl_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="clamp_xl">
+            <geom type="mesh"
+                  mesh="clamp_xl_mesh"
+                  material="clamp_xl_mat"
+                  mass="0.45"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.45" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

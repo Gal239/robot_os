@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: screwdriver_phillips -->
+    <asset>
+        <mesh name="screwdriver_phillips_mesh" file="textured.obj"/>
+        <texture name="screwdriver_phillips_tex" type="2d" file="texture_map.png"/>
+        <material name="screwdriver_phillips_mat" texture="screwdriver_phillips_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="screwdriver_phillips">
+            <geom type="mesh"
+                  mesh="screwdriver_phillips_mesh"
+                  material="screwdriver_phillips_mat"
+                  mass="0.1"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

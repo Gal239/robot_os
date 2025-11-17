@@ -1,0 +1,20 @@
+{
+  "name": "marbles_a",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/marbles_a/marbles_a.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

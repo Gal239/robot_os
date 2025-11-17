@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: pudding_box -->
+    <asset>
+        <mesh name="pudding_box_mesh" file="textured.obj"/>
+        <texture name="pudding_box_tex" type="2d" file="texture_map.png"/>
+        <material name="pudding_box_mat" texture="pudding_box_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="pudding_box">
+            <geom type="mesh"
+                  mesh="pudding_box_mesh"
+                  material="pudding_box_mat"
+                  mass="0.2"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.2" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

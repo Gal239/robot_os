@@ -1,0 +1,22 @@
+{
+  "name": "golf_ball",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/golf_ball/golf_ball.xml",
+  "behaviors": [
+    "graspable",
+    "rollable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "rollable",
+        "stackable"
+      ]
+    }
+  }
+}

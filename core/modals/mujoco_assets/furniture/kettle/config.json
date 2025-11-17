@@ -1,0 +1,25 @@
+{
+  "name": "kettle",
+  "category": "furniture",
+  "xml_file": "kettle.xml",
+  "components": {
+    "kettle": {
+      "name": "kettle",
+      "geom_names": [
+        "kettle_body",
+        "kettle_spout",
+        "kettle_lid",
+        "handle_part"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "pourable"
+      ]
+    }
+  },
+  "behaviors": [
+    "graspable",
+    "pourable"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "name": "slide_cabinet",
+  "category": "furniture",
+  "xml_file": "slide_cabinet.xml",
+  "components": {
+    "slide_cabinet": {
+      "name": "slide_cabinet",
+      "geom_names": [
+        "cabinet_body",
+        "drawer_body"
+      ],
+      "joint_names": [
+        "drawer_joint"
+      ],
+      "behaviors": [
+        "container",
+        "sliding"
+      ]
+    }
+  },
+  "behaviors": [
+    "container",
+    "sliding"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "quarter": 0.25,
+    "half": 0.5,
+    "extended": 1.0
+  },
+  "joint_ranges": {
+    "slidedoor_joint": [
+      0.0,
+      0.44
+    ]
+  },
+  "default_state": "closed"
+}

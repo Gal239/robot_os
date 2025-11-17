@@ -1,0 +1,266 @@
+/**
+ * Echo Scene Builder - Code Viewer Component
+ * Professional code display with syntax highlighting
+ */
+
+.code-viewer-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-white);
+}
+
+/* ========== Code Header ========== */
+.code-viewer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    background-color: var(--color-light);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.code-viewer-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-dark);
+}
+
+.code-viewer-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.code-action-button {
+    padding: var(--spacing-xs) var(--spacing-md);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray);
+    transition: all var(--transition-base);
+}
+
+.code-action-button:hover {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-color: var(--color-primary);
+}
+
+/* ========== Code Content ========== */
+.code-viewer-content {
+    flex: 1;
+    overflow: auto;
+    background-color: var(--color-dark);
+    color: var(--color-white);
+}
+
+.code-block {
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.code-line {
+    display: block;
+    min-height: 1.6em;
+}
+
+.code-line-number {
+    display: inline-block;
+    width: 3em;
+    margin-right: var(--spacing-md);
+    color: var(--color-gray);
+    text-align: right;
+    user-select: none;
+}
+
+/* ========== Syntax Highlighting ========== */
+.code-keyword {
+    color: #c678dd;
+}
+
+.code-string {
+    color: #98c379;
+}
+
+.code-number {
+    color: #d19a66;
+}
+
+.code-comment {
+    color: #5c6370;
+    font-style: italic;
+}
+
+.code-function {
+    color: #61afef;
+}
+
+.code-class {
+    color: #e5c07b;
+}
+
+/* ========== Empty State ========== */
+.code-viewer-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: var(--spacing-2xl);
+    text-align: center;
+    color: var(--color-gray);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Twinkling LED Stars Background - Realistic night sky effect */
+.code-viewer-empty::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image:
+        radial-gradient(3px 3px at 20% 30%, #00FF00, transparent),
+        radial-gradient(3px 3px at 60% 70%, #FF0044, transparent),
+        radial-gradient(2px 2px at 50% 50%, #00FFFF, transparent),
+        radial-gradient(2px 2px at 80% 10%, #00FF00, transparent),
+        radial-gradient(3px 3px at 90% 60%, #FF8800, transparent),
+        radial-gradient(2px 2px at 15% 80%, #00FFFF, transparent),
+        radial-gradient(3px 3px at 35% 20%, #FF0044, transparent),
+        radial-gradient(2px 2px at 70% 40%, #00FF00, transparent),
+        radial-gradient(3px 3px at 25% 60%, #00FFFF, transparent),
+        radial-gradient(2px 2px at 85% 85%, #FF0044, transparent),
+        radial-gradient(2px 2px at 45% 90%, #00FF00, transparent),
+        radial-gradient(3px 3px at 10% 15%, #FF8800, transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    animation: twinkleCodeBlink1 3.8s ease-in-out infinite;
+    animation-delay: 1.2s;
+}
+
+.code-viewer-empty::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image:
+        radial-gradient(2px 2px at 30% 25%, #00FFFF, transparent),
+        radial-gradient(3px 3px at 75% 55%, #00FF00, transparent),
+        radial-gradient(2px 2px at 40% 75%, #FF0044, transparent),
+        radial-gradient(3px 3px at 55% 35%, #FF8800, transparent),
+        radial-gradient(2px 2px at 95% 45%, #00FFFF, transparent),
+        radial-gradient(3px 3px at 5% 50%, #00FF00, transparent),
+        radial-gradient(2px 2px at 65% 15%, #FF0044, transparent),
+        radial-gradient(2px 2px at 22% 88%, #00FFFF, transparent);
+    background-size: 200% 200%;
+    background-position: 0% 0%;
+    animation: twinkleCodeBlink2 4.6s ease-in-out infinite;
+    animation-delay: 0.6s;
+}
+
+@keyframes twinkleCodeBlink1 {
+    0% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+    13% {
+        opacity: 0;
+        transform: scale(0.78);
+    }
+    29% {
+        opacity: 0.82;
+        transform: scale(1.24);
+    }
+    44% {
+        opacity: 0.18;
+        transform: scale(0.88);
+    }
+    59% {
+        opacity: 0.92;
+        transform: scale(1.32);
+    }
+    76% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    91% {
+        opacity: 0.68;
+        transform: scale(1.12);
+    }
+    100% {
+        opacity: 0.5;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes twinkleCodeBlink2 {
+    0% {
+        opacity: 0.15;
+        transform: scale(0.85);
+    }
+    17% {
+        opacity: 0.88;
+        transform: scale(1.26);
+    }
+    36% {
+        opacity: 0;
+        transform: scale(0.73);
+    }
+    52% {
+        opacity: 0.72;
+        transform: scale(1.16);
+    }
+    69% {
+        opacity: 0.08;
+        transform: scale(0.81);
+    }
+    86% {
+        opacity: 0.95;
+        transform: scale(1.35);
+    }
+    100% {
+        opacity: 0.15;
+        transform: scale(0.85);
+    }
+}
+
+.code-viewer-empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--spacing-md);
+    opacity: 0.5;
+    position: relative;
+    z-index: 1;
+}
+
+.code-viewer-empty-text {
+    font-size: var(--font-size-base);
+    color: var(--color-gray);
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Line Highlighting ========== */
+.code-line.highlight {
+    background-color: rgba(99, 102, 241, 0.1);
+    border-left: 3px solid var(--color-primary);
+    padding-left: calc(var(--spacing-lg) - 3px);
+}
+
+.code-line.error {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-left: 3px solid var(--color-danger);
+    padding-left: calc(var(--spacing-lg) - 3px);
+}

@@ -1,0 +1,79 @@
+{
+  "name": "oven",
+  "category": "furniture",
+  "xml_file": "oven.xml",
+  "components": {
+    "oven": {
+      "name": "oven",
+      "geom_names": [
+        "oven_body",
+        "door_panel"
+      ],
+      "joint_names": [
+        "knob1_joint",
+        "knob2_joint",
+        "knob3_joint",
+        "knob4_joint",
+        "knob5_joint",
+        "door_joint"
+      ],
+      "behaviors": [
+        "container",
+        "hinged"
+      ]
+    }
+  },
+  "behaviors": [
+    "container",
+    "hinged"
+  ],
+  "state_presets": {
+    "closed": 0.0,
+    "ajar": 0.25,
+    "half_open": 0.5,
+    "open": 1.0
+  },
+  "joint_ranges": {
+    "knob1_joint": [
+      -1.57,
+      0.0
+    ],
+    "burner1_joint": [
+      -0.009,
+      0.0
+    ],
+    "knob2_joint": [
+      -1.57,
+      0.0
+    ],
+    "burner2_joint": [
+      -0.009,
+      0.0
+    ],
+    "knob3_joint": [
+      -1.57,
+      0.0
+    ],
+    "burner3_joint": [
+      -0.009,
+      0.0
+    ],
+    "knob4_joint": [
+      -1.57,
+      0.0
+    ],
+    "burner4_joint": [
+      -0.009,
+      0.0
+    ],
+    "lightswitch_joint": [
+      -0.7,
+      0.0
+    ],
+    "light_joint": [
+      -0.05,
+      0.0
+    ]
+  },
+  "default_state": "closed"
+}

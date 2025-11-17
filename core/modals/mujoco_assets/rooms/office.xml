@@ -1,0 +1,182 @@
+<mujoco model="room">
+<!-- Room assets and geometry -->
+  <asset>
+    <!-- Professional carpet with subtle pattern -->
+    <texture name="office_carpet" type="2d" builtin="checker"
+             rgb1="0.42 0.42 0.48" rgb2="0.38 0.38 0.44"
+             width="64" height="64"/>
+
+    <!-- Clean drywall -->
+    <texture name="drywall" type="2d" builtin="flat"
+             rgb1="0.88 0.88 0.85" rgb2="0.85 0.85 0.82"
+             width="1024" height="1024"/>
+
+    <!-- Drop ceiling tiles -->
+    <texture name="ceiling_tiles" type="2d" builtin="checker"
+             rgb1="0.96 0.96 0.96" rgb2="0.92 0.92 0.92"
+             width="32" height="32"/>
+
+    <!-- Glass partition -->
+    <texture name="frosted_glass" type="2d" builtin="gradient"
+             rgb1="0.9 0.95 1.0" rgb2="0.85 0.9 0.95"
+             width="128" height="128"/>
+
+    <!-- Aluminum trim -->
+    <texture name="aluminum" type="2d" builtin="flat"
+             rgb1="0.75 0.75 0.78" rgb2="0.72 0.72 0.75"
+             width="256" height="256"/>
+
+    <!-- Materials -->
+    <material name="carpet" texture="office_carpet"
+              texrepeat="30 24"
+              specular="0.02"
+              shininess="0.01"
+              reflectance="0.0"/>
+
+    <material name="wall_paint" texture="drywall"
+              texrepeat="3 3"
+              specular="0.08"
+              shininess="0.03"
+              reflectance="0.01"/>
+
+    <material name="drop_ceiling" texture="ceiling_tiles"
+              texrepeat="20 16"
+              specular="0.15"
+              shininess="0.08"
+              reflectance="0.05"/>
+
+    <material name="glass_partition" texture="frosted_glass"
+              texrepeat="2 4"
+              specular="0.9"
+              shininess="0.8"
+              reflectance="0.3"/>
+
+    <material name="metal_trim" texture="aluminum"
+              texrepeat="4 4"
+              specular="0.85"
+              shininess="0.7"
+              reflectance="0.5"/>
+  </asset>
+
+  <worldbody>
+    <!-- Professional carpet -->
+    <geom name="floor" type="plane"
+          size="6 5 0.1"
+          material="carpet"
+          friction="1.6 0.08 0.04"/>
+
+    <!-- Clean drywall walls -->
+    <geom name="wall_north" type="box"
+          size="6 0.12 2.7"
+          pos="0 5 1.35"
+          material="wall_paint"/>
+    <geom name="wall_south" type="box"
+          size="6 0.12 2.7"
+          pos="0 -5 1.35"
+          material="wall_paint"/>
+    <geom name="wall_east" type="box"
+          size="0.12 5 2.7"
+          pos="6 0 1.35"
+          material="wall_paint"/>
+
+    <!-- Wall with door opening -->
+    <geom name="wall_west_top" type="box"
+          size="0.12 5 0.5"
+          pos="-6 0 2.45"
+          material="wall_paint"/>
+    <geom name="wall_west_left" type="box"
+          size="0.12 1.5 2.7"
+          pos="-6 -3.5 1.35"
+          material="wall_paint"/>
+    <geom name="wall_west_right" type="box"
+          size="0.12 1.5 2.7"
+          pos="-6 3.5 1.35"
+          material="wall_paint"/>
+
+    <!-- Door frame -->
+    <geom name="door_frame_top" type="box"
+          size="0.9 0.05 0.05"
+          pos="-5.95 0 2.0"
+          material="metal_trim"/>
+    <geom name="door_frame_left" type="box"
+          size="0.05 0.05 1.0"
+          pos="-5.95 -0.9 1.0"
+          material="metal_trim"/>
+    <geom name="door_frame_right" type="box"
+          size="0.05 0.05 1.0"
+          pos="-5.95 0.9 1.0"
+          material="metal_trim"/>
+
+    <!-- Drop ceiling with tiles -->
+    <geom name="ceiling" type="box"
+          size="6 5 0.08"
+          pos="0 0 2.7"
+          material="drop_ceiling"/>
+
+    <!-- Ceiling grid (aluminum) -->
+    <geom name="grid1" type="box"
+          size="6 0.02 0.01"
+          pos="0 -2.5 2.65"
+          material="metal_trim"/>
+    <geom name="grid2" type="box"
+          size="6 0.02 0.01"
+          pos="0 0 2.65"
+          material="metal_trim"/>
+    <geom name="grid3" type="box"
+          size="6 0.02 0.01"
+          pos="0 2.5 2.65"
+          material="metal_trim"/>
+    <geom name="grid4" type="box"
+          size="0.02 5 0.01"
+          pos="-3 0 2.65"
+          material="metal_trim"/>
+    <geom name="grid5" type="box"
+          size="0.02 5 0.01"
+          pos="0 0 2.65"
+          material="metal_trim"/>
+    <geom name="grid6" type="box"
+          size="0.02 5 0.01"
+          pos="3 0 2.65"
+          material="metal_trim"/>
+
+    <!-- LED panel lights -->
+    <geom name="light_panel1" type="box"
+          size="1.4 1.2 0.02"
+          pos="-1.5 -1.25 2.68"
+          rgba="1 1 0.97 0.9"/>
+    <geom name="light_panel2" type="box"
+          size="1.4 1.2 0.02"
+          pos="1.5 -1.25 2.68"
+          rgba="1 1 0.97 0.9"/>
+    <geom name="light_panel3" type="box"
+          size="1.4 1.2 0.02"
+          pos="-1.5 1.25 2.68"
+          rgba="1 1 0.97 0.9"/>
+    <geom name="light_panel4" type="box"
+          size="1.4 1.2 0.02"
+          pos="1.5 1.25 2.68"
+          rgba="1 1 0.97 0.9"/>
+
+    <!-- Glass partition with aluminum frame -->
+    <geom name="partition_frame_top" type="box"
+          size="2 0.05 0.05"
+          pos="3 2.5 2.45"
+          material="metal_trim"/>
+    <geom name="partition_frame_bottom" type="box"
+          size="2 0.05 0.05"
+          pos="3 2.5 0.05"
+          material="metal_trim"/>
+    <geom name="partition_frame_left" type="box"
+          size="0.05 0.05 2.4"
+          pos="2 2.5 1.2"
+          material="metal_trim"/>
+    <geom name="partition_frame_right" type="box"
+          size="0.05 0.05 2.4"
+          pos="4 2.5 1.2"
+          material="metal_trim"/>
+    <geom name="glass_panel" type="box"
+          size="1.9 0.02 2.3"
+          pos="3 2.5 1.15"
+          material="glass_partition"/>
+  </worldbody>
+</mujoco>

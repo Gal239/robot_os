@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: fork -->
+    <asset>
+        <mesh name="fork_mesh" file="textured.obj"/>
+        <texture name="fork_tex" type="2d" file="texture_map.png"/>
+        <material name="fork_mat" texture="fork_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="fork">
+            <geom type="mesh"
+                  mesh="fork_mesh"
+                  material="fork_mat"
+                  mass="0.03"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.03" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

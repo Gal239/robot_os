@@ -1,0 +1,24 @@
+{
+  "name": "pitcher",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/pitcher/pitcher.xml",
+  "behaviors": [
+    "graspable",
+    "container",
+    "pourable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "container",
+        "pourable",
+        "stackable"
+      ]
+    }
+  }
+}

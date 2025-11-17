@@ -1,0 +1,42 @@
+{
+  "tool_id": "discover_orientations",
+  "description": "AUTO-DISCOVERY: Get all available orientation options for robots and assets. Returns preset orientations (north/south/east/west/upright/etc.), relational patterns (facing_X), and quaternion format. Pure MOP - reads from ORIENTATION_PRESETS!",
+  "type": "function_tool",
+  "parameters": {},
+  "returns": {
+    "presets": "object mapping preset names to quaternions (w, x, y, z)",
+    "relational_pattern": "string explaining the 'facing_X' pattern",
+    "manual_format": "string explaining manual quaternion format",
+    "examples": "array of usage examples",
+    "summary": "object with counts and categories"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "presets": {"type": "object"},
+      "relational_pattern": {"type": "string"},
+      "manual_format": {"type": "string"},
+      "examples": {"type": "array"},
+      "summary": {"type": "object"}
+    }
+  },
+  "workflow_hints": {
+    "stage": "discovery",
+    "order": 2,
+    "when_to_use": "When you need to orient robots or assets in specific directions (face table, face east, etc.)",
+    "outputs_feed": ["create_scene_script"]
+  },
+  "examples": [
+    {
+      "description": "Get all orientation options",
+      "input": {},
+      "output_summary": "Returns 9 preset orientations + relational pattern + manual quaternion format",
+      "use_case": "When planning robot/asset orientation in scene"
+    }
+  ],
+  "best_practices": [
+    "Use presets for simple directions (north, south, east, west)",
+    "Use relational 'facing_X' pattern for dynamic positioning (facing_table, facing_apple)",
+    "Use manual quaternions for precise rotations (advanced users only)"
+  ]
+}

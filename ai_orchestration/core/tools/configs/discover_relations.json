@@ -1,0 +1,37 @@
+{
+  "tool_id": "discover_relations",
+  "description": "AUTO-DISCOVERY: Get all available spatial relations from RELATIONS.json. Returns relations (on_top, stack_on, inside, next_to, etc.), surface positions, and their usage syntax. Pure MOP - reads from Pydantic modals!",
+  "type": "function_tool",
+  "parameters": {},
+  "returns": {
+    "relations": "object mapping relation names to descriptions and parameters",
+    "surface_positions": "object mapping position names to (x, y) factors",
+    "summary": "object with counts"
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "relations": {"type": "object"},
+      "surface_positions": {"type": "object"},
+      "summary": {"type": "object"}
+    },
+    "required": ["relations", "surface_positions", "summary"]
+  },
+  "workflow_hints": {
+    "stage": "discovery",
+    "order": 3,
+    "when_to_use": "After discovering assets and behaviors, learn spatial placement options (on_top, inside, next_to, etc.)",
+    "outputs_feed": ["create_scene_script"]
+  },
+  "examples": [
+    {
+      "description": "Get all relations",
+      "input": {},
+      "output_summary": "Returns 8 spatial relations and 5 surface positions for precise asset placement",
+      "use_case": "To understand how to position assets relative to each other in scenes"
+    }
+  ],
+  "best_practices": [
+    "Use this to learn proper relation syntax before creating scene scripts"
+  ]
+}

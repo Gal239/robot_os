@@ -1,0 +1,217 @@
+/**
+ * Dream Factory - Tool Call Component
+ * Elegant collapsible tool execution display
+ */
+
+.tool-call {
+    margin: var(--spacing-sm) 0;
+    border-radius: var(--border-radius-md);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border);
+    overflow: hidden;
+    transition: all var(--transition-base);
+}
+
+.tool-call:hover {
+    border-color: var(--color-border-strong);
+}
+
+/* ========== Tool Call Header (Always visible) ========== */
+.tool-call-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+.tool-call-header:hover {
+    background: rgba(148, 163, 184, 0.05);
+}
+
+.tool-call-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex: 1;
+}
+
+.tool-call-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    opacity: 0.8;
+}
+
+.tool-call-name {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+    font-family: var(--font-mono);
+}
+
+.tool-call-summary {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    margin-left: var(--spacing-sm);
+}
+
+.tool-call-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.tool-call-status {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.tool-call-expand-icon {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    transition: transform var(--transition-base);
+}
+
+.tool-call.expanded .tool-call-expand-icon {
+    transform: rotate(180deg);
+}
+
+/* ========== Tool Call Body (Collapsible) ========== */
+.tool-call-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--transition-slow);
+}
+
+.tool-call.expanded .tool-call-body {
+    max-height: 500px;
+}
+
+.tool-call-content {
+    padding: var(--spacing-md);
+    border-top: 1px solid var(--color-border);
+}
+
+/* ========== Tool Call Details ========== */
+.tool-call-section {
+    margin-bottom: var(--spacing-md);
+}
+
+.tool-call-section:last-child {
+    margin-bottom: 0;
+}
+
+.tool-call-section-title {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.tool-call-input,
+.tool-call-output {
+    background: var(--color-bg-base);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-secondary);
+    overflow-x: auto;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.tool-call-input pre,
+.tool-call-output pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* ========== Status Badges ========== */
+.tool-call-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: 2px var(--spacing-xs);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.tool-call-status-badge.running {
+    background: rgba(139, 92, 246, 0.1);
+    color: var(--color-primary-light);
+}
+
+.tool-call-status-badge.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-success-light);
+}
+
+.tool-call-status-badge.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-danger-light);
+}
+
+/* ========== Different Tool Types ========== */
+.tool-call.tool-edit_script {
+    border-left: 3px solid var(--color-secondary);
+}
+
+.tool-call.tool-handoff {
+    border-left: 3px solid var(--color-accent);
+}
+
+.tool-call.tool-ask_master {
+    border-left: 3px solid var(--color-primary);
+}
+
+/* ========== Animations ========== */
+@keyframes tool-call-appear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tool-call {
+    animation: tool-call-appear 300ms ease-out;
+}
+
+/* ========== Compact Mode (for inline display) ========== */
+.tool-call.compact {
+    border: none;
+    background: transparent;
+    margin: var(--spacing-xs) 0;
+}
+
+.tool-call.compact .tool-call-header {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background: rgba(148, 163, 184, 0.08);
+    border-radius: var(--border-radius-sm);
+}
+
+.tool-call.compact:hover {
+    border: none;
+}
+
+.tool-call.compact .tool-call-header:hover {
+    background: rgba(148, 163, 184, 0.12);
+}

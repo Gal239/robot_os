@@ -1,0 +1,23 @@
+{
+  "name": "table",
+  "category": "furniture",
+  "xml_file": "table.xml",
+  "components": {
+    "table_surface": {
+      "name": "table_surface",
+      "geom_names": [
+        "table_top",
+        "table_legs"
+      ],
+      "joint_names": [],
+      "behaviors": [
+        "surface",
+        "stackable"
+      ]
+    }
+  },
+  "behaviors": [
+    "surface",
+    "stackable"
+  ]
+}

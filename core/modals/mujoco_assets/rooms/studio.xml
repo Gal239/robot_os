@@ -1,0 +1,116 @@
+o<mujoco model="room">
+<!-- Room assets and geometry -->
+  <asset>
+    <!-- Polished concrete studio floor -->
+    <texture name="polished_concrete" type="2d" builtin="gradient"
+             rgb1="0.65 0.65 0.68" rgb2="0.58 0.58 0.62"
+             width="256" height="256"/>
+
+    <!-- White painted studio walls -->
+    <texture name="white_studio" type="2d" builtin="flat"
+             rgb1="0.98 0.98 0.96" rgb2="0.96 0.96 0.94"
+             width="1024" height="1024"/>
+
+    <!-- Exposed ceiling structure -->
+    <texture name="exposed_structure" type="2d" builtin="flat"
+             rgb1="0.4 0.4 0.42" rgb2="0.38 0.38 0.4"
+             width="512" height="512"/>
+
+    <!-- Materials -->
+    <material name="studio_floor" texture="polished_concrete"
+              texrepeat="15 15"
+              specular="0.7"
+              shininess="0.6"
+              reflectance="0.3"/>
+
+    <material name="studio_walls" texture="white_studio"
+              texrepeat="1 1"
+              specular="0.05"
+              shininess="0.02"
+              reflectance="0.02"/>
+
+    <material name="structure" texture="exposed_structure"
+              texrepeat="3 3"
+              specular="0.4"
+              shininess="0.3"
+              reflectance="0.1"/>
+  </asset>
+
+  <worldbody>
+    <!-- Large polished concrete floor -->
+    <geom name="floor" type="plane"
+          size="8 8 0.1"
+          material="studio_floor"
+          friction="1.0 0.03 0.01"/>
+
+    <!-- Minimal white walls - open studio feel -->
+    <geom name="wall_north" type="box"
+          size="8 0.2 4"
+          pos="0 8 2"
+          material="studio_walls"/>
+    <geom name="wall_south" type="box"
+          size="8 0.2 4"
+          pos="0 -8 2"
+          material="studio_walls"/>
+    <geom name="wall_east" type="box"
+          size="0.2 8 4"
+          pos="8 0 2"
+          material="studio_walls"/>
+    <geom name="wall_west" type="box"
+          size="0.2 8 4"
+          pos="-8 0 2"
+          material="studio_walls"/>
+
+    <!-- Exposed ceiling structure/beams -->
+    <geom name="ceiling_beam1" type="box"
+          size="8 0.15 0.2"
+          pos="0 -4 3.8"
+          material="structure"/>
+    <geom name="ceiling_beam2" type="box"
+          size="8 0.15 0.2"
+          pos="0 0 3.8"
+          material="structure"/>
+    <geom name="ceiling_beam3" type="box"
+          size="8 0.15 0.2"
+          pos="0 4 3.8"
+          material="structure"/>
+
+    <!-- Cross beams -->
+    <geom name="cross_beam1" type="box"
+          size="0.15 8 0.2"
+          pos="-4 0 3.8"
+          material="structure"/>
+    <geom name="cross_beam2" type="box"
+          size="0.15 8 0.2"
+          pos="0 0 3.8"
+          material="structure"/>
+    <geom name="cross_beam3" type="box"
+          size="0.15 8 0.2"
+          pos="4 0 3.8"
+          material="structure"/>
+
+    <!-- Large studio windows (floor to ceiling) -->
+    <geom name="window_north" type="box"
+          size="6 0.05 3"
+          pos="0 7.95 2"
+          rgba="0.85 0.9 1.0 0.4"/>
+
+    <!-- Track lighting on ceiling -->
+    <geom name="track_light1" type="box"
+          size="0.8 0.05 0.03"
+          pos="-3 0 3.7"
+          rgba="1 1 0.98 0.8"/>
+    <geom name="track_light2" type="box"
+          size="0.8 0.05 0.03"
+          pos="-1 0 3.7"
+          rgba="1 1 0.98 0.8"/>
+    <geom name="track_light3" type="box"
+          size="0.8 0.05 0.03"
+          pos="1 0 3.7"
+          rgba="1 1 0.98 0.8"/>
+    <geom name="track_light4" type="box"
+          size="0.8 0.05 0.03"
+          pos="3 0 3.7"
+          rgba="1 1 0.98 0.8"/>
+  </worldbody>
+</mujoco>

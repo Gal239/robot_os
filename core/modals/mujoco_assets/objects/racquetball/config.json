@@ -1,0 +1,22 @@
+{
+  "name": "racquetball",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/racquetball/racquetball.xml",
+  "behaviors": [
+    "graspable",
+    "rollable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "rollable",
+        "stackable"
+      ]
+    }
+  }
+}

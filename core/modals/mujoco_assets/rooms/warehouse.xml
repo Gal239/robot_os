@@ -1,0 +1,130 @@
+<mujoco model="room">
+<!-- Warehouse room assets and geometry -->
+  <asset>
+    <!-- Dark concrete floor with expansion joints -->
+    <texture name="concrete_floor" type="2d" builtin="checker"
+             rgb1="0.35 0.35 0.38" rgb2="0.32 0.32 0.35"
+             width="100" height="100"/>
+
+    <!-- Corrugated metal walls -->
+    <texture name="metal_siding" type="2d" builtin="gradient"
+             rgb1="0.55 0.58 0.62" rgb2="0.48 0.51 0.55"
+             width="64" height="512"/>
+
+    <!-- Steel beams -->
+    <texture name="steel_beam" type="2d" builtin="flat"
+             rgb1="0.45 0.45 0.48" rgb2="0.4 0.4 0.43"
+             width="256" height="256"/>
+
+    <!-- Safety markings -->
+    <texture name="safety_stripe" type="2d" builtin="checker"
+             rgb1="1.0 0.8 0.0" rgb2="0.1 0.1 0.1"
+             width="8" height="8"/>
+
+    <!-- Materials -->
+    <material name="concrete" texture="concrete_floor"
+              texrepeat="40 30"
+              specular="0.1"
+              shininess="0.05"
+              reflectance="0.02"/>
+
+    <material name="metal_wall" texture="metal_siding"
+              texrepeat="8 6"
+              specular="0.7"
+              shininess="0.6"
+              reflectance="0.3"/>
+
+    <material name="steel" texture="steel_beam"
+              texrepeat="2 2"
+              specular="0.8"
+              shininess="0.7"
+              reflectance="0.4"/>
+
+    <material name="safety" texture="safety_stripe"
+              texrepeat="80 4"/>
+  </asset>
+
+  <worldbody>
+    <!-- Large concrete floor -->
+    <geom name="floor" type="plane"
+          size="12 10 0.1"
+          material="concrete"
+          friction="1.8 0.08 0.02"/>
+
+    <!-- Safety lines -->
+    <geom name="safety_line1" type="box"
+          size="12 0.1 0.002"
+          pos="0 -4 0.002"
+          material="safety"/>
+    <geom name="safety_line2" type="box"
+          size="12 0.1 0.002"
+          pos="0 4 0.002"
+          material="safety"/>
+
+    <!-- Metal walls - high ceiling -->
+    <geom name="wall_north" type="box"
+          size="12 0.3 4.5"
+          pos="0 10 2.25"
+          material="metal_wall"/>
+    <geom name="wall_south" type="box"
+          size="12 0.3 4.5"
+          pos="0 -10 2.25"
+          material="metal_wall"/>
+    <geom name="wall_east" type="box"
+          size="0.3 10 4.5"
+          pos="12 0 2.25"
+          material="metal_wall"/>
+    <geom name="wall_west" type="box"
+          size="0.3 10 4.5"
+          pos="-12 0 2.25"
+          material="metal_wall"/>
+
+    <!-- Support pillars -->
+    <geom name="pillar1" type="cylinder"
+          size="0.2 2.25"
+          pos="-6 -5 2.25"
+          material="steel"/>
+    <geom name="pillar2" type="cylinder"
+          size="0.2 2.25"
+          pos="6 -5 2.25"
+          material="steel"/>
+    <geom name="pillar3" type="cylinder"
+          size="0.2 2.25"
+          pos="-6 5 2.25"
+          material="steel"/>
+    <geom name="pillar4" type="cylinder"
+          size="0.2 2.25"
+          pos="6 5 2.25"
+          material="steel"/>
+
+    <!-- Overhead steel beams -->
+    <geom name="beam1" type="box"
+          size="12 0.15 0.3"
+          pos="0 -5 4.2"
+          material="steel"/>
+    <geom name="beam2" type="box"
+          size="12 0.15 0.3"
+          pos="0 0 4.2"
+          material="steel"/>
+    <geom name="beam3" type="box"
+          size="12 0.15 0.3"
+          pos="0 5 4.2"
+          material="steel"/>
+
+    <!-- Loading dock door -->
+    <geom name="dock_door" type="box"
+          size="2 0.1 2"
+          pos="8 -9.9 1"
+          rgba="0.6 0.3 0.1 1"/>
+
+    <!-- Skylights (transparent) -->
+    <geom name="skylight1" type="box"
+          size="2 2 0.05"
+          pos="-3 0 4.45"
+          rgba="0.7 0.8 1.0 0.4"/>
+    <geom name="skylight2" type="box"
+          size="2 2 0.05"
+          pos="3 0 4.45"
+          rgba="0.7 0.8 1.0 0.4"/>
+  </worldbody>
+</mujoco>

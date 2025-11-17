@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: knife -->
+    <asset>
+        <mesh name="knife_mesh" file="textured.obj"/>
+        <texture name="knife_tex" type="2d" file="texture_map.png"/>
+        <material name="knife_mat" texture="knife_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="knife">
+            <geom type="mesh"
+                  mesh="knife_mesh"
+                  material="knife_mat"
+                  mass="0.04"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.04" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

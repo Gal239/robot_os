@@ -1,0 +1,22 @@
+{
+  "name": "windex_bottle",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/windex_bottle/windex_bottle.xml",
+  "behaviors": [
+    "graspable",
+    "pourable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "pourable",
+        "stackable"
+      ]
+    }
+  }
+}

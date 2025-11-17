@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Semantic Robotics DSL - Think in relationships, not coordinates">
+    <title>Semantic Robotics DSL Documentation</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <span class="hero-label">Documentation</span>
+            <h1>Semantic Robotics DSL</h1>
+            <p class="hero-subtitle">Think in <strong>relationships</strong>, not coordinates</p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-value">50→1</span>
+                    <span class="stat-label">Lines of code</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">100%</span>
+                    <span class="stat-label">AI-readable</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">Auto</span>
+                    <span class="stat-label">Validated</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <!-- The Problem -->
+        <section class="block">
+            <div class="block-icon">❌</div>
+            <h2>The Old Way: Coordinate Hell</h2>
+            <p class="block-desc">Traditional robot simulation requires you to manually calculate 3D positions using complex math. Want to put an apple on the top-left of a table? Get ready to calculate offsets, sizes, and positions.</p>
+
+            <pre><code class="language-python"># ❌ PROBLEM: Manual coordinate calculation
+# Fragile - change table size? Recalculate everything!
+
+table_pos = [2.0, 0.0, 0.0]      # Table center position
+table_size = [0.6, 0.4, 0.02]    # Table dimensions (width, depth, height)
+apple_radius = 0.05              # Apple size
+
+# Complex math just to say "apple on top-left of table"
+apple_pos = [
+    table_pos[0] - table_size[0]/2 + apple_radius + 0.05,  # Left edge + padding
+    table_pos[1] + table_size[1]/2 - apple_radius - 0.05,  # Top edge - padding
+    table_pos[2] + table_size[2] + apple_radius             # On top surface
+]
+
+p.loadURDF("apple.urdf", apple_pos)  # Finally load apple
+
+# Manual validation every single frame
+for step in range(1000):
+    contacts = p.getContactPoints(apple_id, table_id)
+    if len(contacts) == 0:
+        print("Apple fell!")  # You have to check this yourself!</code></pre>
+
+            <div class="badges">
+                <span class="badge badge-bad">🔢 50+ lines</span>
+                <span class="badge badge-bad">🐛 Fragile</span>
+                <span class="badge badge-bad">🔄 Not reusable</span>
+                <span class="badge badge-bad">🤖 AI can't understand</span>
+            </div>
+        </section>
+
+        <!-- The Solution -->
+        <section class="block">
+            <div class="block-icon">✅</div>
+            <h2>The New Way: Semantic Relationships</h2>
+            <p class="block-desc">Semantic DSL lets you describe WHAT you want, not HOW to calculate it. Just say "apple on top-left of table" - the system handles all the math automatically.</p>
+
+            <pre><code class="language-python"># ✅ SOLUTION: Semantic relationships
+# Robust - table changes size? Positions update automatically!
+
+# Step 1: Place apple using semantic relationship
+# Notice: No math! Just describe the relationship.
+ops.add_asset(
+    asset="apple",              # What object?
+    relative_to="table",        # Related to what?
+    relation="on_top",          # What relationship? (on_top, next_to, inside)
+    surface_position="top_left" # Where on surface? (top_left, center, etc.)
+)
+
+# Step 2: Automatic physics-verified tracking
+# The system AUTOMATICALLY checks if apple is on table every frame
+ops.add_reward(
+    tracked_asset="apple",      # What to track?
+    behavior="stacked_on",      # What behavior to check?
+    target="table",             # What's it stacked on?
+    reward=100                  # Points if true
+)
+
+# Step 3: Get semantic state (automatic!)
+state = ops.get_state()
+print(state["apple"]["stacked_on_table"])  # True or False (physics-verified!)</code></pre>
+
+            <div class="badges">
+                <span class="badge badge-good">✅ 3 lines</span>
+                <span class="badge badge-good">✅ Readable</span>
+                <span class="badge badge-good">✅ Auto-validated</span>
+                <span class="badge badge-good">✅ AI understands!</span>
+            </div>
+        </section>
+
+        <!-- Key Concept -->
+        <div class="callout">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+                <h3>Key Concept: Semantic vs Numeric</h3>
+                <p><strong>Numeric (old):</strong> <code>pos=[2.3, 0.5, 0.8]</code> - AI can't understand this</p>
+                <p><strong>Semantic (new):</strong> <code>relation="on_top", surface_position="top_left"</code> - AI knows what this means!</p>
+                <p>This isn't just syntax sugar - it's a fundamental shift in how we describe robot worlds.</p>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <section class="block">
+            <div class="block-icon">⚙️</div>
+            <h2>How It Works: 4-Layer Architecture</h2>
+            <p class="block-desc">When you write <code>relation="on_top"</code>, here's what happens behind the scenes:</p>
+
+            <div class="mermaid">
+graph TD
+    A[🗣️ You write: relation='on_top'] -->|Semantic Description| B[🔧 Translation Layer]
+    B -->|Auto-calculates coordinates| C[⚙️ Physics Simulation]
+    C -->|Validates every frame| D[📊 Semantic State Output]
+
+    style A fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+    style B fill:#fce7f3,stroke:#ec4899,stroke-width:2px
+    style C fill:#d1fae5,stroke:#10b981,stroke-width:2px
+    style D fill:#dbeafe,stroke:#3b82f6,stroke-width:2px
+            </div>
+
+            <div class="layer-cards">
+                <div class="layer-card">
+                    <h3>🗣️ Layer 1: Semantic</h3>
+                    <p>You write human-readable code</p>
+                    <pre><code class="language-python">ops.add_asset("apple", relative_to="table",
+              relation="on_top", surface_position="top_left")</code></pre>
+                </div>
+
+                <div class="layer-card">
+                    <h3>🔧 Layer 2: Translation</h3>
+                    <p>System auto-calculates 3D coordinates</p>
+                    <pre><code class="language-python"># Automatic:
+position = calculate_surface_position(
+    surface=table,
+    position_label="top_left",  # Your input!
+    relation="on_top"
+)
+# Result: [1.7, 0.2, 0.82] (you never see this!)</code></pre>
+                </div>
+
+                <div class="layer-card">
+                    <h3>⚙️ Layer 3: Physics</h3>
+                    <p>MuJoCo validates semantic claims</p>
+                    <pre><code class="language-python"># Every frame:
+contacts = detect_contacts(apple, table)
+is_actually_on_table = len(contacts) > 0  # Physics truth!</code></pre>
+                </div>
+
+                <div class="layer-card">
+                    <h3>📊 Layer 4: State</h3>
+                    <p>Get physics-verified semantic state</p>
+                    <pre><code class="language-python">state = ops.get_state()
+state["apple"]["stacked_on_table"]  # True or False
+state["table"]["supporting_apple"]  # Reciprocal!</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <div class="callout callout-concept">
+            <div class="callout-icon">🎯</div>
+            <div class="callout-content">
+                <h3>Semantic Truth = Physics Truth</h3>
+                <p>The system doesn't just ASSUME relationships - it VERIFIES them through physics simulation every frame.</p>
+                <p>When you ask <code>is apple on table?</code>, you get the PHYSICS answer, not a cached assumption.</p>
+            </div>
+        </div>
+
+        <!-- Core Operations -->
+        <section class="block">
+            <div class="block-icon">📖</div>
+            <h2>Core Operations</h2>
+            <p class="block-desc">Learn the essential methods to build your scenes</p>
+
+            <div class="operation">
+                <h3>1️⃣ Placing Objects</h3>
+                <p>Use semantic relationships instead of coordinates</p>
+                <pre><code class="language-python"># Basic placement
+ops.add_asset(
+    asset="apple",              # WHAT: Which object to add
+    relative_to="table",        # WHERE: Relative to which object
+    relation="on_top",          # HOW: What spatial relationship
+    surface_position="top_left" # DETAIL: Where on the surface
+)
+
+# Available relations:
+relation="on_top"       # Vertical: place ON TOP of surface
+relation="next_to"      # Horizontal: place BESIDE object
+relation="inside"       # Containment: place INSIDE container
+
+# Surface positions (for on_top):
+surface_position="top_left"      # Top-left corner
+surface_position="center"        # Dead center
+surface_position="bottom_right"  # Bottom-right corner
+# Also: top_right, bottom_left, center_left, center_right</code></pre>
+            </div>
+
+            <div class="operation">
+                <h3>2️⃣ Validating Relationships</h3>
+                <p>Track spatial relationships with automatic physics verification</p>
+                <pre><code class="language-python"># Add reward to track relationship
+ops.add_reward(
+    tracked_asset="apple",     # WHAT: Object to track
+    behavior="stacked_on",     # BEHAVIOR: What to check
+    target="table",            # TARGET: Related to what
+    reward=100,                # POINTS: Score if true
+    id="apple_on_table"        # ID: Unique identifier
+)
+
+# Available behaviors:
+behavior="stacked_on"    # Is object resting on target?
+behavior="supporting"    # Is object holding up target? (reciprocal!)
+behavior="containing"    # Does container hold target?
+behavior="stable"        # Is object not wobbling?
+behavior="next_to"       # Are objects adjacent?
+
+# Get the answer:
+state = ops.get_state()
+is_on_table = state["apple"]["stacked_on_table"]  # True or False</code></pre>
+            </div>
+
+            <div class="operation">
+                <h3>3️⃣ Adding Cameras</h3>
+                <p>Smart cameras that auto-position themselves</p>
+                <pre><code class="language-python"># Easiest: Overhead camera (auto-calculates everything!)
+ops.add_overhead_camera()
+
+# Track specific object:
+ops.add_free_camera(
+    camera_id="track_apple",  # Unique name
+    track_target="apple",     # Follow this object!
+    distance=1.0,             # How far from object
+    azimuth=45,               # Horizontal angle (degrees)
+    elevation=-20             # Vertical angle (negative = look down)
+)
+
+# Fixed viewpoint:
+ops.add_free_camera(
+    camera_id="side_view",
+    lookat=(2.0, 0.0, 0.8),  # Look at this point
+    distance=2.5,             # How far away
+    azimuth=90,               # Side view
+    elevation=-15
+)</code></pre>
+            </div>
+        </section>
+
+        <!-- Examples -->
+        <section class="block">
+            <div class="block-icon">📚</div>
+            <h2>Learn By Example</h2>
+            <p class="block-desc">Progressive lessons from simple to advanced</p>
+
+            <!-- Example 1: Tower -->
+            <div class="example">
+                <h3>🎯 Example 1: Tower Stacking</h3>
+                <p class="example-desc"><strong>Learning Objective:</strong> Vertical stacking with stability tracking</p>
+
+                <div class="example-visual">
+<pre class="ascii-art">    ┌─────────┐
+    │ Yellow  │  ← Top
+    └─────────┘
+        ↓ on_top
+    ┌─────────┐
+    │  Green  │
+    └─────────┘
+        ↓ on_top
+    ┌─────────┐
+    │  Blue   │
+    └─────────┘
+        ↓ on_top
+    ┌─────────┐
+    │   Red   │  ← Base
+    └─────────┘
+        ↓ on_top
+    ┌═══════════════┐
+    │     Table     │
+    └═══════════════┘</pre>
+                </div>
+
+                <pre><code class="language-python"># LESSON 1: Tower Stacking
+# Concept: Stack objects vertically using "on_top" relation
+
+# Step 1: Place base block on table (foundation)
+ops.add_asset(
+    "block", name="block_red",
+    relative_to="table",
+    relation="on_top",           # ON TOP of table
+    surface_position="center"    # Dead center
+)
+
+# Step 2: Stack blue block on red (2nd level)
+# Notice: relative_to is now "block_red" (not table!)
+ops.add_asset(
+    "block", name="block_blue",
+    relative_to="block_red",     # On top of RED block
+    relation="on_top",
+    surface_position="center"
+)
+
+# Step 3: Continue stacking
+ops.add_asset("block", name="block_green", relative_to="block_blue", relation="on_top")
+ops.add_asset("block", name="block_yellow", relative_to="block_green", relation="on_top")
+
+# Step 4: Validate each level (is blue ACTUALLY on red?)
+ops.add_reward(
+    tracked_asset="block_blue",
+    behavior="stacked_on",       # Check contact
+    target="block_red",          # With red block
+    reward=100,
+    id="blue_on_red"
+)
+
+# Step 5: Detect collapse (did yellow fall to floor?)
+ops.add_reward(
+    tracked_asset="block_yellow",
+    behavior="stacked_on",
+    target="floor",              # Floor = failure!
+    reward=-100,                 # Penalty
+    id="yellow_fell"
+)</code></pre>
+
+                <div class="example-takeaway">
+                    <strong>✅ Key Takeaway:</strong> Use <code>relative_to</code> to chain objects. Each block references the one below it. Validation tracks EVERY level!
+                </div>
+            </div>
+
+            <!-- Example 2: Container -->
+            <div class="example">
+                <h3>🎯 Example 2: Container Filling</h3>
+                <p class="example-desc"><strong>Learning Objective:</strong> Containment with "inside" relation</p>
+
+                <div class="example-visual">
+<pre class="ascii-art">        ╔════════════╗
+        ║    Bowl    ║
+        ║  ┌──┐ ┌──┐ ║
+        ║  │🍒│ │🍇│ ║  ← Items INSIDE
+        ║  └──┘ └──┘ ║
+        ╚════════════╝
+              ↓
+        ┌──────────────┐
+        │    Table     │
+        └──────────────┘</pre>
+                </div>
+
+                <pre><code class="language-python"># LESSON 2: Container Filling
+# Concept: Use "inside" relation for containment
+
+# Step 1: Place container on table
+ops.add_asset("bowl", relative_to="table", relation="on_top")
+
+# Step 2: Place cherry INSIDE bowl
+# Notice: relation changed to "inside"!
+ops.add_asset(
+    "cherry",
+    relative_to="bowl",          # Relative to BOWL (not table!)
+    relation="inside",           # INSIDE the bowl
+    surface_position="bottom"    # At bottom of bowl
+)
+
+# Step 3: Place grape INSIDE bowl too
+ops.add_asset("grape", relative_to="bowl", relation="inside")
+
+# Step 4: Track containment (reciprocal relationship!)
+# Bowl knows what it contains
+ops.add_reward(
+    tracked_asset="bowl",        # Track the CONTAINER
+    behavior="containing",       # Is it containing...
+    target="cherry",             # ...the cherry?
+    reward=100,
+    id="bowl_has_cherry"
+)
+
+# Step 5: Detect escape (did cherry get out?)
+ops.add_reward(
+    tracked_asset="cherry",
+    behavior="stacked_on",
+    target="table",              # Cherry on table = escaped!
+    reward=-50,
+    id="cherry_escaped"
+)</code></pre>
+
+                <div class="example-takeaway">
+                    <strong>✅ Key Takeaway:</strong> <code>relation="inside"</code> handles containment geometry automatically. Use <code>behavior="containing"</code> for reciprocal tracking.
+                </div>
+            </div>
+
+            <!-- Example 3: Domino -->
+            <div class="example">
+                <h3>🎯 Example 3: Domino Cascade</h3>
+                <p class="example-desc"><strong>Learning Objective:</strong> Dynamic physics and inverse stability</p>
+
+                <div class="example-visual">
+<pre class="ascii-art">Robot→ [D1] → [D2] → [D3] → [D4] → [D5]
+  ↓      ↓      ↓      ↓      ↓      ↓
+Push  Falls  Falls  Falls  Falls  Falls</pre>
+                </div>
+
+                <pre><code class="language-python"># LESSON 3: Domino Cascade
+# Concept: Precise spacing + inverse stability (WANT falling!)
+
+# Step 1: Chain dominoes with precise spacing
+ops.add_asset("domino", name="domino_1", relative_to=(3.0, 0.0, 0.0))
+ops.add_asset(
+    "domino", name="domino_2",
+    relative_to="domino_1",
+    relation="next_to",
+    spacing=0.15                 # 15cm apart (perfect for cascade)
+)
+ops.add_asset("domino", name="domino_3", relative_to="domino_2",
+              relation="next_to", spacing=0.15)
+ops.add_asset("domino", name="domino_4", relative_to="domino_3",
+              relation="next_to", spacing=0.15)
+
+# Step 2: INVERSE STABILITY (want dominoes to fall!)
+# Notice: target=False means reward INSTABILITY
+ops.add_reward(
+    tracked_asset="domino_3",
+    behavior="stable",           # Is it stable?
+    target=False,                # We want FALSE (unstable!)
+    reward=20,                   # Points for falling!
+    id="domino_3_fell"
+)</code></pre>
+
+                <div class="example-takeaway">
+                    <strong>✅ Key Takeaway:</strong> <code>spacing</code> parameter gives precise control. <code>target=False</code> for inverse tracking - perfect for dynamic physics!
+                </div>
+            </div>
+
+            <!-- Example 4: Sorting -->
+            <div class="example">
+                <h3>🎯 Example 4: Categorical Sorting</h3>
+                <p class="example-desc"><strong>Learning Objective:</strong> Proximity-based grouping</p>
+
+                <div class="example-visual">
+<pre class="ascii-art">Initial: [🍎][🍌][🍴][🥄]
+           ↓  ↓  ↓  ↓
+  Goal:  [🍎][🍌] | [🍴][🥄]
+        Fruits left  Utensils right</pre>
+                </div>
+
+                <pre><code class="language-python"># LESSON 4: Sorting Task
+# Concept: Use proximity rewards for categorical grouping
+
+# Step 1: Place all objects mixed (initial state)
+ops.add_asset("apple", relative_to="table", relation="on_top")
+ops.add_asset("banana", relative_to="apple", relation="next_to")
+ops.add_asset("fork", relative_to="banana", relation="next_to")
+ops.add_asset("spoon", relative_to="fork", relation="next_to")
+
+# Step 2: Reward fruits being together
+ops.add_reward(
+    tracked_asset="apple",
+    behavior="next_to",          # Are they adjacent?
+    target="banana",
+    reward=100,                  # High reward!
+    id="fruits_grouped"
+)
+
+# Step 3: Reward utensils being together
+ops.add_reward(
+    tracked_asset="fork",
+    behavior="next_to",
+    target="spoon",
+    reward=100,
+    id="utensils_grouped"
+)
+
+# Step 4: Penalize mixed groups
+ops.add_reward(
+    tracked_asset="apple",
+    behavior="next_to",
+    target="fork",               # Apple next to fork
+    reward=-50,                  # Penalty!
+    id="mixed_penalty"
+)</code></pre>
+
+                <div class="example-takeaway">
+                    <strong>✅ Key Takeaway:</strong> Use <code>behavior="next_to"</code> for proximity detection. Positive rewards for correct grouping, negative for mixing!
+                </div>
+            </div>
+        </section>
+
+        <!-- Get Started -->
+        <section class="block block-cta">
+            <div class="block-icon">🚀</div>
+            <h2>Ready to Try It?</h2>
+            <p class="block-desc">Run the AI-generated demos and see it in action</p>
+
+            <pre><code class="language-bash">cd simulation_center
+python core/tests/demos/demo_1_ai_generated_scenes.py</code></pre>
+
+            <div class="demo-list">
+                <h3>6 AI-generated scenarios:</h3>
+                <ol>
+                    <li><strong>Tower Stacking</strong> (4 blocks) - Learn vertical stacking</li>
+                    <li><strong>Sorting Task</strong> - Learn categorical grouping</li>
+                    <li><strong>Container Filling</strong> - Learn containment</li>
+                    <li><strong>Domino Chain</strong> - Learn dynamic cascade</li>
+                    <li><strong>Balanced Shelf</strong> - Learn weight distribution</li>
+                    <li><strong>Nested Containers</strong> - Learn multi-level nesting</li>
+                </ol>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Built with 🤖 by humans and AI working together</p>
+        <p class="footer-sub">Semantic Robotics DSL - Think in Relationships</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

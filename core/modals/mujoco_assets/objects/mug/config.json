@@ -1,0 +1,24 @@
+{
+  "name": "mug",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/mug/mug.xml",
+  "behaviors": [
+    "graspable",
+    "fragile",
+    "container",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "fragile",
+        "container",
+        "stackable"
+      ]
+    }
+  }
+}

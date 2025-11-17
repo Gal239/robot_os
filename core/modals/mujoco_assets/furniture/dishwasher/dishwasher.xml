@@ -1,0 +1,13 @@
+<mujoco model="dishwasher">
+    <compiler angle="radian" meshdir="" texturedir=""/>
+
+    <!-- Include assets if they exist -->
+    <include file="dishwasher_asset.xml"/>
+
+    <worldbody>
+        <body name="dishwasher_root" pos="0 0 0">
+            <!-- Include body if it exists -->
+            <include file="dishwasher_body.xml"/>
+        </body>
+    </worldbody>
+</mujoco>

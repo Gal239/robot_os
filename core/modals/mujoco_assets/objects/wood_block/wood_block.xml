@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: wood_block -->
+    <asset>
+        <mesh name="wood_block_mesh" file="textured.obj"/>
+        <texture name="wood_block_tex" type="2d" file="texture_map.png"/>
+        <material name="wood_block_mat" texture="wood_block_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="wood_block">
+            <geom type="mesh"
+                  mesh="wood_block_mesh"
+                  material="wood_block_mat"
+                  mass="0.2"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.2" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

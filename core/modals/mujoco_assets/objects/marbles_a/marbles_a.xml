@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: marbles_a -->
+    <asset>
+        <mesh name="marbles_a_mesh" file="textured.obj"/>
+        <texture name="marbles_a_tex" type="2d" file="texture_map.png"/>
+        <material name="marbles_a_mat" texture="marbles_a_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="marbles_a">
+            <geom type="mesh"
+                  mesh="marbles_a_mesh"
+                  material="marbles_a_mat"
+                  mass="0.2"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.2" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: True -->
+        </body>
+    </worldbody>
+</mujoco>

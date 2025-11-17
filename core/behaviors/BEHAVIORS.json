@@ -1,0 +1,473 @@
+{
+  "_unit_types": {
+    "radians": {
+      "what": "Rotation angle (like opening a door)",
+      "physical_units": "radians",
+      "input_example": "1.57",
+      "smooth": true
+    },
+    "meters": {
+      "what": "Distance in real world",
+      "physical_units": "meters",
+      "input_example": "0.8",
+      "smooth": true
+    },
+    "Newtons": {
+      "what": "Force (how hard you push/grip)",
+      "physical_units": "Newtons",
+      "input_example": "5",
+      "smooth": true
+    },
+    "percentage": {
+      "what": "Part of whole (0-100%)",
+      "physical_units": "percentage",
+      "input_example": "30",
+      "smooth": true
+    },
+    "m/s": {
+      "what": "Speed (how fast moving)",
+      "physical_units": "m/s",
+      "input_example": "0.5",
+      "smooth": true
+    },
+    "rad/s": {
+      "what": "Spin speed (how fast rotating)",
+      "physical_units": "rad/s",
+      "input_example": "0.3",
+      "smooth": true
+    },
+    "boolean": {
+      "what": "Yes or No (on/off, true/false)",
+      "physical_units": "boolean",
+      "input_example": "",
+      "smooth": false
+    }
+  },
+  "hinged": {
+    "description": "Objects with rotating joints like doors, lids, cabinet doors",
+    "properties": {
+      "angle": {
+        "description": "Current rotation angle of the joint",
+        "unit": "radians",
+        "states": {},
+        "default": null
+      },
+      "velocity": {
+        "description": "How fast the joint is rotating",
+        "unit": "rad/s",
+        "states": {},
+        "default": null
+      },
+      "open": {
+        "description": "True when angle exceeds threshold (parameterizable - customize threshold per use case)",
+        "unit": "percentage",
+        "states": {
+          "0": "Fully closed",
+          "25": "Slightly ajar",
+          "50": "Half open",
+          "75": "Mostly open",
+          "100": "Fully open"
+        },
+        "default": 1.4
+      },
+      "closed": {
+        "description": "True when angle is near 0",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "handle_grabbed": {
+        "description": "True when robot gripper contacts handle (via per-geom contact tracking)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "opening": {
+        "description": "True when door is actively moving (velocity > threshold)",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "graspable": {
+    "description": "Objects that can be picked up and held by robot",
+    "properties": {
+      "contact_force": {
+        "description": "Total force from contacts (gripper touching object)",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      },
+      "held_by": {
+        "description": "Contact force from specific gripper/holder (relational property like distance_to, contact)",
+        "unit": "Newtons (grip strength)",
+        "states": {
+          "0": "Not grasped",
+          "1": "Light touch",
+          "2": "Normal grip",
+          "5": "Firm grip",
+          "10": "Very tight"
+        },
+        "default": 2.0
+      },
+      "height": {
+        "description": "Z coordinate (height above ground) - parameterizable for custom height thresholds",
+        "unit": "meters (height)",
+        "states": {
+          "0": "On floor",
+          "0.8": "Table height",
+          "1.0": "Waist height",
+          "1.5": "Chest height",
+          "2.0": "Overhead"
+        },
+        "default": 1.0
+      },
+      "velocity": {
+        "description": "Linear velocity in XYZ",
+        "unit": "m/s",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "sliding": {
+    "description": "Objects with linear joints like drawers, sliding doors",
+    "properties": {
+      "position": {
+        "description": "Linear position along slide axis",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "velocity": {
+        "description": "Speed of sliding motion",
+        "unit": "m/s",
+        "states": {},
+        "default": null
+      },
+      "extended": {
+        "description": "True when position exceeds threshold (parameterizable - customize extension distance)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "handle_grabbed": {
+        "description": "True when robot gripper contacts drawer handle (via per-geom contact tracking)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "sliding": {
+        "description": "True when drawer is actively moving (velocity > threshold)",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "container": {
+    "description": "Objects that can hold other objects inside",
+    "properties": {
+      "contains": {
+        "description": "Check if specific object is inside this container",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "empty": {
+        "description": "True when nothing inside",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "full": {
+        "description": "True when at capacity (defined in config)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "num_contained": {
+        "description": "Count of objects currently inside (parameterizable - customize object count threshold)",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "surface": {
+    "description": "Room surfaces like floor, walls, ceiling - detect collisions",
+    "properties": {
+      "contact": {
+        "description": "Detect contact between surface and object",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "contact_force": {
+        "description": "Contact force magnitude on this surface",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "rollable": {
+    "description": "Objects that can roll like balls, cylinders",
+    "properties": {
+      "angular_velocity": {
+        "description": "Angular velocity around each axis",
+        "unit": "rad/s",
+        "states": {},
+        "default": null
+      },
+      "rolling": {
+        "description": "True when angular velocity exceeds threshold",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "stationary": {
+        "description": "True when angular velocity near zero",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "stackable": {
+    "description": "Objects that can be stacked on top of each other",
+    "properties": {
+      "stacked_on": {
+        "description": "List of objects this is stacked on (below)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "supporting": {
+        "description": "List of objects stacked on top (above)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "stack_height": {
+        "description": "Position in stack (1=bottom, higher=further up)",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "stable": {
+        "description": "True when stack is not wobbling/falling",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "pressable": {
+    "description": "Objects that can be pressed like buttons, switches",
+    "properties": {
+      "pressed": {
+        "description": "True when button is currently pressed down",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "released": {
+        "description": "True when button is not pressed",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "force": {
+        "description": "Force applied to button",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      },
+      "activation_count": {
+        "description": "Number of times button has been pressed",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "pourable": {
+    "description": "Objects containing liquid or granular material",
+    "properties": {
+      "volume": {
+        "description": "Current volume of liquid/material inside",
+        "unit": "liters",
+        "states": {},
+        "default": null
+      },
+      "flow_rate": {
+        "description": "Rate of liquid flowing out",
+        "unit": "L/s",
+        "states": {},
+        "default": null
+      },
+      "pouring": {
+        "description": "True when actively pouring",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "empty": {
+        "description": "True when no liquid inside",
+        "unit": "",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "fragile": {
+    "description": "Objects that can break if handled roughly",
+    "properties": {
+      "intact": {
+        "description": "True when object is not broken",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "broken": {
+        "description": "True when object has broken",
+        "unit": "",
+        "states": {},
+        "default": null
+      },
+      "impact_force": {
+        "description": "Maximum contact force on object",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "spatial": {
+    "description": "Position and distance tracking for any component (universal behavior)",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world coordinates [x, y, z]",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to another asset - dynamic property (e.g., distance_to_apple, distance_to_gripper)",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "vision": {
+    "description": "Visual sensing and object detection",
+    "properties": {
+      "target_visible": {
+        "description": "True when target in view",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "target_distance": {
+        "description": "Distance to visible target",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "distance_sensing": {
+    "description": "Distance measurement and obstacle detection",
+    "properties": {
+      "min_distance": {
+        "description": "Minimum detected distance",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "obstacle_detected": {
+        "description": "True when obstacle within threshold",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "motion_sensing": {
+    "description": "Motion and acceleration sensing",
+    "properties": {
+      "acceleration": {
+        "description": "Linear acceleration magnitude",
+        "unit": "m/s^2",
+        "states": {},
+        "default": null
+      },
+      "angular_velocity": {
+        "description": "Angular velocity magnitude",
+        "unit": "rad/s",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "tactile": {
+    "description": "Touch and force sensing",
+    "properties": {
+      "force": {
+        "description": "Applied force",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      },
+      "contact": {
+        "description": "True when contact detected",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "audio_sensing": {
+    "description": "Sound capture and localization",
+    "properties": {
+      "sound_detected": {
+        "description": "True when sound above threshold",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "sound_direction": {
+        "description": "Direction of sound source",
+        "unit": "radians",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "room_boundary": {
+    "description": "Room boundaries (walls, floor, ceiling) that objects interact with",
+    "properties": {
+      "contact": {
+        "description": "Object touching this boundary",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "contact_force": {
+        "description": "Force of contact with boundary",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      },
+      "object_stuck": {
+        "description": "Object stuck in/on this boundary",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  }
+}

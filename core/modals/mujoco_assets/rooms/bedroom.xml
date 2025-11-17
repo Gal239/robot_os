@@ -1,0 +1,56 @@
+<mujoco model="bedroom">
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="-120" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <texture name="carpet_tex" type="2d" file="../common/textures/carpet.png"/>
+    <texture name="gray_wall_real_tex" type="2d" file="../common/textures/gray_wall_real.png"/>
+
+    <material name="floor_material" texture="carpet_tex"
+              texrepeat="8 8" specular="0.3" shininess="0.2"/>
+    <material name="wall_material" texture="gray_wall_real_tex"
+              texrepeat="4 4" specular="0.05" shininess="0.01"/>
+  </asset>
+
+  <worldbody>
+    <!-- Floor -->
+    <geom name="floor" type="plane" size="2.0 2.5 0.1"
+          pos="0 0 0" material="floor_material" friction="1.0 0.05 0.01"/>
+
+    <!-- North wall -->
+    <geom name="wall_north" type="box"
+          size="2.0 0.15 1.25"
+          pos="0 2.5 1.25"
+          material="wall_material"/>
+
+    <!-- South wall -->
+    <geom name="wall_south" type="box"
+          size="2.0 0.15 1.25"
+          pos="0 -2.5 1.25"
+          material="wall_material"/>
+
+    <!-- East wall -->
+    <geom name="wall_east" type="box"
+          size="0.15 2.5 1.25"
+          pos="2.0 0 1.25"
+          material="wall_material"/>
+
+    <!-- West wall with opening -->
+    <geom name="wall_west_bottom" type="box"
+          size="0.15 1.525 1.25"
+          pos="-2.0 -0.9750000000000001 1.25"
+          material="wall_material"/>
+    <geom name="wall_west_top" type="box"
+          size="0.15 0.525 1.25"
+          pos="-2.0 1.975 1.25"
+          material="wall_material"/>
+    <!-- door opening: width=0.9m, offset=1m -->
+
+    <!-- Ceiling -->
+    <geom name="ceiling" type="box" size="2.0 2.5 0.1"
+          pos="0 0 2.5" rgba="0.95 0.95 0.95 1"/>
+  </worldbody>
+</mujoco>

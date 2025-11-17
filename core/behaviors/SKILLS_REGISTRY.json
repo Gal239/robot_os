@@ -1,0 +1,44 @@
+{
+  "_comment": "SKILLS_REGISTRY - Pydantic auto-serialized Skills",
+  "_note": "Skills = List[ActionBlock]. Can be manual, RL-trained, or composed",
+  "navigate_to_table_rl": {
+    "id": "navigate_to_table_rl",
+    "name": "Navigate to Table (RL)",
+    "description": "Navigate to table using PPO-trained policy",
+    "source": "rl_trained",
+    "created_by": "ppo",
+    "policy_path": "models/navigate_to_table_ppo.zip",
+    "training_info": {
+      "algorithm": "PPO",
+      "episodes": 1000,
+      "mean_reward": 450.5,
+      "success_rate": 0.89,
+      "training_time_hours": 2.5
+    },
+    "action_blocks": []
+  },
+  "pick_object_rl": {
+    "id": "pick_object_rl",
+    "name": "Pick Object (RL)",
+    "description": "Pick up object using SAC-trained policy",
+    "source": "rl_trained",
+    "created_by": "sac",
+    "policy_path": "models/pick_object_sac.zip",
+    "training_info": {
+      "algorithm": "SAC",
+      "episodes": 2000,
+      "mean_reward": 380.2,
+      "success_rate": 0.92,
+      "training_time_hours": 3.8
+    },
+    "action_blocks": []
+  },
+  "test_registered_skill": {
+    "id": "test_registered_skill",
+    "name": "Test Registered Skill",
+    "description": "Skill added via test",
+    "action_blocks": [],
+    "source": "manual",
+    "created_by": "pytest"
+  }
+}

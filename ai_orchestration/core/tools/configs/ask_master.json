@@ -1,0 +1,23 @@
+{
+  "tool_id": "ask_master",
+  "description": "Ask your parent agent for clarification or additional information. Use when you need guidance or missing context.",
+  "type": "ask_master",
+  "parameters": {
+    "question": {
+      "type": "string",
+      "description": "The question to ask your parent agent",
+      "required": true
+    },
+    "documents": {
+      "type": "array",
+      "description": "List of document paths from workspace to attach (e.g., ['draft.md', 'analysis.pdf'])",
+      "required": false,
+      "default": []
+    }
+  },
+  "returns": {
+    "answer": "string",
+    "from_agent": "string",
+    "documents": "array"
+  }
+}

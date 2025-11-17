@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: dice -->
+    <asset>
+        <mesh name="dice_mesh" file="textured.obj"/>
+        <texture name="dice_tex" type="2d" file="texture_map.png"/>
+        <material name="dice_mat" texture="dice_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="dice">
+            <geom type="mesh"
+                  mesh="dice_mesh"
+                  material="dice_mat"
+                  mass="0.005"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.005" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

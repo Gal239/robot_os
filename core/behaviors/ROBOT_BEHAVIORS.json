@@ -1,0 +1,411 @@
+{
+  "robot_wheel": {
+    "description": "Left Wheel Vel control",
+    "properties": {
+      "position": {
+        "description": "Position value",
+        "unit": "rad/s",
+        "natural_range": 12.0,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_lift": {
+    "description": "Vertical lift mechanism",
+    "properties": {
+      "height": {
+        "description": "Height value",
+        "unit": "meters",
+        "natural_range": 1.1,
+        "states": {},
+        "default": null
+      },
+      "raised": {
+        "description": "True when raised past threshold",
+        "unit": "percentage",
+        "states": {},
+        "default": 0.5
+      }
+    }
+  },
+  "robot_lift_spatial": {
+    "description": "Spatial position tracking for robot_lift",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_arm": {
+    "description": "Telescoping arm extension",
+    "properties": {
+      "extension": {
+        "description": "Extension value",
+        "unit": "meters",
+        "natural_range": 0.52,
+        "states": {},
+        "default": null
+      },
+      "extended": {
+        "description": "True when extended past threshold",
+        "unit": "percentage",
+        "states": {},
+        "default": 0.3
+      }
+    }
+  },
+  "robot_arm_spatial": {
+    "description": "Spatial position tracking for robot_arm",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_yaw": {
+    "description": "Wrist yaw rotation",
+    "properties": {
+      "angle_rad": {
+        "description": "Angle Rad value",
+        "unit": "radians",
+        "natural_range": 5.81,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_yaw_spatial": {
+    "description": "Spatial position tracking for robot_wrist_yaw",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_pitch": {
+    "description": "Wrist pitch rotation",
+    "properties": {
+      "angle_rad": {
+        "description": "Angle Rad value",
+        "unit": "radians",
+        "natural_range": 2.13,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_pitch_spatial": {
+    "description": "Spatial position tracking for robot_wrist_pitch",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_roll": {
+    "description": "Wrist roll rotation",
+    "properties": {
+      "angle_rad": {
+        "description": "Angle Rad value",
+        "unit": "radians",
+        "natural_range": 6.28,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_wrist_roll_spatial": {
+    "description": "Spatial position tracking for robot_wrist_roll",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_gripper": {
+    "description": "Robot gripper/end effector",
+    "properties": {
+      "aperture": {
+        "description": "Aperture value",
+        "unit": "meters",
+        "natural_range": 0.06,
+        "states": {},
+        "default": null
+      },
+      "closed": {
+        "description": "True when gripper closed",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "holding": {
+        "description": "True when gripping object",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_head_pan": {
+    "description": "Head pan rotation",
+    "properties": {
+      "angle_rad": {
+        "description": "Angle Rad value",
+        "unit": "radians",
+        "natural_range": 5.77,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_head_pan_spatial": {
+    "description": "Spatial position tracking for robot_head_pan",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_head_tilt": {
+    "description": "Head tilt rotation",
+    "properties": {
+      "angle_rad": {
+        "description": "Angle Rad value",
+        "unit": "radians",
+        "natural_range": 2.3200000000000003,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_head_tilt_spatial": {
+    "description": "Spatial position tracking for robot_head_tilt",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_speaker": {
+    "description": "Audio output speaker",
+    "properties": {
+      "volume": {
+        "description": "Volume value",
+        "unit": "",
+        "natural_range": 1.0,
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "vision": {
+    "description": "Visual sensing and object detection",
+    "properties": {
+      "target_visible": {
+        "description": "True when target in view",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "target_distance": {
+        "description": "Distance to visible target",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_head_spatial": {
+    "description": "Spatial position tracking for robot_head",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_gripper_spatial": {
+    "description": "Spatial position tracking for robot_gripper",
+    "properties": {
+      "position": {
+        "description": "XYZ position in world frame",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "distance_to": {
+        "description": "Distance to target position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "distance_sensing": {
+    "description": "Distance measurement and obstacle detection",
+    "properties": {
+      "min_distance": {
+        "description": "Minimum detected distance",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "obstacle_detected": {
+        "description": "True when obstacle within threshold",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "motion_sensing": {
+    "description": "Motion and acceleration sensing",
+    "properties": {
+      "acceleration": {
+        "description": "Linear acceleration magnitude",
+        "unit": "m/s^2",
+        "states": {},
+        "default": null
+      },
+      "angular_velocity": {
+        "description": "Angular velocity magnitude",
+        "unit": "rad/s",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "tactile": {
+    "description": "Touch and force sensing",
+    "properties": {
+      "force": {
+        "description": "Applied force",
+        "unit": "Newtons",
+        "states": {},
+        "default": null
+      },
+      "contact": {
+        "description": "True when contact detected",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "audio_sensing": {
+    "description": "Sound capture and localization",
+    "properties": {
+      "sound_detected": {
+        "description": "True when sound above threshold",
+        "unit": "boolean",
+        "states": {},
+        "default": null
+      },
+      "sound_direction": {
+        "description": "Direction of sound source",
+        "unit": "radians",
+        "states": {},
+        "default": null
+      }
+    }
+  },
+  "robot_base": {
+    "description": "Odometry sensing",
+    "properties": {
+      "position": {
+        "description": "Base XYZ position",
+        "unit": "meters",
+        "states": {},
+        "default": null
+      },
+      "rotation": {
+        "description": "Rotation angle around Z axis",
+        "unit": "radians",
+        "natural_range": 360.0,
+        "states": {},
+        "default": null
+      },
+      "at_location": {
+        "description": "True when base near target XY",
+        "unit": "meters",
+        "states": {
+          "0.5": "Close",
+          "1.0": "Near"
+        },
+        "default": 0.5
+      }
+    }
+  }
+}

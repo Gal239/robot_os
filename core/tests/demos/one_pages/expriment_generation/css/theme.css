@@ -1,0 +1,49 @@
+/* ========================================
+   THEME - Pastel Color Palette
+   ======================================== */
+
+:root {
+    /* ========================================
+       COLORS - White Background + Pastel Accents
+       ======================================== */
+
+    /* Background */
+    --bg-primary: #FFFFFF;
+    --bg-secondary: #F8FAFC;
+
+    /* Text */
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+
+    /* Primary (Soft Indigo) */
+    --primary-color: #818CF8;
+    --primary-dark: #6366F1;
+    --primary-light: #EEF2FF;
+
+    /* Accent (Soft Pink) */
+    --accent-color: #F472B6;
+    --accent-light: #FCE7F3;
+
+    /* UI */
+    --border-color: #E2E8F0;
+    --card-bg: #FFFFFF;
+
+    /* Code */
+    --code-bg: #F1F5F9;
+    --code-block-bg: #1E293B;
+
+    /* State Colors */
+    --success-color: #34D399;
+    --success-light: #D1FAE5;
+    --error-color: #F87171;
+    --error-light: #FEE2E2;
+    --warning-color: #FBBF24;
+    --warning-light: #FEF3C7;
+    --info-color: #60A5FA;
+    --info-light: #DBEAFE;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}

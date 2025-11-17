@@ -1,0 +1,20 @@
+{
+  "name": "skillet_lid",
+  "category": "object",
+  "xml_file": "mujoco_assets/objects/skillet_lid/skillet_lid.xml",
+  "behaviors": [
+    "graspable",
+    "stackable"
+  ],
+  "components": {
+    "body": {
+      "name": "body",
+      "geom_names": [],
+      "joint_names": [],
+      "behaviors": [
+        "graspable",
+        "stackable"
+      ]
+    }
+  }
+}

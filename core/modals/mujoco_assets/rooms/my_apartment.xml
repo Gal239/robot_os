@@ -1,0 +1,40 @@
+<mujoco model="my_apartment">
+<visual>
+  <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+  <rgba haze="0.15 0.25 0.35 1"/>
+</visual>
+
+<asset>
+  <texture name="wood_floor" type="2d" file="../textures/wood_floor.png"/>
+  <material name="floor_material" texture="wood_floor" texrepeat="8 8" specular="0.3" shininess="0.2"/>
+  <texture name="gray_wall_real" type="2d" file="../textures/gray_wall_real.png"/>
+  <material name="wall_material" texture="gray_wall_real" texrepeat="4 4" specular="0.05" shininess="0.01"/>
+</asset>
+
+<worldbody>
+  <geom name="floor" type="plane" size="4.0 5.0 0.1" pos="0 0 0" material="floor_material" friction="1.0 0.05 0.01"/>
+  <geom name="wall_north_left" type="box" size="0.25 0.15 1.35" pos="-3.75 5.0 1.35" material="wall_material"/>
+  <geom name="wall_north_right" type="box" size="3.25 0.15 1.35" pos="0.75 5.0 1.35" material="wall_material"/>
+  <!-- door opening: 1.0m x 2.0m @ position -3m, interactive: no (just opening) -->
+  <geom name="wall_south_left" type="box" size="1.75 0.15 1.35" pos="-2.25 -5.0 1.35" material="wall_material"/>
+  <geom name="wall_south_right" type="box" size="1.75 0.15 1.35" pos="2.25 -5.0 1.35" material="wall_material"/>
+  <body name="south_door_body" pos="0 -5.0 0">
+    <body name="south_door_frame" pos="0 0 1.0">
+      <!-- Frame -->
+      <geom name="frame_left" type="box" size="0.04 0.04 1.0" pos="-0.5 0 0" rgba="0.3 0.15 0.05 1"/>
+      <geom name="frame_right" type="box" size="0.04 0.04 1.0" pos="0.5 0 0" rgba="0.3 0.15 0.05 1"/>
+      <geom name="frame_top" type="box" size="0.5 0.04 0.08" pos="0 0 1.0" rgba="0.3 0.15 0.05 1"/>
+      <body name="south_door_panel" pos="-0.46 0 0">
+        <joint name="south_door_hinge" type="hinge" axis="0 0 1" range="0 1.57" damping="1"/>
+        <geom name="door_panel" type="box" size="0.42 0.025 0.9" pos="0.42 0 0" rgba="0.6 0.4 0.2 1"/>
+        <body name="south_door_handle" pos="0.7 0 0">
+          <geom name="handle" type="sphere" size="0.025" rgba="0.7 0.7 0.7 1"/>
+        </body>
+      </body>
+    </body>
+  </body>
+  <!-- door opening: 1.0m x 2.0m @ position 0m, interactive: yes (door added) -->
+  <!-- window opening: 2m x 1.2m @ position 0m, sill height: 0.9m, interactive: no (just opening) -->
+  <geom name="wall_west" type="box" size="0.15 5.0 1.35" pos="-4.0 0 1.35" material="wall_material"/>
+</worldbody>
+</mujoco>

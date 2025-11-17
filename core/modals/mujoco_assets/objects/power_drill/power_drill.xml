@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: power_drill -->
+    <asset>
+        <mesh name="power_drill_mesh" file="textured.obj"/>
+        <texture name="power_drill_tex" type="2d" file="texture_map.png"/>
+        <material name="power_drill_mat" texture="power_drill_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="power_drill">
+            <geom type="mesh"
+                  mesh="power_drill_mesh"
+                  material="power_drill_mat"
+                  mass="1.2"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="1.2" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

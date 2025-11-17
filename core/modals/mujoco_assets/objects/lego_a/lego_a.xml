@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: lego_a -->
+    <asset>
+        <mesh name="lego_a_mesh" file="textured.obj"/>
+        <texture name="lego_a_tex" type="2d" file="texture_map.png"/>
+        <material name="lego_a_mat" texture="lego_a_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="lego_a">
+            <geom type="mesh"
+                  mesh="lego_a_mesh"
+                  material="lego_a_mat"
+                  mass="0.25"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.25" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>

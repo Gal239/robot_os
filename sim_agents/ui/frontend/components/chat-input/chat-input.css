@@ -1,0 +1,56 @@
+/**
+ * Chat Input Component - Styles
+ * ==============================
+ */
+
+.chat-input-container {
+    padding: var(--spacing-lg);
+    background-color: var(--white);
+    border-top: 1px solid var(--soft-gray);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+.chat-input-wrapper {
+    display: flex;
+    gap: var(--spacing-md);
+    align-items: flex-end;
+}
+
+.chat-input-field {
+    flex: 1;
+    padding: var(--spacing-md);
+    border: 1px solid var(--soft-gray);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-family: inherit;
+    resize: none;
+    transition: border 200ms ease-in-out;
+    outline: none;
+    min-height: 40px;
+    max-height: 150px;
+}
+
+.chat-input-field:focus {
+    border-color: var(--echo-blue);
+}
+
+.chat-input-field:disabled {
+    background-color: var(--light-gray);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.chat-send-button {
+    padding: var(--spacing-md) var(--spacing-xl);
+    white-space: nowrap;
+}
+
+.chat-send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.chat-send-button:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}

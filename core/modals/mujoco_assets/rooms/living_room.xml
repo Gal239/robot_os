@@ -1,0 +1,66 @@
+<mujoco model="living_room">
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="-120" elevation="-20"/>
+  </visual>
+
+  <asset>
+    <texture name="wood_floor_tex" type="2d" file="../common/textures/wood_floor.png"/>
+    <texture name="white_wall_tex" type="2d" file="../common/textures/white_wall.png"/>
+
+    <material name="floor_material" texture="wood_floor_tex"
+              texrepeat="8 8" specular="0.3" shininess="0.2"/>
+    <material name="wall_material" texture="white_wall_tex"
+              texrepeat="4 4" specular="0.05" shininess="0.01"/>
+  </asset>
+
+  <worldbody>
+    <!-- Floor -->
+    <geom name="floor" type="plane" size="3.5 4.5 0.1"
+          pos="0 0 0" material="floor_material" friction="1.0 0.05 0.01"/>
+
+    <!-- North wall with opening -->
+    <geom name="wall_north_left" type="box"
+          size="0.5 0.15 1.4"
+          pos="-3.0 4.5 1.4"
+          material="wall_material"/>
+    <geom name="wall_north_right" type="box"
+          size="2.5 0.15 1.4"
+          pos="1.0 4.5 1.4"
+          material="wall_material"/>
+    <!-- door opening: width=1.0m, offset=-2m -->
+
+    <!-- South wall with opening -->
+    <geom name="wall_south_left" type="box"
+          size="1.45 0.15 1.4"
+          pos="-2.05 -4.5 1.4"
+          material="wall_material"/>
+    <geom name="wall_south_right" type="box"
+          size="1.45 0.15 1.4"
+          pos="2.05 -4.5 1.4"
+          material="wall_material"/>
+    <!-- door opening: width=1.2m, offset=0m -->
+
+    <!-- East wall with opening -->
+    <geom name="wall_east_bottom" type="box"
+          size="0.15 1.875 1.4"
+          pos="3.5 -2.625 1.4"
+          material="wall_material"/>
+    <geom name="wall_east_top" type="box"
+          size="0.15 1.875 1.4"
+          pos="3.5 2.625 1.4"
+          material="wall_material"/>
+    <!-- window opening: width=1.5m, offset=0m -->
+
+    <!-- West wall -->
+    <geom name="wall_west" type="box"
+          size="0.15 4.5 1.4"
+          pos="-3.5 0 1.4"
+          material="wall_material"/>
+
+    <!-- Ceiling -->
+    <geom name="ceiling" type="box" size="3.5 4.5 0.1"
+          pos="0 0 2.8" rgba="0.95 0.95 0.95 1"/>
+  </worldbody>
+</mujoco>

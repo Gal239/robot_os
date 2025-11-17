@@ -1,0 +1,15 @@
+{
+  "name": "ceiling",
+  "category": "room_parts",
+  "behaviors": ["surface"],
+  "semantic_properties": {
+    "contact_with": {
+      "type": "contact",
+      "description": "Object touching ceiling - detects impacts/hits"
+    },
+    "contact_force": {
+      "type": "contact",
+      "description": "Force magnitude of ceiling impact"
+    }
+  }
+}

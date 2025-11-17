@@ -1,0 +1,21 @@
+{
+  "_meta": {
+    "description": "Auto-discovered actuator tolerances from physics simulation",
+    "pattern": "MODAL-TO-MODAL",
+    "source": "ToleranceDiscoveryModal",
+    "principle": "MOP #1 (AUTO-DISCOVERY) + MOP #2 (SELF-GENERATION)",
+    "discovery_method": "Measures error after 1000-step settling (true physics limit)",
+    "discovery_steps": 1000,
+    "note": "One-time discovery when robot XML added to system - accuracy over speed!"
+  },
+  "tolerances": {
+    "lift": 0.6870251190231006,
+    "arm": 0.41233267861031275,
+    "gripper": 0.030026623262737764,
+    "wrist_yaw": 1.5893957957982057,
+    "wrist_pitch": 2.695300874328632,
+    "wrist_roll": 1.9270894079834924,
+    "head_pan": 1.4742680291704384,
+    "head_tilt": 1.292922368330835
+  }
+}

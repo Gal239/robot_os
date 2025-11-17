@@ -1,0 +1,20 @@
+<mujoco model="object">
+    <!-- YCB Object: padlock -->
+    <asset>
+        <mesh name="padlock_mesh" file="textured.obj"/>
+        <texture name="padlock_tex" type="2d" file="texture_map.png"/>
+        <material name="padlock_mat" texture="padlock_tex"/>
+    </asset>
+
+    <worldbody>
+        <body name="padlock">
+            <geom type="mesh"
+                  mesh="padlock_mesh"
+                  material="padlock_mat"
+                  mass="0.15"
+                  friction="1 0.005 0.0001"/>
+            <inertial pos="0 0 0" mass="0.15" diaginertia="0.001 0.001 0.001"/>
+            <!-- fragile: False -->
+        </body>
+    </worldbody>
+</mujoco>
