@@ -47,6 +47,26 @@ def start():
     return jsonify(result)
 
 
+@app.route('/api/reset', methods=['POST'])
+def reset():
+    """
+    Start new dream session (creates new session_id, fresh conversation)
+    Old session is already auto-saved to database!
+    """
+    global echo_manager
+
+    print("[API] Resetting to new dream session...")
+
+    # Old session auto-saved to database/runs/session_XXX/
+    # Just create fresh manager with new session_id
+    echo_manager = EchoConversationManager()
+    result = echo_manager.start_session()
+
+    print(f"[API] New dream session created: {result.get('session_id')}")
+
+    return jsonify(result)
+
+
 @app.route('/api/chat', methods=['POST'])
 def chat():
     """Send message to Echo"""
@@ -192,6 +212,9 @@ def edits():
 
     document_ops = echo_manager.ops.document_ops
     edit_stream = document_ops.get_edit_stream()
+
+    # Clear edit stream after getting it (prevents accumulation!)
+    document_ops.clear_edit_stream()
 
     return jsonify({
         "success": True,

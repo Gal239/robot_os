@@ -70,70 +70,25 @@ class ScriptViewer {
      */
     static createCodeBlock(script) {
         const codeBlock = document.createElement('div');
-        codeBlock.className = 'script-viewer-code script-viewer-code-highlighted';
+        codeBlock.className = 'script-viewer-code';
 
+        // Create pre and code elements for Prism.js
         const pre = document.createElement('pre');
+        const code = document.createElement('code');
+        code.className = 'language-python';
 
-        // Strip any existing HTML tags (in case backend sends pre-highlighted)
-        const cleanScript = script.replace(/<[^>]*>/g, '');
+        // Set text content (Prism will handle highlighting)
+        code.textContent = script;
 
-        // Split into lines and add line numbers
-        const lines = cleanScript.split('\n');
-        lines.forEach((line, index) => {
-            const lineDiv = document.createElement('div');
-            lineDiv.className = 'code-line';
-
-            // Line number
-            const lineNumber = document.createElement('span');
-            lineNumber.className = 'line-number';
-            lineNumber.textContent = (index + 1).toString().padStart(3, ' ');
-
-            // Line content with syntax highlighting
-            const lineContent = document.createElement('span');
-            lineContent.className = 'line-content';
-            lineContent.innerHTML = this.highlightPython(line);
-
-            lineDiv.appendChild(lineNumber);
-            lineDiv.appendChild(lineContent);
-            pre.appendChild(lineDiv);
-        });
-
+        pre.appendChild(code);
         codeBlock.appendChild(pre);
+
+        // Apply Prism highlighting
+        if (typeof Prism !== 'undefined') {
+            Prism.highlightElement(code);
+        }
+
         return codeBlock;
-    }
-
-    /**
-     * Simple Python syntax highlighter
-     */
-    static highlightPython(code) {
-        if (!code) return '';
-
-        // Escape HTML
-        let highlighted = code
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-
-        // Python keywords
-        const keywords = /\b(def|class|import|from|if|elif|else|for|while|return|yield|try|except|finally|with|as|pass|break|continue|raise|assert|lambda|None|True|False|and|or|not|in|is|async|await)\b/g;
-        highlighted = highlighted.replace(keywords, '<span class="keyword">$1</span>');
-
-        // Strings (single and double quotes)
-        highlighted = highlighted.replace(/(["'])(?:(?=(\\?))\2.)*?\1/g, '<span class="string">$&</span>');
-
-        // Comments
-        highlighted = highlighted.replace(/(#.*$)/g, '<span class="comment">$1</span>');
-
-        // Numbers
-        highlighted = highlighted.replace(/\b(\d+\.?\d*)\b/g, '<span class="number">$1</span>');
-
-        // Function definitions
-        highlighted = highlighted.replace(/\b(def)\s+(\w+)/g, '<span class="keyword">$1</span> <span class="function">$2</span>');
-
-        // Function calls
-        highlighted = highlighted.replace(/\b(\w+)(?=\()/g, '<span class="function">$1</span>');
-
-        return highlighted;
     }
 
     /**
@@ -202,8 +157,9 @@ class ScriptViewer {
     /**
      * Render animated script viewer (for live editing)
      * @param {string} containerId - Container element ID
+     * @param {string} initialScript - Initial script to display before animating edits
      */
-    static renderAnimated(containerId) {
+    static renderAnimated(containerId, initialScript = '') {
         const container = document.getElementById(containerId);
         if (!container) {
             console.error(`[ScriptViewer] Container ${containerId} not found`);
@@ -226,6 +182,17 @@ class ScriptViewer {
         const animatedViewer = document.createElement('div');
         animatedViewer.className = 'script-viewer-animated';
         animatedViewer.id = 'script-animated-content';
+
+        // Pre-populate with current script lines (no animation)
+        if (initialScript) {
+            const lines = initialScript.split('\n');
+            lines.forEach((line) => {
+                const lineEl = document.createElement('div');
+                lineEl.className = 'code-line';
+                lineEl.textContent = line;
+                animatedViewer.appendChild(lineEl);
+            });
+        }
 
         content.appendChild(animatedViewer);
         viewer.appendChild(content);

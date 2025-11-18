@@ -94,8 +94,9 @@
     margin: 0;
     padding: var(--spacing-lg);
     font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
     line-height: 1.8;
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-secondary);
     overflow-x: auto;
 }
@@ -206,7 +207,9 @@
 }
 
 .script-viewer-empty-text {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-muted);
     max-width: 400px;
     position: relative;
@@ -220,7 +223,9 @@
     border-radius: var(--border-radius-md);
     padding: var(--spacing-lg);
     font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
+    line-height: 1.8;
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-secondary);
     overflow-x: auto;
     min-height: 200px;

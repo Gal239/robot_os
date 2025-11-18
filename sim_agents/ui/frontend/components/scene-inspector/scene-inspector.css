@@ -84,8 +84,10 @@
 }
 
 .scene-inspector-item-key {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
     font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-secondary);
     font-family: var(--font-mono);
 }
@@ -100,7 +102,9 @@
 }
 
 .scene-inspector-item-value {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-secondary);
     font-family: var(--font-mono);
     word-wrap: break-word;
@@ -207,7 +211,9 @@
 }
 
 .scene-inspector-empty-text {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);  /* Upgraded from sm to base */
+    line-height: var(--line-height-base);
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-muted);
     max-width: 400px;
     position: relative;

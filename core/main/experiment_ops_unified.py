@@ -338,7 +338,7 @@ class ExperimentOps:
     def add_asset(self, asset_name: str, asset_id: str = None, relative_to=None, relation: str = None,
                   distance: float = None, surface_position: str = None,
                   offset: tuple = None, orientation: Union[Tuple[float, float, float, float], str] = None,
-                  initial_state: Dict = None):
+                  initial_state: Dict = None, is_tracked: bool = False):
         """Add asset to scene - SELF-EXPLANATORY + PURE MOP
 
         Args:
@@ -352,6 +352,9 @@ class ExperimentOps:
             offset: Manual (x, y) offset in meters - NEW
             orientation: Quaternion (w,x,y,z) or preset like "upright" - NEW for stable stacking
             initial_state: Initial joint states
+            is_tracked: Track this asset for state extraction (default False) - PERFORMANCE OPTIMIZATION!
+                       Set to True to extract state for this asset even without rewards.
+                       Automatically set to True when add_reward() is called.
 
         PURE MOP: If distance=None, dimensions extracted from MuJoCo model.
         """
@@ -360,7 +363,7 @@ class ExperimentOps:
                              relation=relation, distance=distance,
                              surface_position=surface_position, offset=offset,
                              orientation=orientation,
-                             initial_state=initial_state)
+                             initial_state=initial_state, is_tracked=is_tracked)
 
     def add_object(self, asset_type: str = None, name: str = None, position: tuple = None,
                    on_top: str = None, relative_to: str = None, offset: tuple = None,
@@ -544,7 +547,11 @@ class ExperimentOps:
                         f"Actuator '{actuator_name}' not found in robot '{robot_name}'\n"
                         f"Available actuators: {available}"
                     )
-            self._robot_initial_state = initial_state
+
+            # Convert percentage strings to numeric values - MOP delegation!
+            # Supports: "100%", "50%", "0%" alongside numeric values 0.3, 0.5
+            from ..modals.robot_modal import convert_initial_state_percentages
+            self._robot_initial_state = convert_initial_state_percentages(initial_state, self.robot)
         else:
             self._robot_initial_state = None
 
@@ -1276,68 +1283,25 @@ class ExperimentOps:
         if settling_steps is None:
             settling_steps = 100 if enable_timeline else 10
 
-        # MOP FIX 3: Preserve robot pose during settling!
-        # Physics settling should NOT change robot spawn position/orientation
-        # Only other objects (apples, blocks) and velocities should settle
-        robot_qpos_adr = None
-        if self.robot:
-            # MOP: Look up robot's actual qpos index (not hardcoded [0:7]!)
-            # Robot base body is "base_link" - find its freejoint qpos address
-            import mujoco
-            robot_body_id = mujoco.mj_name2id(self.backend.model, mujoco.mjtObj.mjOBJ_BODY, "base_link")
-            if robot_body_id >= 0:
-                # Get joint ID first, then qpos address (body_jntadr gives joint ID, not qpos addr!)
-                robot_jnt_id = self.backend.model.body_jntadr[robot_body_id]
-                robot_qpos_adr = self.backend.model.jnt_qposadr[robot_jnt_id]
-                original_robot_qpos = self.backend.data.qpos[robot_qpos_adr:robot_qpos_adr+7].copy()  # Robot freejoint (7 DOFs)
-                print(f"  [Settling] Preserving robot pose: pos=({original_robot_qpos[0]:.3f}, {original_robot_qpos[1]:.3f}, {original_robot_qpos[2]:.3f}), quat=({original_robot_qpos[3]:.3f}, {original_robot_qpos[4]:.3f}, {original_robot_qpos[5]:.3f}, {original_robot_qpos[6]:.3f})")
-
-        print(f"  [Settling physics ({settling_steps} steps)...]")
-        for _ in range(settling_steps):
-            self.backend.step()
-            # RESTORE robot pose after each step (only velocities settle, not pose!)
-            if self.robot and robot_qpos_adr is not None:
-                self.backend.data.qpos[robot_qpos_adr:robot_qpos_adr+7] = original_robot_qpos
-
-        # CRITICAL FIX: Zero ALL velocities after settling!
-        self.backend.data.qvel[:] = 0
-
-        # PURE MOP: Apply initial_state DIRECTLY to joint qpos!
-        # Instead of setting ctrl and waiting for actuators to move, set qpos directly = INSTANT!
+        # PURE MOP: Robot applies its own initial_state BEFORE settling!
+        # Robot modal knows how to handle joint vs tendon actuators
+        # Apply initial_state FIRST so robot settles in the correct configuration
         if self._robot_initial_state and self.robot:
-            print("  [Applying initial_state directly to joint qpos (INSTANT!)...]")
-            import mujoco
+            self.robot.apply_initial_state(
+                self.backend.model,
+                self.backend.data,
+                self._robot_initial_state
+            )
 
-            # Direct joint position setting (no actuator movement needed!)
-            for actuator_name, target_value in self._robot_initial_state.items():
-                actuator = self.robot.actuators[actuator_name]
+        # MOP: Backend knows how to settle physics!
+        # For MuJoCoBackend: Settles objects while freezing robot
+        # For RealBackend: No settling needed (real world is settled!)
+        self.backend.settle_physics(robot=self.robot, steps=settling_steps)
 
-                # Get actuator ID
-                act_id = mujoco.mj_name2id(self.backend.model, mujoco.mjtObj.mjOBJ_ACTUATOR, actuator_name)
-                if act_id < 0:
-                    continue
-
-                # Get joint controlled by this actuator
-                trntype = self.backend.model.actuator_trntype[act_id]
-                if trntype == 0:  # Joint transmission
-                    jnt_id = self.backend.model.actuator_trnid[act_id][0]
-                    qpos_adr = self.backend.model.jnt_qposadr[jnt_id]
-
-                    # Clamp target to actuator range
-                    clamped = actuator.move_to(target_value)
-
-                    # Set joint position DIRECTLY!
-                    self.backend.data.qpos[qpos_adr] = clamped
-                    print(f"    {actuator_name}: qpos[{qpos_adr}] = {clamped:.3f}")
-
-                # Also set ctrl for consistency
-                self.backend.data.ctrl[act_id] = actuator.move_to(target_value)
-
-            # Forward kinematics to update positions (NO physics steps needed!)
-            mujoco.mj_forward(self.backend.model, self.backend.data)
-
-            # Zero velocities (robot is stationary)
-            self.backend.data.qvel[:] = 0
+        # MOP FIX: Re-sync actuators from backend after settling!
+        # Settling preserves qpos, but actuator modals need to be updated
+        if self.robot:
+            self.backend.sync_actuators_from_backend(self.robot)
 
         # Bootstrap relational properties (stacked_on_X, supporting_X)
         # Make components self-aware of neighbors, then extract ALL properties
@@ -2071,6 +2035,165 @@ e        TIME TRAVELER: Auto-saves timeline at specified FPS!
             Reward timeline data (see RewardModal.get_reward_timeline for format details)
         """
         return self.scene.reward_modal.get_reward_timeline(format=format)
+
+    def is_facing(self, object1: str, object2: str, threshold: float = 0.7) -> dict:
+        """Check if object1 is facing object2 - MOP UTILITY!
+
+        Convenience wrapper that automatically uses current runtime state.
+        Delegates to Scene.is_facing() (MOP delegation pattern).
+
+        Args:
+            object1: Asset or component name (e.g., "stretch.arm", "apple")
+            object2: Asset or component name (e.g., "table", "apple")
+            threshold: Dot product threshold for "facing" (default 0.7 = ~45°)
+
+        Returns:
+            dict with:
+                - facing: bool (True if dot > threshold)
+                - dot: float (how much facing: 1.0 = directly facing, 0.0 = perpendicular, -1.0 = opposite)
+                - dot_class: str (category: "directly_facing", "facing", "partially_facing", "perpendicular", "partially_away", "facing_away", "directly_opposite")
+                - dot_explain: str (human-readable explanation with angle estimate)
+                - distance: float (distance between objects in meters)
+                - object1_direction: list [dx, dy, dz]
+                - object2_position: list [x, y, z]
+
+        Example:
+            result = ops.is_facing("stretch.arm", "apple")
+            print(result["dot_explain"])  # "stretch.arm is perpendicular to apple (side-by-side, ~90°)"
+            if result["facing"]:
+                print(f"Arm is facing apple! (dot={result['dot']:.2f})")
+        """
+        # SELF-SYNCING: Auto-step if no state yet
+        if not self.last_result:
+            print("🔄 AUTO-SYNC: is_facing() called before step() - auto-stepping to populate state")
+            self.step()
+
+        # Delegate to Scene modal (MOP: Scene knows its spatial relationships)
+        runtime_state = {"extracted_state": self.last_result["state"]}
+        return self.scene.is_facing(object1, object2, runtime_state, threshold)
+
+    def get_distance(self, object1: str, object2: str) -> dict:
+        """Get distance between two objects - MOP UTILITY!"""
+        if not self.last_result:
+            print("🔄 AUTO-SYNC: get_distance() called before step() - auto-stepping")
+            self.step()
+
+        runtime_state = {"extracted_state": self.last_result["state"]}
+        return self.scene.get_distance(object1, object2, runtime_state)
+
+    def get_offset(self, object1: str, object2: str) -> dict:
+        """Get offset from object1 to object2 - MOP UTILITY!"""
+        if not self.last_result:
+            print("🔄 AUTO-SYNC: get_offset() called before step() - auto-stepping")
+            self.step()
+
+        runtime_state = {"extracted_state": self.last_result["state"]}
+        return self.scene.get_offset(object1, object2, runtime_state)
+
+    def get_asset_info(self, asset_name: str) -> dict:
+        """Get asset information - MOP! Asset knows itself!
+
+        Can be called BEFORE or AFTER compile:
+        - Before compile: Returns height from XML definition
+        - After compile: Returns actual runtime position + height
+
+        Wrapper that delegates to Asset modal.
+        """
+        # Check if asset exists in scene
+        if asset_name not in self.scene.assets:
+            return {"exists": False, "error": f"Asset '{asset_name}' not found in scene"}
+
+        asset = self.scene.assets[asset_name]
+
+        # If compiled, get runtime info
+        if self.last_result:
+            runtime_state = {"extracted_state": self.last_result["state"]}
+            return self.scene.get_asset_info(asset_name, runtime_state)
+
+        # Before compile - extract from XML definition
+        from ..modals.xml_resolver import extract_dimensions_from_xml, XMLResolver
+        from ..modals.registry import get_asset_xml_path
+        import xml.etree.ElementTree as ET
+        from pathlib import Path
+
+        try:
+            # Load asset XML
+            xml_file = asset.config.get("xml_file")
+            if not xml_file:
+                return {"exists": True, "error": "Asset has no XML file (virtual asset)"}
+
+            # Get asset type (furniture, objects, robots, etc.)
+            asset_type = asset.config.get("type", "furniture")
+
+            # MOP: Delegate to centralized path resolver (SINGLE SOURCE OF TRUTH!)
+            full_path = get_asset_xml_path(asset_name, asset_type, xml_file)
+
+            tree = ET.parse(full_path)
+            root = tree.getroot()
+
+            # MOP FIX: Resolve XML includes BEFORE extracting dimensions!
+            # Table XML uses <include> tags, so we need to resolve them first
+            base_dir = full_path.parent
+            XMLResolver._resolve_includes(root, base_dir)
+
+            # Extract dimensions (now includes are resolved!)
+            dims = extract_dimensions_from_xml(root, asset_name)
+
+            # Return surface_z as height (where objects sit on furniture)
+            # For furniture with "surface" behavior, this is the top surface position
+            height = dims.get("surface_z", dims.get("height", 0.0))
+
+            return {
+                "exists": True,
+                "height": height,
+                "z": height,
+                "width": dims.get("width", 0.0),
+                "depth": dims.get("depth", 0.0),
+                "from_xml": True  # Indicates pre-compile extraction
+            }
+
+        except Exception as e:
+            return {"exists": True, "error": f"Failed to extract info from XML: {e}"}
+
+    def get_robot_info(self, robot_type: str = "stretch") -> dict:
+        """Get robot specifications - MOP! Robot knows itself!
+
+        Returns robot actuator specs + geometry for dynamic positioning calculations.
+        Enables calculating robot positions (no hardcoding!)
+        Works BEFORE or AFTER adding robot to scene!
+
+        Args:
+            robot_type: Type of robot (e.g., "stretch") - default "stretch"
+
+        Returns:
+            dict with:
+                - robot_type: str
+                - actuators: {name: {min_position, max_position, unit, type}}
+                - geometry: {gripper_length, base_to_arm_offset, base_height}
+                - margins: {reach_safety, placement_safety, grasp_threshold}
+                - comfortable_pct: {arm_reach, lift_height}
+
+        Example:
+            ```python
+            robot_info = ops.get_robot_info("stretch")
+            arm_max = robot_info['actuators']['arm']['max_position']  # 0.52m
+            gripper_len = robot_info['geometry']['gripper_length']  # 0.144m (from XML!)
+            comfortable_pct = robot_info['comfortable_pct']['arm_reach']  # 0.7
+            ```
+
+        Raises:
+            ValueError: If robot not found in scene
+        """
+        # OFFENSIVE: Scene MUST be built!
+        if self.scene is None:
+            raise ValueError(
+                "Cannot get robot info - scene not created yet!\n"
+                "Call ops.create_scene() first"
+            )
+
+        # Delegate to scene modal - MOP!
+        return self.scene.get_robot_info(robot_type)
+
     def get_view(self, view_name: str):
         """Get view - THIN MOP WRAPPER (delegates to ViewAggregator)"""
         return self.engine.last_views[view_name]

@@ -26,6 +26,7 @@ class Robot:
     xml_path: str = ""  # Path to robot XML file, set by robot_ops
     _built: bool = field(default=False, init=False)  # Track if robot has been built
     _view_deps: Dict[str, List[str]] = field(default_factory=dict, init=False)  # View dependencies
+    _is_tracked: bool = field(default=True, init=False)  # Robots ALWAYS need full physics collisions!
 
     def __post_init__(self):
         """Initialize dependency tracking"""
@@ -136,6 +137,245 @@ class Robot:
             data["views"] = {k: v.render_data() for k, v in self.views.items()}
 
         return data
+
+    def get_specs(self) -> Dict[str, Any]:
+        """MOP: Get robot specifications for dynamic positioning calculations
+
+        Returns actuator ranges + geometry constants for calculating robot positions.
+        Used by ops.get_robot_info() to enable dynamic positioning (no hardcoding!)
+
+        Returns:
+            dict with:
+                - actuators: {name: {min_position, max_position, unit, ...}}
+                - geometry: {gripper_length, base_to_arm_offset, base_height}
+                - margins: {reach_safety, placement_safety, grasp_threshold}
+                - comfortable_pct: {arm_reach, lift_height}
+        """
+        # Import constants from robot-specific actuator module
+        if self.robot_type == "stretch":
+            try:
+                from .stretch import actuator_modals as stretch_actuators
+
+                # DYNAMIC: Extract geometry from XML (MOP!)
+                geometry = stretch_actuators._extract_robot_geometry()
+
+                # Combine with physics-derived constants
+                constants = {
+                    # From XML (dynamic extraction)
+                    "gripper_length": geometry["gripper_length"],
+                    "base_height": geometry["base_height"],
+                    "base_to_arm_offset": geometry["base_to_arm_offset"],
+                    # From physics testing (constants)
+                    "gripper_grasp_threshold": stretch_actuators.GRIPPER_GRASP_THRESHOLD,
+                    "arm_comfortable_reach_pct": stretch_actuators.ARM_COMFORTABLE_REACH_PCT,
+                    "lift_comfortable_height_pct": stretch_actuators.LIFT_COMFORTABLE_HEIGHT_PCT,
+                    "reach_safety_margin": stretch_actuators.REACH_SAFETY_MARGIN,
+                    "placement_safety_margin": stretch_actuators.PLACEMENT_SAFETY_MARGIN,
+                }
+            except ImportError:
+                # Fallback if can't import (shouldn't happen)
+                constants = {}
+        else:
+            constants = {}
+
+        # Extract actuator specs (ranges, etc.)
+        # Only include position actuators (have range) - skip velocity actuators
+        actuator_specs = {}
+        for name, actuator in self.actuators.items():
+            # Skip actuators without render_data() (shouldn't happen but be safe)
+            if not hasattr(actuator, 'render_data'):
+                continue
+
+            data = actuator.render_data()
+
+            # Only include actuators with range (position actuators)
+            # Velocity actuators don't have range, skip them
+            if "range" not in data:
+                continue
+
+            # OFFENSIVE: Position actuators MUST have these fields!
+            try:
+                actuator_specs[name] = {
+                    "min_position": data["range"][0],
+                    "max_position": data["range"][1],
+                    "unit": data["unit"],
+                    "type": data["type"],
+                }
+            except (KeyError, IndexError) as e:
+                raise KeyError(
+                    f"Position actuator '{name}' missing required field!\n"
+                    f"Expected: range, unit, type\n"
+                    f"Got: {list(data.keys())}\n"
+                    f"Error: {e}"
+                )
+
+        # OFFENSIVE: Expect constants to be populated (no defaults!)
+        if not constants:
+            raise ValueError(
+                f"Robot constants not loaded for type '{self.robot_type}'!\n"
+                f"Expected geometry/margins constants from actuator_modals.\n"
+                f"Check if robot type '{self.robot_type}' is supported."
+            )
+
+        return {
+            "robot_type": self.robot_type,
+            "actuators": actuator_specs,
+            "geometry": {
+                "gripper_length": constants["gripper_length"],  # OFFENSIVE!
+                "base_to_arm_offset": constants["base_to_arm_offset"],  # OFFENSIVE!
+                "base_height": constants["base_height"],  # OFFENSIVE!
+            },
+            "margins": {
+                "reach_safety": constants["reach_safety_margin"],  # OFFENSIVE!
+                "placement_safety": constants["placement_safety_margin"],  # OFFENSIVE!
+                "grasp_threshold": constants["gripper_grasp_threshold"],  # OFFENSIVE!
+            },
+            "comfortable_pct": {
+                "arm_reach": constants["arm_comfortable_reach_pct"],  # OFFENSIVE!
+                "lift_height": constants["lift_comfortable_height_pct"],  # OFFENSIVE!
+            }
+        }
+
+    def apply_initial_state(self, model, data, initial_state: Dict[str, float]):
+        """Apply initial actuator states to MuJoCo - MOP! Robot knows itself!
+
+        Robot modal knows how to apply its own initial state to the backend.
+        Handles both joint and tendon actuators correctly.
+
+        Args:
+            model: MuJoCo model
+            data: MuJoCo data
+            initial_state: Dict of actuator_name -> target_value
+
+        Example:
+            robot.apply_initial_state(model, data, {"arm": 0.0, "lift": 0.76, "gripper": 0.04})
+        """
+        import mujoco
+
+        print("  [Applying initial_state directly to joint qpos (INSTANT!)...]")
+
+        for actuator_name, target_value in initial_state.items():
+            # Get actuator modal (MOP: actuator knows how to move!)
+            actuator = self.actuators[actuator_name]
+
+            # Get actuator ID in MuJoCo
+            act_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, actuator_name)
+            if act_id < 0:
+                continue  # Actuator not found in compiled model
+
+            # Get transmission type and handle accordingly
+            trntype = model.actuator_trntype[act_id]
+            clamped = actuator.move_to(target_value)  # Actuator clamps to range
+
+            if trntype == mujoco.mjtTrn.mjTRN_JOINT:  # Direct joint control
+                jnt_id = model.actuator_trnid[act_id][0]
+                qpos_adr = model.jnt_qposadr[jnt_id]
+                data.qpos[qpos_adr] = clamped
+                print(f"    {actuator_name} (joint): qpos[{qpos_adr}] = {clamped:.3f}")
+
+            elif trntype == mujoco.mjtTrn.mjTRN_TENDON:  # Tendon control (e.g., arm telescope)
+                # Get tendon ID and all wraps (joints) in the tendon
+                tendon_id = model.actuator_trnid[act_id][0]
+                tendon_adr = model.tendon_adr[tendon_id]
+                tendon_num = model.tendon_num[tendon_id]
+
+                # Set ALL joints in the tendon (synchronized movement!)
+                for i in range(tendon_num):
+                    # Get joint ID from wrap (MuJoCo stores tendon wraps)
+                    jnt_id = model.wrap_objid[tendon_adr + i]
+                    qpos_adr = model.jnt_qposadr[jnt_id]
+                    # For telescoping arm with coef=1, all joints move equally
+                    data.qpos[qpos_adr] = clamped
+                    print(f"    {actuator_name} (tendon joint {i}): qpos[{qpos_adr}] = {clamped:.3f}")
+
+            else:
+                # OFFENSIVE: Crash if unsupported transmission type
+                raise ValueError(
+                    f"Unsupported actuator transmission type for '{actuator_name}'!\n"
+                    f"  trntype = {trntype} ({mujoco.mjtTrn(trntype).name})\n"
+                    f"  Supported: mjTRN_JOINT (0), mjTRN_TENDON (3)\n"
+                    f"  This is a bug - add support for this transmission type!"
+                )
+
+            # Also set ctrl for consistency
+            data.ctrl[act_id] = clamped
+
+        # Forward kinematics to update positions (NO physics steps needed!)
+        mujoco.mj_forward(model, data)
+
+        # Zero velocities (robot is stationary)
+        data.qvel[:] = 0
+
+    def get_qpos_range(self, model):
+        """MOP: Robot knows its own qpos range in the compiled model!
+
+        Returns the (start, end) indices for this robot's qpos.
+        This includes the base freejoint + all actuator joints.
+
+        Args:
+            model: MuJoCo model
+
+        Returns:
+            tuple: (qpos_start, qpos_end) indices
+
+        Example:
+            start, end = robot.get_qpos_range(model)
+            robot_qpos = data.qpos[start:end]  # Robot's configuration
+        """
+        import mujoco
+
+        # Find robot's base body (base_link for Stretch)
+        robot_body_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_BODY, "base_link")
+
+        if robot_body_id < 0:
+            raise ValueError(f"Robot base body 'base_link' not found in model!")
+
+        # Robot qpos starts at base_link's freejoint
+        robot_jnt_id = model.body_jntadr[robot_body_id]
+        qpos_start = model.jnt_qposadr[robot_jnt_id]
+
+        # Robot qpos ends at end of model (robot is last in qpos)
+        # This assumes robot is added AFTER all scene objects (floor, table, apple, etc.)
+        qpos_end = model.nq
+
+        return (qpos_start, qpos_end)
+
+    def freeze_during_settling(self, model, data):
+        """MOP: Robot knows how to freeze itself during settling!
+
+        Settling is for OBJECTS (apples, blocks), not for robot!
+        Robot is explicitly placed and configured - it should stay FROZEN.
+
+        This method returns a snapshot of the robot's current qpos that can
+        be restored after each physics step during settling.
+
+        Args:
+            model: MuJoCo model
+            data: MuJoCo data
+
+        Returns:
+            numpy array: Saved robot qpos (base + all joints)
+
+        Example:
+            saved_qpos = robot.freeze_during_settling(model, data)
+            start, end = robot.get_qpos_range(model)
+            # During settling:
+            for _ in range(100):
+                mujoco.mj_step(model, data)
+                data.qpos[start:end] = saved_qpos  # Restore robot!
+        """
+        qpos_start, qpos_end = self.get_qpos_range(model)
+
+        # Save robot's current configuration (base + ALL joints)
+        saved_robot_qpos = data.qpos[qpos_start:qpos_end].copy()
+
+        # Log what we're preserving
+        robot_base = data.qpos[qpos_start:qpos_start+7]
+        print(f"  [Robot] FREEZING during settling qpos[{qpos_start}:{qpos_end}]: "
+              f"pos=({robot_base[0]:.3f}, {robot_base[1]:.3f}, {robot_base[2]:.3f}), "
+              f"quat=({robot_base[3]:.3f}, {robot_base[4]:.3f}, {robot_base[5]:.3f}, {robot_base[6]:.3f})")
+
+        return saved_robot_qpos
 
     def render_json(self) -> str:
         """MOP: Robot as JSON"""
@@ -701,3 +941,52 @@ class _RobotDataDict(dict):
                 msg += f"\n💡 TIP: Use robot_data['{suggestions[0]}'] instead\n"
 
             raise KeyError(msg)
+
+
+# ============================================================================
+# UTILITY: Percentage-Based initial_state Conversion - MOP!
+# ============================================================================
+def convert_initial_state_percentages(initial_state: Dict, robot: Robot) -> Dict:
+    """Convert percentage strings to numeric values - PURE MOP UTILITY!
+
+    Supports:
+        {"arm": "100%"} → {"arm": 0.52} (max)
+        {"arm": "50%"}  → {"arm": 0.26} (middle)
+        {"arm": "0%"}   → {"arm": 0.0}  (min)
+        {"arm": 0.3}    → {"arm": 0.3}  (unchanged)
+
+    Args:
+        initial_state: Dict with actuator names and values (numeric or percentage strings)
+        robot: Robot modal instance with actuators
+
+    Returns:
+        Dict with all values converted to numeric (floats)
+
+    Raises:
+        ValueError: If percentage format is invalid
+    """
+    converted = {}
+
+    for actuator_name, value in initial_state.items():
+        if isinstance(value, str) and value.endswith('%'):
+            # Parse percentage: "50%" → 50.0
+            try:
+                percent = float(value.rstrip('%'))
+            except ValueError:
+                raise ValueError(f"Invalid percentage format for '{actuator_name}': {value}")
+
+            # Clamp to valid range [0, 100]
+            if percent < 0 or percent > 100:
+                print(f"⚠️  {actuator_name}: Percentage {percent}% out of range [0, 100], clamping")
+                percent = max(0.0, min(100.0, percent))
+
+            # Get actuator range and convert
+            actuator = robot.actuators[actuator_name]
+            min_val, max_val = actuator.range
+            numeric_value = min_val + (percent / 100.0) * (max_val - min_val)
+            converted[actuator_name] = numeric_value
+        else:
+            # Already numeric (int or float)
+            converted[actuator_name] = float(value)
+
+    return converted

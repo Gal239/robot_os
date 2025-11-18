@@ -1,6 +1,6 @@
 /**
- * Echo Robotics Lab - Status Indicator Component
- * Animated status display with dot and text
+ * Status Indicator Component
+ * Shows current system status with LED neon effects
  */
 
 class StatusIndicator {
@@ -8,36 +8,29 @@ class StatusIndicator {
      * Create a status indicator element
      * @param {Object} options - Configuration options
      * @param {string} options.status - Status ('ready', 'thinking', 'building', 'error', 'not_started')
-     * @param {string} options.size - Size ('compact', 'normal', 'large')
-     * @param {boolean} options.showIcon - Show icon (optional)
+     * @param {string} options.id - Element ID
      * @returns {HTMLElement} - Status indicator element
      */
     static create(options = {}) {
         const {
             status = 'not_started',
-            size = 'normal',
-            showIcon = false
+            id = 'status-indicator'
         } = options;
 
         const indicator = document.createElement('div');
         indicator.className = `status-indicator ${status}`;
+        indicator.id = id;
 
-        if (size !== 'normal') {
-            indicator.classList.add(size);
-        }
+        // Icon
+        const icon = document.createElement('i');
+        icon.setAttribute('data-feather', 'activity');
+        icon.className = 'status-indicator-icon';
+        indicator.appendChild(icon);
 
         // Dot
         const dot = document.createElement('span');
         dot.className = 'status-indicator-dot';
         indicator.appendChild(dot);
-
-        // Icon (optional)
-        if (showIcon) {
-            const icon = document.createElement('span');
-            icon.className = 'status-indicator-icon';
-            icon.textContent = this.getIconForStatus(status);
-            indicator.appendChild(icon);
-        }
 
         // Text
         const text = document.createElement('span');
@@ -50,11 +43,15 @@ class StatusIndicator {
 
     /**
      * Update status indicator
-     * @param {HTMLElement} element - Status indicator element
+     * @param {string} elementId - Status indicator element ID
      * @param {string} status - New status
      */
-    static update(element, status) {
-        if (!element) return;
+    static update(elementId, status) {
+        const element = document.getElementById(elementId);
+        if (!element) {
+            console.error(`[StatusIndicator] Element ${elementId} not found`);
+            return;
+        }
 
         // Remove all status classes
         element.classList.remove('ready', 'thinking', 'building', 'error', 'not_started');
@@ -68,10 +65,9 @@ class StatusIndicator {
             textEl.textContent = this.getTextForStatus(status);
         }
 
-        // Update icon if present
-        const iconEl = element.querySelector('.status-indicator-icon');
-        if (iconEl) {
-            iconEl.textContent = this.getIconForStatus(status);
+        // Re-initialize Feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
         }
     }
 
@@ -91,21 +87,6 @@ class StatusIndicator {
     }
 
     /**
-     * Get icon for status
-     */
-    static getIconForStatus(status) {
-        const statusIcons = {
-            'ready': '✓',
-            'thinking': '●',
-            'building': '⚙',
-            'error': '✕',
-            'not_started': '○'
-        };
-
-        return statusIcons[status] || '○';
-    }
-
-    /**
      * Render status indicator in container
      * @param {string} containerId - Container element ID
      * @param {Object} options - Configuration options
@@ -118,8 +99,12 @@ class StatusIndicator {
         }
 
         const indicator = this.create(options);
-        container.innerHTML = '';
         container.appendChild(indicator);
+
+        // Initialize Feather icons
+        if (typeof feather !== 'undefined') {
+            feather.replace();
+        }
 
         return indicator;
     }

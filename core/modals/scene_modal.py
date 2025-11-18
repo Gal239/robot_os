@@ -570,7 +570,8 @@ class Scene:
                   surface_position: Optional[str] = None,  # NEW
                   offset: Optional[Tuple[float, float]] = None,  # NEW
                   orientation: Optional[Union[Tuple[float, float, float, float], str]] = None,  # NEW - quat (w,x,y,z) or preset
-                  initial_state: Optional[Union[str, Dict[str, float]]] = None):
+                  initial_state: Optional[Union[str, Dict[str, float]]] = None,
+                  is_tracked: bool = False):  # PERFORMANCE OPTIMIZATION!
         """Add any asset to scene - returns Asset instance - OFFENSIVE + PURE MOP
 
         Args:
@@ -670,6 +671,10 @@ class Scene:
         config = registry.load_asset_config(asset)
         asset_instance = Asset(asset, config, instance_name=asset_key)  # MOP: Use asset_key!
 
+        # PERFORMANCE: Set tracking flag if requested
+        if is_tracked:
+            asset_instance._is_tracked = True
+
         # Store in scene using the determined key (asset_id if provided, else asset type)
         self.assets[asset_key] = asset_instance
 
@@ -703,6 +708,45 @@ class Scene:
             f"   {available_ids}\n"
             f"\n🧵 MOP: Use exact asset_id from add_asset(asset_id='...')"
         )
+
+    def get_tracked_assets(self) -> Dict[str, Any]:
+        """Get only tracked assets for selective state extraction - PERFORMANCE OPTIMIZATION!
+
+        Returns dict of asset_name -> Asset for:
+        1. Robot (always tracked - has actuators/sensors)
+        2. Assets marked as tracked by add_reward() (_is_tracked=True)
+        3. Reward targets (e.g., table if tracking "stacked_on table")
+
+        This allows selective state extraction:
+        - 100 blocks in scene, only 3 tracked → extract state for 3 blocks + robot + table = 5 assets
+        - 95% reduction in data copying and state extraction!
+
+        Used by:
+        - RuntimeEngine._snapshot_mujoco_data() - selective body data copying
+        - StateExtractor.extract() - selective state extraction
+        """
+        tracked = {}
+
+        # 1. Always include robot (has actuators/sensors that must be updated)
+        for robot_name in self.robots:
+            if robot_name in self.assets:
+                tracked[robot_name] = self.assets[robot_name]
+
+        # 2. Include assets marked as tracked by add_reward()
+        for asset_name, asset in self.assets.items():
+            if hasattr(asset, '_is_tracked') and asset._is_tracked:
+                tracked[asset_name] = asset
+
+        # 3. Include reward targets (e.g., table if we have "stacked_on table")
+        if self.reward_modal and hasattr(self.reward_modal, 'rewards'):
+            for reward in self.reward_modal.rewards.values():
+                # Get target asset from reward
+                if hasattr(reward, 'target') and reward.target:
+                    target_name = reward.target
+                    if target_name in self.assets:
+                        tracked[target_name] = self.assets[target_name]
+
+        return tracked
 
     def add_robot(self, robot, relative_to=(0, 0, 0), orientation=None):
         """
@@ -1033,6 +1077,12 @@ class Scene:
 
             # TRUE MOP: Discover behavior_name from asset components - NO STRING PARSING!
             asset_modal = self.assets[tracked_asset]
+
+            # MOP: Tell asset it's being tracked (collision optimization!)
+            # Asset marks itself as needing full physics collisions
+            if hasattr(asset_modal, 'mark_as_tracked'):
+                asset_modal.mark_as_tracked()
+
             behavior_name = None
 
             # DYNAMIC PROPERTIES: Recognize runtime-generated properties!
@@ -1333,6 +1383,330 @@ class Scene:
         vectors.extend([asset.get_rl() for asset in self.assets.values()])
 
         return np.concatenate(vectors)
+
+    def is_facing(self, object1: str, object2: str, runtime_state: dict, threshold: float = 0.7) -> dict:
+        """Check if object1 is facing object2 - MOP UTILITY!
+
+        Uses extracted state (position, direction) to calculate spatial facing.
+        Works with assets or components: "stretch.arm", "apple", "table.table_surface"
+
+        Args:
+            object1: Asset or component name (e.g., "stretch.arm", "apple")
+            object2: Asset or component name (e.g., "table", "apple")
+            runtime_state: Current state dict from engine (with extracted_state)
+            threshold: Dot product threshold for "facing" (default 0.7 = ~45°)
+
+        Returns:
+            dict with:
+                - facing: bool (True if dot > threshold)
+                - dot: float (how much facing: 1.0 = directly facing, 0.0 = perpendicular, -1.0 = opposite)
+                - dot_class: str (category: "directly_facing", "facing", "partially_facing", "perpendicular", "partially_away", "facing_away", "directly_opposite")
+                - dot_explain: str (human-readable explanation with angle estimate)
+                - distance: float (distance between objects in meters)
+                - object1_direction: list [dx, dy, dz]
+                - object2_position: list [x, y, z]
+
+        Example:
+            result = scene.is_facing("stretch.arm", "apple", runtime_state)
+            print(result["dot_explain"])  # "stretch.arm is perpendicular to apple (side-by-side, ~90°)"
+            if result["facing"]:
+                print(f"Arm is facing apple! (dot={result['dot']:.2f})")
+        """
+        import numpy as np
+
+        # Get extracted state (hierarchical: state[asset][component][property])
+        state = runtime_state.get("extracted_state", {})
+        if not state:
+            raise ValueError("No extracted_state in runtime_state - did you call get_state()?")
+
+        # Parse object names (handle "asset.component" or just "asset")
+        def get_component_state(obj_name):
+            parts = obj_name.split(".")
+            if len(parts) == 2:
+                asset_name, comp_name = parts
+                asset_state = state.get(asset_name, {})
+                return asset_state.get(comp_name, {})
+            else:
+                # Just asset name - get first component with spatial behavior
+                asset_name = obj_name
+                asset_state = state.get(asset_name, {})
+                # Find first component with position
+                for comp_state in asset_state.values():
+                    if isinstance(comp_state, dict) and "position" in comp_state:
+                        return comp_state
+                return {}
+
+        obj1_state = get_component_state(object1)
+        obj2_state = get_component_state(object2)
+
+        # Extract required data
+        pos1 = obj1_state.get("position")
+        pos2 = obj2_state.get("position")
+        dir1 = obj1_state.get("direction")
+
+        if not pos1:
+            raise ValueError(f"Object '{object1}' has no position in state")
+        if not pos2:
+            raise ValueError(f"Object '{object2}' has no position in state")
+        if not dir1:
+            raise ValueError(f"Object '{object1}' has no direction in state (no orientation data)")
+
+        # Calculate facing
+        pos1 = np.array(pos1)
+        pos2 = np.array(pos2)
+        dir1 = np.array(dir1)
+
+        # Vector from obj1 to obj2
+        to_obj2 = pos2 - pos1
+        distance = float(np.linalg.norm(to_obj2))
+
+        if distance < 1e-6:
+            # Objects at same position - can't determine facing
+            return {
+                "facing": False,
+                "dot": 0.0,
+                "distance": 0.0,
+                "object1_direction": dir1.tolist(),
+                "object2_position": pos2.tolist()
+            }
+
+        # Normalize direction to obj2
+        to_obj2_norm = to_obj2 / distance
+
+        # Dot product: how aligned is dir1 with direction to obj2?
+        dot = float(np.dot(dir1, to_obj2_norm))
+
+        # Classify dot product for human understanding
+        if dot > 0.95:
+            dot_class = "directly_facing"
+            dot_explain = f"{object1} is directly facing {object2} (perfect alignment)"
+        elif dot > 0.7:
+            dot_class = "facing"
+            dot_explain = f"{object1} is facing {object2} (strong alignment)"
+        elif dot > 0.3:
+            dot_class = "partially_facing"
+            dot_explain = f"{object1} is partially facing {object2} (angled ~45-60°)"
+        elif dot > -0.3:
+            dot_class = "perpendicular"
+            dot_explain = f"{object1} is perpendicular to {object2} (side-by-side, ~90°)"
+        elif dot > -0.7:
+            dot_class = "partially_away"
+            dot_explain = f"{object1} is angled away from {object2} (~120-135°)"
+        elif dot > -0.95:
+            dot_class = "facing_away"
+            dot_explain = f"{object1} is facing away from {object2} (strong opposite)"
+        else:
+            dot_class = "directly_opposite"
+            dot_explain = f"{object1} is directly opposite to {object2} (perfect opposite, 180°)"
+
+        return {
+            "facing": dot > threshold,
+            "dot": dot,
+            "dot_class": dot_class,
+            "dot_explain": dot_explain,
+            "distance": distance,
+            "object1_direction": dir1.tolist(),
+            "object2_position": pos2.tolist()
+        }
+
+    def get_distance(self, object1: str, object2: str, runtime_state: dict) -> dict:
+        """Get distance between two objects - MOP UTILITY!"""
+        import numpy as np
+
+        state = runtime_state.get("extracted_state", {})
+
+        def get_component_state(obj_name):
+            parts = obj_name.split(".")
+            if len(parts) == 2:
+                asset_name, comp_name = parts
+                asset_state = state.get(asset_name, {})
+                return asset_state.get(comp_name, {})
+            else:
+                asset_name = obj_name
+                asset_state = state.get(asset_name, {})
+                for comp_state in asset_state.values():
+                    if isinstance(comp_state, dict) and "position" in comp_state:
+                        return comp_state
+                return {}
+
+        obj1_state = get_component_state(object1)
+        obj2_state = get_component_state(object2)
+
+        # MOP FIX: OFFENSIVE error handling for None positions!
+        # If position is missing, tell user what's available
+        pos1 = obj1_state.get("position")
+        pos2 = obj2_state.get("position")
+
+        if pos1 is None:
+            available = list(state.keys())
+            raise ValueError(
+                f"❌ Object '{object1}' has no position in extracted_state!\n"
+                f"✅ Available objects: {available}\n"
+                f"💡 Did you call ops.step() before get_distance()?"
+            )
+
+        if pos2 is None:
+            available = list(state.keys())
+            raise ValueError(
+                f"❌ Object '{object2}' has no position in extracted_state!\n"
+                f"✅ Available objects: {available}\n"
+                f"💡 Did you call ops.step() before get_distance()?"
+            )
+
+        pos1 = np.array(pos1)
+        pos2 = np.array(pos2)
+
+        offset = pos2 - pos1
+        distance = float(np.linalg.norm(offset))
+        horizontal_distance = float(np.linalg.norm(offset[:2]))
+        vertical_distance = float(abs(offset[2]))
+
+        return {
+            "distance": distance,
+            "horizontal_distance": horizontal_distance,
+            "vertical_distance": vertical_distance,
+            "offset": {
+                "dx": float(offset[0]),
+                "dy": float(offset[1]),
+                "dz": float(offset[2])
+            }
+        }
+
+    def get_offset(self, object1: str, object2: str, runtime_state: dict) -> dict:
+        """Get offset from object1 to object2 - MOP UTILITY!"""
+        dist_result = self.get_distance(object1, object2, runtime_state)
+        return dist_result["offset"]
+
+    def get_asset_info(self, asset_name: str, runtime_state: dict) -> dict:
+        """Get asset information - MOP! Asset knows itself!
+
+        Returns asset properties like position, height.
+
+        Returns:
+            {
+                "position": [x, y, z],
+                "height": float,  # Height of top surface (z-coordinate)
+                "exists": bool
+            }
+        """
+        state = runtime_state.get("extracted_state", {})
+
+        if asset_name not in state:
+            return {"exists": False, "error": f"Asset '{asset_name}' not found"}
+
+        asset_state = state[asset_name]
+
+        # Find main body component with position
+        position = None
+        for comp_name, comp_state in asset_state.items():
+            if isinstance(comp_state, dict) and "position" in comp_state:
+                position = comp_state["position"]
+                break
+
+        if position is None:
+            return {"exists": True, "error": f"Asset '{asset_name}' has no position"}
+
+        # Height is z-coordinate of top surface
+        height = position[2]
+
+        return {
+            "exists": True,
+            "position": position,
+            "height": height,
+            "z": height
+        }
+
+    def get_robot_info(self, robot_type: str = "stretch") -> dict:
+        """Get robot specifications - MOP! Robot knows itself!
+
+        Returns robot actuator specs + geometry for dynamic positioning calculations.
+        Works BEFORE or AFTER adding robot to scene!
+
+        Args:
+            robot_type: Type of robot (e.g., "stretch") - NOT the instance name!
+
+        Returns:
+            dict with:
+                - robot_type: str
+                - actuators: {name: {min_position, max_position, unit, type}}
+                - geometry: {gripper_length, base_to_arm_offset, base_height}
+                - margins: {reach_safety, placement_safety, grasp_threshold}
+                - comfortable_pct: {arm_reach, lift_height}
+
+        Raises:
+            ValueError: If robot type not supported
+        """
+        # Check if robot already in scene (use it if exists)
+        for robot in self.robots.values():
+            if robot.robot_type == robot_type and robot.actuators:
+                # Use existing built robot
+                return robot.get_specs()
+
+        # Robot not in scene yet - extract specs directly from robot modules!
+        # MOP: Robot specs are static per type, don't need full scene
+
+        if robot_type == "stretch":
+            # Import robot building utilities
+            from .stretch import actuator_modals
+
+            # Get specs by directly calling functions (no temp robot needed!)
+            try:
+                # Get geometry from XML
+                geometry = actuator_modals._extract_robot_geometry()
+
+                # Get actuators from auto-discovery
+                all_actuators = actuator_modals.create_all_actuators()
+
+                # Extract actuator specs (only position actuators)
+                actuator_specs = {}
+                for name, actuator in all_actuators.items():
+                    # ActuatorComponent uses get_data(), not render_data()!
+                    if not hasattr(actuator, 'range'):
+                        continue
+
+                    # Only include actuators with range (position actuators)
+                    # Velocity actuators won't have numeric range
+                    if actuator.range is None or not isinstance(actuator.range, tuple):
+                        continue
+
+                    actuator_specs[name] = {
+                        "min_position": actuator.range[0],
+                        "max_position": actuator.range[1],
+                        "unit": actuator.unit,
+                        "type": "position",  # All with range are position actuators
+                    }
+
+                # Return specs dict
+                return {
+                    "robot_type": robot_type,
+                    "actuators": actuator_specs,
+                    "geometry": {
+                        "gripper_length": geometry["gripper_length"],
+                        "base_to_arm_offset": geometry["base_to_arm_offset"],
+                        "base_height": geometry["base_height"],
+                    },
+                    "margins": {
+                        "reach_safety": actuator_modals.REACH_SAFETY_MARGIN,
+                        "placement_safety": actuator_modals.PLACEMENT_SAFETY_MARGIN,
+                        "grasp_threshold": actuator_modals.GRIPPER_GRASP_THRESHOLD,
+                    },
+                    "comfortable_pct": {
+                        "arm_reach": actuator_modals.ARM_COMFORTABLE_REACH_PCT,
+                        "lift_height": actuator_modals.LIFT_COMFORTABLE_HEIGHT_PCT,
+                    }
+                }
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to get specs for robot type '{robot_type}'!\n"
+                    f"Error: {e}\n"
+                    f"Robot type may not be supported or actuator discovery failed"
+                )
+        else:
+            raise ValueError(
+                f"Robot type '{robot_type}' not supported!\n"
+                f"Currently only 'stretch' is supported.\n"
+                f"Add support in scene_modal.get_robot_info()"
+            )
 
     @classmethod
     def from_json(cls, data: dict):

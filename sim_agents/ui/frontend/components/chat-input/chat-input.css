@@ -1,56 +1,140 @@
 /**
- * Chat Input Component - Styles
- * ==============================
+ * Chat Input Component
+ * =====================
+ * Textarea + send button for user input
  */
 
 .chat-input-container {
     padding: var(--spacing-lg);
-    background-color: var(--white);
-    border-top: 1px solid var(--soft-gray);
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    background-color: var(--color-bg-elevated);
+    border-top: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .chat-input-container {
+    background-color: #2B2B2B;
+    border-top-color: #555555;
 }
 
 .chat-input-wrapper {
     display: flex;
-    gap: var(--spacing-md);
-    align-items: flex-end;
+    gap: var(--spacing-sm);
+    align-items: stretch;  /* Make button stretch to full height */
 }
 
-.chat-input-field {
+.chat-input {
     flex: 1;
+    min-height: 44px;
+    max-height: 120px;
     padding: var(--spacing-md);
-    border: 1px solid var(--soft-gray);
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    font-family: inherit;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
     resize: none;
-    transition: border 200ms ease-in-out;
+    line-height: 1.5;
+    transition: all var(--transition-base);
+}
+
+.chat-input:focus {
     outline: none;
-    min-height: 40px;
-    max-height: 150px;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
-.chat-input-field:focus {
-    border-color: var(--echo-blue);
+.chat-input::placeholder {
+    color: var(--color-text-muted);
 }
 
-.chat-input-field:disabled {
-    background-color: var(--light-gray);
-    cursor: not-allowed;
-    opacity: 0.6;
+/* Dark mode text area */
+[data-theme="dark"] .chat-input {
+    background: #313335;
+    border-color: #555555;
+    color: #A9B7C6;
+}
+
+[data-theme="dark"] .chat-input:focus {
+    border-color: #00FF00;
+    box-shadow: 0 0 0 3px rgba(0, 255, 0, 0.15),
+                0 0 12px rgba(0, 255, 0, 0.3);
 }
 
 .chat-send-button {
-    padding: var(--spacing-md) var(--spacing-xl);
-    white-space: nowrap;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.chat-send-button i {
+    width: 18px;
+    height: 18px;
+}
+
+.chat-send-button:hover:not(:disabled) {
+    background-color: var(--color-primary-dark);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
 .chat-send-button:disabled {
-    opacity: 0.5;
+    background-color: var(--color-gray-light);
     cursor: not-allowed;
 }
 
-.chat-send-button:disabled:hover {
-    transform: none;
-    box-shadow: none;
+/* Dark mode LED glow for send button */
+[data-theme="dark"] .chat-send-button {
+    background-color: #2B2B2B;
+    border: 1px solid #00FF00;
+    animation: ledBlink 2s ease-in-out infinite;
+}
+
+[data-theme="dark"] .chat-send-button i {
+    color: #00FF00;
+}
+
+[data-theme="dark"] .chat-send-button:hover:not(:disabled) {
+    background-color: #003300;
+    border-color: #00FF00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.8),
+                0 0 40px rgba(0, 255, 0, 0.4),
+                0 4px 6px rgba(0, 0, 0, 0.4);
+    animation: none;
+}
+
+[data-theme="dark"] .chat-send-button:hover:not(:disabled) i {
+    color: #00FF00;
+}
+
+[data-theme="dark"] .chat-send-button:disabled {
+    background-color: #2B2B2B;
+    border-color: #333333;
+    animation: none;
+}
+
+[data-theme="dark"] .chat-send-button:disabled i {
+    color: #555555;
+}
+
+/* LED Blink Animation */
+@keyframes ledBlink {
+    0%, 100% {
+        box-shadow: 0 0 8px rgba(0, 255, 0, 0.5),
+                    0 0 16px rgba(0, 255, 0, 0.3);
+        border-color: #00FF00;
+    }
+    50% {
+        box-shadow: 0 0 12px rgba(0, 255, 0, 0.8),
+                    0 0 24px rgba(0, 255, 0, 0.5),
+                    0 0 36px rgba(0, 255, 0, 0.2);
+        border-color: #33FF33;
+    }
 }

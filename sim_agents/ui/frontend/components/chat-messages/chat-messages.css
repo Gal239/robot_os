@@ -1,0 +1,14 @@
+/**
+ * Chat Messages Component
+ * ========================
+ * Scrollable messages area container
+ */
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}

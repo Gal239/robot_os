@@ -41,8 +41,26 @@ print(f"Components: {list(robot.keys())}")
 
 if "arm" in robot:
     print(f"\n--- arm ---")
-    for key, val in sorted(robot["arm"].items()):
-        print(f"  {key}: {val}")
+    arm = robot["arm"]
+    # Show key properties first
+    print(f"  position: {arm.get('position', 'N/A')}")
+    print(f"  orientation: {arm.get('orientation', 'N/A')}")
+    print(f"  direction: {arm.get('direction', 'N/A')}")
+    print(f"  extension: {arm.get('extension', 'N/A')}")
+    print(f"  at_target: {arm.get('at_target', 'N/A')}")
+    print(f"  is_busy: {arm.get('is_busy', 'N/A')}")
+    print(f"  distance_to_apple: {arm.get('distance_to_apple', 'N/A')}")
+
+    # Compute if arm is facing apple
+    if 'direction' in arm and 'position' in arm:
+        import numpy as np
+        arm_dir = np.array(arm['direction'])
+        arm_pos = np.array(arm['position'])
+        apple_pos = np.array(apple['position'])
+        to_apple = apple_pos - arm_pos
+        to_apple_norm = to_apple / np.linalg.norm(to_apple)
+        facing_dot = np.dot(arm_dir, to_apple_norm)
+        print(f"\n  FACING APPLE? dot={facing_dot:.3f} ({'YES' if facing_dot > 0.7 else 'NO'})")
 
 if "gripper" in robot:
     print(f"\n--- gripper ---")

@@ -4,39 +4,63 @@
  */
 
 .message-bubble {
-    margin-bottom: var(--spacing-lg);
-    padding: var(--spacing-lg);
+    margin-bottom: 10px;
+    padding: 10px 12px;
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
     max-width: 85%;
     border: 1px solid var(--color-border);
-    transition: all var(--transition-base);
-    animation: slideInBottom 300ms ease-out;
+    transition: all 0.3s ease;
+}
+
+.message-bubble-new {
+    animation: slideInBottom 500ms ease-out;
 }
 
 .message-bubble:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
 }
 
 /* Echo messages (left-aligned) */
 .message-bubble.echo {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
-    border-left: 3px solid var(--color-primary);
     margin-right: auto;
+}
+
+.message-bubble.echo:hover {
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.3),
+                0 0 24px rgba(6, 182, 212, 0.2),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(139, 92, 246, 0.4);
 }
 
 /* User messages (right-aligned) */
 .message-bubble.user {
-    background: rgba(51, 65, 85, 0.5);
-    border-right: 3px solid var(--color-secondary);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.1));
     margin-left: auto;
+}
+
+.message-bubble.user:hover {
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.35),
+                0 0 20px rgba(5, 150, 105, 0.2),
+                0 4px 8px rgba(0, 0, 0, 0.1);
+    border-color: rgba(16, 185, 129, 0.5);
+}
+
+/* User message text - dark color for readability */
+.message-bubble.user .message-content {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+/* Dark theme - lighter text for user messages */
+[data-theme="dark"] .message-bubble.user .message-content {
+    color: #e5e7eb;
 }
 
 /* System messages (centered) */
 .message-bubble.system {
     background: rgba(245, 158, 11, 0.1);
-    border-left: 3px solid var(--color-accent);
     margin: 0 auto;
     max-width: 70%;
 }
@@ -45,9 +69,9 @@
 .message-header {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    margin-bottom: var(--spacing-md);
-    padding-bottom: var(--spacing-sm);
+    gap: 6px;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -62,7 +86,7 @@
 }
 
 .message-time {
-    margin-left: auto;
+    margin-left: auto;  /* Timestamp always on right for both Echo and User */
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
     font-family: var(--font-mono);
@@ -71,8 +95,15 @@
 /* ========== Message Content ========== */
 .message-content {
     font-size: var(--font-size-sm);
-    line-height: 1.6;
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-normal);
     color: var(--color-text-secondary);
+
+    /* Prevent overflow */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-width: 100%;
+    overflow-x: auto;
 }
 
 .message-content strong {
@@ -107,6 +138,180 @@
     background: none;
     border: none;
     padding: 0;
+}
+
+/* ========== Beautiful Markdown Rendering ========== */
+
+/* Paragraphs */
+.message-content p {
+    margin-bottom: 8px;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Headings */
+.message-content h1,
+.message-content h2,
+.message-content h3,
+.message-content h4,
+.message-content h5,
+.message-content h6 {
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    line-height: var(--line-height-tight);
+}
+
+.message-content h1 {
+    font-size: var(--font-size-2xl);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: var(--spacing-sm);
+}
+
+.message-content h2 {
+    font-size: var(--font-size-xl);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--spacing-xs);
+}
+
+.message-content h3 { font-size: var(--font-size-lg); }
+.message-content h4 { font-size: var(--font-size-base); }
+.message-content h5 { font-size: var(--font-size-sm); }
+.message-content h6 { font-size: var(--font-size-xs); }
+
+/* Lists - BEAUTIFUL BULLETS */
+.message-content ul,
+.message-content ol {
+    margin: 6px 0;
+    padding-left: 20px;
+}
+
+.message-content ul {
+    list-style-type: disc;
+}
+
+.message-content ol {
+    list-style-type: decimal;
+}
+
+.message-content li {
+    margin-bottom: 4px;
+    padding-left: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);  /* BOLD list items */
+    color: var(--color-text-primary);
+}
+
+.message-content li::marker {
+    color: var(--color-primary);  /* Colored bullets */
+    font-weight: var(--font-weight-bold);
+}
+
+.message-content ul ul,
+.message-content ol ol,
+.message-content ul ol,
+.message-content ol ul {
+    margin: var(--spacing-xs) 0;
+}
+
+/* Nested list styling */
+.message-content ul ul {
+    list-style-type: circle;
+}
+
+.message-content ul ul ul {
+    list-style-type: square;
+}
+
+/* Links */
+.message-content a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    font-weight: var(--font-weight-medium);
+    transition: color var(--transition-base);
+}
+
+.message-content a:hover {
+    color: var(--color-primary-dark);
+}
+
+/* Blockquotes */
+.message-content blockquote {
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-left: 4px solid var(--color-primary);
+    background: var(--color-bg-subtle);
+    border-radius: var(--border-radius-md);
+    font-style: italic;
+    color: var(--color-text-secondary);
+}
+
+.message-content blockquote p {
+    margin-bottom: var(--spacing-sm);
+}
+
+.message-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Horizontal Rules */
+.message-content hr {
+    border: none;
+    border-top: 2px solid var(--color-border);
+    margin: var(--spacing-lg) 0;
+}
+
+/* Tables */
+.message-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-md) 0;
+    font-size: var(--font-size-sm);
+}
+
+.message-content table th {
+    background: var(--color-bg-subtle);
+    font-weight: var(--font-weight-bold);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
+    text-align: left;
+}
+
+.message-content table td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: 1px solid var(--color-border);
+}
+
+.message-content table tr:hover {
+    background: var(--color-bg-subtle);
+}
+
+/* Task Lists (GitHub Flavored Markdown) */
+.message-content input[type="checkbox"] {
+    margin-right: var(--spacing-xs);
+}
+
+.message-content li input[type="checkbox"] {
+    margin-left: calc(-1 * var(--spacing-lg));
+}
+
+/* Strikethrough */
+.message-content del {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+/* ========== Timestamp at Bottom Right ========== */
+.message-timestamp {
+    display: block;
+    text-align: right;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    margin-top: 6px;
+    opacity: 0.7;
 }
 
 /* ========== Tool Calls Section ========== */

@@ -1,0 +1,72 @@
+/**
+ * Typing Indicator Component
+ * ==========================
+ * Animated dots indicating Echo is typing
+ */
+
+.typing-indicator {
+    align-self: flex-start;
+    display: none;
+    padding: 8px 12px;
+    background-color: #F8F9FC;
+    border: 1px solid #E0E7FF;
+    border-radius: var(--border-radius-lg);
+    border-bottom-left-radius: var(--border-radius-sm);
+}
+
+.typing-indicator.active {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    animation: wave 2.5s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(1) {
+    background-color: #C4B5FD;
+    animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+    background-color: #A78BFA;
+    animation-delay: 0.3s;
+}
+
+.typing-dot:nth-child(3) {
+    background-color: #8B5CF6;
+    animation-delay: 0.6s;
+}
+
+@keyframes wave {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.5;
+    }
+    30% {
+        transform: translateY(-6px);
+        opacity: 0.9;
+    }
+}
+
+/* Dark mode typing indicator */
+[data-theme="dark"] .typing-indicator {
+    background-color: #2B2B2B;
+    border-color: #4C4C4C;
+}
+
+[data-theme="dark"] .typing-dot:nth-child(1) {
+    background-color: #A5B4FC;
+}
+
+[data-theme="dark"] .typing-dot:nth-child(2) {
+    background-color: #818CF8;
+}
+
+[data-theme="dark"] .typing-dot:nth-child(3) {
+    background-color: #6366F1;
+}

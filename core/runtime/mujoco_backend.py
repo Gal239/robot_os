@@ -155,6 +155,60 @@ class MuJoCoBackend(PhysicsBackend):
         # Delegate to modal!
         self.modal.step()
 
+    def settle_physics(self, robot=None, steps: int = 100):
+        """MOP: MuJoCo backend knows how to settle physics!
+
+        Settling is for OBJECTS (apples, blocks), not for robot!
+        Robot is explicitly placed/configured and should stay FROZEN during settling.
+
+        This is simulation-specific - RealBackend doesn't need this (real world is settled!)
+
+        Args:
+            robot: Robot modal (optional). If provided, robot is frozen during settling.
+            steps: Number of physics steps to run for settling
+
+        Example:
+            backend.settle_physics(robot=robot, steps=100)
+            # Objects fall/settle, robot stays frozen
+        """
+        print(f"  [Backend] Settling physics ({steps} steps)...")
+
+        saved_robot_qpos = None
+        robot_qpos_range = None
+
+        if robot:
+            # MOP: Ask robot to freeze itself (robot knows its own qpos range!)
+            saved_robot_qpos = robot.freeze_during_settling(self.model, self.data)
+            robot_qpos_range = robot.get_qpos_range(self.model)
+            qpos_start, qpos_end = robot_qpos_range
+            print(f"  [Backend] Robot qpos range: [{qpos_start}:{qpos_end}] ({qpos_end - qpos_start} DOFs)")
+            print(f"  [Backend] Saved robot base Z: {saved_robot_qpos[2]:.6f}")
+
+        # Run settling loop
+        for i in range(steps):
+            self.step()
+            # MOP: Restore robot's qpos (robot stays frozen, objects settle!)
+            if robot and saved_robot_qpos is not None and robot_qpos_range is not None:
+                qpos_start, qpos_end = robot_qpos_range
+
+                # Debug: Check robot Z BEFORE restoration
+                if i % 20 == 0:  # Print every 20 steps
+                    robot_z_before = self.data.qpos[qpos_start + 2]
+                    self.data.qpos[qpos_start:qpos_end] = saved_robot_qpos
+                    robot_z_after = self.data.qpos[qpos_start + 2]
+                    print(f"    [Step {i:3d}] Robot Z before: {robot_z_before:.6f}, after restore: {robot_z_after:.6f}")
+                else:
+                    self.data.qpos[qpos_start:qpos_end] = saved_robot_qpos
+
+        # Zero ALL velocities after settling
+        self.data.qvel[:] = 0
+
+        # Final check
+        if robot and robot_qpos_range is not None:
+            qpos_start, qpos_end = robot_qpos_range
+            final_robot_z = self.data.qpos[qpos_start + 2]
+            print(f"  [Backend] After settling: Robot base Z = {final_robot_z:.6f}")
+
     def set_controls(self, controls: Dict[str, float]):
         """Set control values for actuators - OFFENSIVE
 
@@ -205,7 +259,7 @@ class MuJoCoBackend(PhysicsBackend):
 
         return state
 
-    def sync_actuators_from_backend(self, robot: Robot):
+    def sync_actuators_from_backend(self, robot: Robot, cache: dict = None):
         """Sync robot actuators FROM MuJoCo state - GENERIC for ANY robot
 
         Critical operation between step() and state extraction!
@@ -213,8 +267,10 @@ class MuJoCoBackend(PhysicsBackend):
 
         Args:
             robot: Robot modal with actuators to sync
+            cache: Optional extraction cache with name→ID mappings (PERFORMANCE!)
+                   Eliminates 47.5x mj_name2id() calls per step
 
-        Each actuator calls actuator.sync_from_mujoco(model, data)
+        Each actuator calls actuator.sync_from_mujoco(model, data, cache=cache)
         - Base: Syncs position/rotation from root body
         - Gripper: Syncs aperture from joint positions
         - Arm: Syncs extension from joint position
@@ -225,7 +281,7 @@ class MuJoCoBackend(PhysicsBackend):
 
         for actuator in robot.actuators.values():
             if hasattr(actuator, 'sync_from_mujoco'):
-                actuator.sync_from_mujoco(self.model, self.data)
+                actuator.sync_from_mujoco(self.model, self.data, cache=cache)
 
     def sync_assets_from_backend(self, scene):
         """Sync all assets FROM MuJoCo state - GENERIC for ANY scene
@@ -272,6 +328,10 @@ class MuJoCoBackend(PhysicsBackend):
         OFFENSIVE: Silently skips sensors without sync_from_mujoco()
         """
         assert self.model is not None and self.data is not None, "Call compile_xml() first"
+
+        # PERFORMANCE: Early exit if nothing to update (saves 170Hz of loop overhead!)
+        if not update_cameras and not update_sensors:
+            return
 
         # PERFORMANCE: Separate camera sensors from other sensors for parallel rendering!
         camera_sensors = []  # (sensor_name, sensor, kwargs)

@@ -1,37 +1,28 @@
 /**
- * Scene Maker Page - Styles
- * ==========================
+ * Scene Maker Page Layout
+ * ========================
+ * Main page container with sidebar and content area
  */
 
-.page-container {
-    display: grid;
-    grid-template-columns: 30% 70%;
-    gap: var(--spacing-xl);
-    padding: var(--spacing-xl);
-    height: calc(100vh - 80px); /* Full height minus app-bar */
-    overflow: hidden;
+/* App Container */
+#app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-base);
 }
 
-.page-sidebar {
-    height: 100%;
-    overflow: hidden;
+/* Main Layout */
+.main-layout {
+    display: flex;
+    margin-top: var(--app-bar-height);
+    height: calc(100vh - var(--app-bar-height));
+    border-bottom: 1px solid var(--color-border);
 }
 
-.page-main {
-    height: 100%;
-    overflow: hidden;
+/* Dark mode border */
+[data-theme="dark"] .main-layout {
+    border-bottom-color: #555555;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-    .page-container {
-        grid-template-columns: 40% 60%;
-    }
-}
-
-@media (max-width: 768px) {
-    .page-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: 50% 50%;
-    }
-}
+/* Note: Main content and tab styling moved to /layouts/main-view/main-view.css */

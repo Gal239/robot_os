@@ -339,6 +339,13 @@ class ViewAggregator:
                 event_data = {"event_log": str(event_log)}
             views["event_log"] = self._add_metadata(event_data, "data", modal_ref=None)  # TYPE 3
 
+        # 5. Scene assets state view (FULL MOP STATE!) - FREE, already computed!
+        # Contains: behaviors, at_target, is_busy, tolerance, range, etc.
+        if runtime_state and "extracted_state" in runtime_state:
+            views["scene_assets_state"] = self._add_metadata(
+                runtime_state["extracted_state"], "data", modal_ref=None
+            )
+
         return views
 
     def distribute(self, views: Dict[str, Any]):

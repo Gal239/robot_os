@@ -598,7 +598,8 @@ class XMLResolver:
 
         # Physics options - CRITICAL for gripper to work properly!
         # Must include integrator settings from robot XML
-        # timestep=0.005 = 200 Hz (STABLE! Save rate controlled separately at 30 FPS)
+        # timestep=0.005 = 200 Hz (STABLE! Optimized for our complex scenes)
+        # Tested 500Hz (0.002): faster per-step but slower than real-time (0.91x)
         # NOTE: Tried iterations=4, noslip_iterations=3 but got SLOWER (9.20:1 vs 9.86:1)
         # MuJoCo defaults are already well-tuned - don't override them
         lines.append('  <option integrator="implicitfast" impratio="20" cone="elliptic" timestep="0.005">')
@@ -901,12 +902,16 @@ class XMLResolver:
                         robot_info = scene.robots.get(placement.instance_name or asset_name, {})
                         robot_modal = robot_info.get("robot_modal")
 
+                        # INJECT SITES for ALL bodies in robot (recursive search!)
+                        if robot_modal:
+                            for body in worldbody.findall(".//body"):  # Recursive!
+                                body_name = body.get("name", "")
+                                XMLResolver._inject_actuator_sites(body, body_name, robot_modal)
+
                         for body in worldbody.findall("body"):
                             body_name = body.get("name", "")
 
-                            # INJECT SITES for actuators (MOP!)
-                            if robot_modal:
-                                XMLResolver._inject_actuator_sites(body, body_name, robot_modal)
+                            # Skip site injection here (already done above)
 
                             # Get existing pos or default to 0,0,0
                             existing_pos = body.get("pos", "0 0 0")
@@ -915,6 +920,11 @@ class XMLResolver:
                             # Add placement offset to existing position
                             new_pos = [existing_coords[j] + pos[j] for j in range(3)]
                             body.set("pos", f"{new_pos[0]} {new_pos[1]} {new_pos[2]}")
+
+                            # NEW: Apply robot orientation (if specified)
+                            if placement.orientation:
+                                quat = XMLResolver._resolve_orientation(placement.orientation)
+                                body.set("quat", f"{quat[0]} {quat[1]} {quat[2]} {quat[3]}")
 
                             # Output the body directly (no wrapper)
                             body_str = ET.tostring(body, encoding='unicode')
@@ -949,7 +959,18 @@ class XMLResolver:
                                 freejoint_objects.append((body_name, pos, quat))
 
                             # Add all body contents (geoms, joints, etc)
+                            # MOP: Disable collisions for non-tracked assets (collision optimization!)
                             for child in body:
+                                # Check if asset is tracked (needs full physics)
+                                asset_modal = scene.assets.get(effective_name) or scene.assets.get(asset_name)
+                                is_tracked = getattr(asset_modal, '_is_tracked', True) if asset_modal else True
+
+                                # COLLISION OPTIMIZATION: Disable physics for non-tracked assets
+                                if child.tag == 'geom' and not is_tracked:
+                                    # Visual only (no collisions) - saves 30-50% performance!
+                                    child.set('contype', '0')  # Don't generate contacts
+                                    child.set('conaffinity', '0')  # Don't respond to contacts
+
                                 child_str = ET.tostring(child, encoding='unicode')
                                 lines.append(f'      {child_str.strip()}')
 

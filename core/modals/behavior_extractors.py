@@ -237,6 +237,7 @@ def build_extraction_cache(model: mujoco.MjModel, data: mujoco.MjData) -> dict:
             'body_name_to_id': Dict[str, int] - body name → body ID
             'joint_name_to_id': Dict[str, int] - joint name → joint ID
             'site_name_to_id': Dict[str, int] - site name → site ID
+            'actuator_name_to_id': Dict[str, int] - actuator name → actuator ID
 
             # Reverse mappings (eliminate 132K list comprehensions!)
             'body_to_geoms': Dict[int, List[int]] - body ID → list of geom IDs
@@ -328,10 +329,18 @@ def build_extraction_cache(model: mujoco.MjModel, data: mujoco.MjData) -> dict:
         if name:
             site_name_to_id[name] = i
 
+    # Actuator names (PERFORMANCE: eliminate 47.5x mj_name2id per step!)
+    actuator_name_to_id = {}
+    for i in range(model.nu):
+        name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_ACTUATOR, i)
+        if name:
+            actuator_name_to_id[name] = i
+
     cache['geom_name_to_id'] = geom_name_to_id
     cache['body_name_to_id'] = body_name_to_id
     cache['joint_name_to_id'] = joint_name_to_id
     cache['site_name_to_id'] = site_name_to_id
+    cache['actuator_name_to_id'] = actuator_name_to_id
 
     # ================================================================
     # 3. REVERSE MAPPINGS - Eliminate 132K list comprehensions!
@@ -1337,30 +1346,71 @@ def extract_spatial(model: mujoco.MjModel, data: mujoco.MjData, component: Any,
         - distance_to_X: Distance to specific asset X (relational)
         - distance_to: Minimum distance to ANY other asset (aggregate)
     """
-    # Get component position - PURE MOP: geoms OR sites!
+    # Get component position - PURE MOP: sites FIRST (accurate endpoint), then geoms!
     my_pos = None
+    use_site = False
 
-    if component.geom_names:
-        # Preferred: Use geom position
-        my_pos = _get_body_position(model, data, component.geom_names[0], contact_cache)
-    elif component.site_names:
-        # Fallback: Use site position (for gripper, etc.)
+    if component.site_names:
+        # PREFERRED: Use site position (accurate endpoint for arm, gripper, etc.)
         site_name = component.site_names[0]
         # Use cached site lookup if available
+        if contact_cache is not None:
+            site_name_to_id = contact_cache.get('site_name_to_id', {})
+            site_id = site_name_to_id.get(site_name, -1)
+            if site_id < 0:
+                # Fallback if site not in cache
+                site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, site_name)
+        else:
+            site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, site_name)
+        if site_id >= 0:
+            my_pos = data.site_xpos[site_id]
+            use_site = True
+    elif component.geom_names:
+        # Fallback: Use geom position (for objects without sites)
+        my_pos = _get_body_position(model, data, component.geom_names[0], contact_cache)
+
+    if my_pos is None:
+        # Spatial extraction failed - component has no position
+        return {}
+
+    result = {
+        "position": my_pos.tolist()  # [x, y, z] in meters
+    }
+
+    # NEW: Extract orientation and direction (cached - O(1)!)
+    # Orientation: quaternion [w, x, y, z]
+    # Direction: forward vector [dx, dy, dz] (normalized)
+    body_id = -1
+    if use_site and component.site_names:
+        # Get body from site (sites attached to bodies)
+        site_name = component.site_names[0]
         if contact_cache is not None:
             site_name_to_id = contact_cache.get('site_name_to_id', {})
             site_id = site_name_to_id.get(site_name, -1)
         else:
             site_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_SITE, site_name)
         if site_id >= 0:
-            my_pos = data.site_xpos[site_id]
+            body_id = model.site_bodyid[site_id]
+    elif component.geom_names:
+        # Get body from geom
+        geom_name = component.geom_names[0]
+        if contact_cache is not None:
+            geom_name_to_id = contact_cache.get('geom_name_to_id', {})
+            geom_id = geom_name_to_id.get(geom_name, -1)
+        else:
+            geom_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_GEOM, geom_name)
+        if geom_id >= 0:
+            body_id = model.geom_bodyid[geom_id]
 
-    if my_pos is None:
-        return {}
+    if body_id >= 0:
+        # Orientation (quaternion)
+        result["orientation"] = data.xquat[body_id].tolist()  # [w, x, y, z]
 
-    result = {
-        "position": my_pos.tolist()  # [x, y, z] in meters
-    }
+        # Direction (forward vector from rotation matrix)
+        # xmat is 3x3 rotation matrix flattened to 9 elements
+        xmat = data.xmat[body_id].reshape(3, 3)
+        # Forward is Z-axis (3rd column) - this is where component is "pointing"
+        result["direction"] = xmat[:, 2].tolist()  # [dx, dy, dz] - normalized!
 
     # Calculate distance to each other asset (relational property!)
     min_distance = float('inf')
@@ -1679,6 +1729,20 @@ def extract_component_state(model: mujoco.MjModel, data: mujoco.MjData,
             state["current"] = current_pos
             state["at_target"] = abs(current_pos - component.position) < component.tolerance
             state["is_busy"] = not state["at_target"]
+
+            # ================================================================
+            # PERCENTAGE & RANGE INFO - for cleaner control
+            # ================================================================
+            # Add percentage info for actuators (makes control easier)
+            min_val, max_val = component.range
+            if max_val != min_val:
+                position_percent = ((current_pos - min_val) / (max_val - min_val)) * 100.0
+            else:
+                position_percent = 0.0
+
+            state["position_percent"] = position_percent
+            state["min_position"] = min_val
+            state["max_position"] = max_val
 
     # Emit change events (ALWAYS-ON!)
     if old_state and asset_id and event_log:

@@ -116,6 +116,10 @@ class EchoConversationManager:
         print(f"\n[User] {user_message}")
         self.status = "thinking"
 
+        # Clear previous edit stream before processing new message
+        # This ensures we only get delta edits for THIS turn
+        self.ops.document_ops.clear_edit_stream()
+
         # Use test_8 pattern - start_root_task handles execution automatically!
         result = await self.ops.start_root_task(
             task=user_message,

@@ -39,6 +39,21 @@ except ModuleNotFoundError:
 
 
 # ============================================
+# PHYSICS-DERIVED CONSTANTS - MOP!
+# ============================================
+# These are from PHYSICS TESTING, not geometry (can't extract from XML!)
+# Geometry (gripper length, base height, etc.) is extracted dynamically from XML
+
+# Comfortable reach percentages (physics-tested for stability)
+ARM_COMFORTABLE_REACH_PCT = 0.7  # 70% of max reach (stable, not max extension)
+LIFT_COMFORTABLE_HEIGHT_PCT = 0.7  # 70% of max lift (stable positioning)
+
+# Safety margins (physics-tested minimum clearances)
+REACH_SAFETY_MARGIN = 0.05  # meters - clearance from objects
+PLACEMENT_SAFETY_MARGIN = 0.1  # meters - clearance when positioning robot
+GRIPPER_GRASP_THRESHOLD = 0.15  # meters - max distance for successful grasp
+
+# ============================================
 # AUTO-DISCOVERY FROM KEYFRAME (MOP!)
 # ============================================
 def _discover_robot_specs() -> Dict[str, Dict[str, any]]:
@@ -390,6 +405,66 @@ def _discover_robot_specs() -> Dict[str, Dict[str, any]]:
         actuator_index += 1
 
     return all_specs
+
+
+def _extract_robot_geometry() -> Dict[str, float]:
+    """Extract robot geometry from XML - MOP!
+
+    Extracts:
+    - gripper_length: Length of gripper fingers (from finger aruco positions)
+    - base_height: Height of robot base from floor
+    - base_to_arm_offset: Distance from base center to arm mount
+
+    Returns geometry dict with measurements in meters
+    """
+    import xml.etree.ElementTree as ET
+    from pathlib import Path
+
+    # Load stretch XML
+    xml_path = Path(__file__).parent.parent / "mujoco_assets" / "robots" / "stretch" / "stretch.xml"
+
+    if not xml_path.exists():
+        # Return defaults if XML not found
+        return {
+            "gripper_length": 0.13,
+            "base_height": 0.3,
+            "base_to_arm_offset": 0.1,
+        }
+
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+
+    geometry = {}
+
+    # Extract gripper length from finger aruco positions
+    # Left finger aruco at pos="-0.14425 0.0014877 -0.005189"
+    # Right finger aruco at pos="0.14426 0 0.005189"
+    left_finger = root.find(".//body[@name='link_SG3_gripper_left_finger_aruco']")
+    right_finger = root.find(".//body[@name='link_SG3_gripper_right_finger_aruco']")
+
+    if left_finger is not None and right_finger is not None:
+        left_pos = left_finger.get("pos", "0 0 0").split()
+        right_pos = right_finger.get("pos", "0 0 0").split()
+        # Gripper length is the X distance from center to finger tip
+        left_x = abs(float(left_pos[0]))
+        right_x = abs(float(right_pos[0]))
+        geometry["gripper_length"] = max(left_x, right_x)  # Use max of both fingers
+    else:
+        geometry["gripper_length"] = 0.13  # Fallback
+
+    # Extract base height (from link_mast body position)
+    mast = root.find(".//body[@name='link_mast']")
+    if mast is not None:
+        mast_pos = mast.get("pos", "0 0 0").split()
+        geometry["base_height"] = float(mast_pos[2])  # Z position
+    else:
+        geometry["base_height"] = 0.3  # Fallback
+
+    # Extract base to arm offset (from arm mount position)
+    # This is approximate - could measure from base to arm joint
+    geometry["base_to_arm_offset"] = 0.1  # This one is harder to extract, keep as constant
+
+    return geometry
 
 
 # ============================================

@@ -16,6 +16,57 @@ html {
     -moz-osx-font-smoothing: grayscale;
 }
 
+/* ========== Responsive Font Scaling ========== */
+/* Scale base font size based on viewport width */
+
+@media (min-width: 1920px) {
+    html {
+        font-size: 18px;  /* Ultra-wide displays - 12.5% bigger */
+    }
+}
+
+@media (min-width: 1600px) and (max-width: 1919px) {
+    html {
+        font-size: 17px;  /* Large desktops - 6.25% bigger */
+    }
+}
+
+@media (min-width: 1440px) and (max-width: 1599px) {
+    html {
+        font-size: 16px;  /* Standard desktops - base */
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1439px) {
+    html {
+        font-size: 15px;  /* Small desktops */
+    }
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+    html {
+        font-size: 15px;  /* Landscape tablets */
+    }
+}
+
+@media (min-width: 900px) and (max-width: 1023px) {
+    html {
+        font-size: 14px;  /* Portrait tablets */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 899px) {
+    html {
+        font-size: 13px;  /* Large phones landscape */
+    }
+}
+
+@media (max-width: 767px) {
+    html {
+        font-size: 12px;  /* Mobile portrait */
+    }
+}
+
 body {
     font-family: var(--font-primary);
     font-size: var(--font-size-base);

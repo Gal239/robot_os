@@ -393,22 +393,33 @@ class ActuatorComponent(Component):
         # Fallback to synced position field
         return self.position
 
-    def sync_from_mujoco(self, model, data):
+    def sync_from_mujoco(self, model, data, cache=None):
         """Sync protocol: Update position and is_active from MuJoCo
 
         Modal-Oriented: Actuator syncs itself from physics.
         Also tracks ctrl (target) and position history for visualization.
+
+        Args:
+            cache: Optional extraction cache with name→ID mappings (PERFORMANCE!)
         """
         super().sync_from_mujoco(model, data)
 
         import mujoco
+
+        # PERFORMANCE: Use cached name→ID mappings if available
+        joint_name_to_id = cache.get('joint_name_to_id', {}) if cache else {}
+        actuator_name_to_id = cache.get('actuator_name_to_id', {}) if cache else {}
 
         # Read joint positions
         joint_values = []
         for joint_name in self.joint_names:
             prefixed = f"{self._instance_prefix}{joint_name}" if self._instance_prefix else joint_name
             try:
-                joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, prefixed)
+                # PERFORMANCE: Use cache instead of mj_name2id (eliminates 47.5x calls per step!)
+                if cache and prefixed in joint_name_to_id:
+                    joint_id = joint_name_to_id[prefixed]
+                else:
+                    joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, prefixed)
                 if joint_id >= 0:
                     qpos_addr = model.jnt_qposadr[joint_id]
                     joint_values.append(data.qpos[qpos_addr])
@@ -433,7 +444,11 @@ class ActuatorComponent(Component):
             prefixed = f"{self._instance_prefix}{actuator_name}" if self._instance_prefix else actuator_name
 
             try:
-                actuator_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, prefixed)
+                # PERFORMANCE: Use cache instead of mj_name2id
+                if cache and prefixed in actuator_name_to_id:
+                    actuator_id = actuator_name_to_id[prefixed]
+                else:
+                    actuator_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_ACTUATOR, prefixed)
                 if actuator_id >= 0:
                     ctrl_values.append(data.ctrl[actuator_id])
             except:
@@ -456,7 +471,11 @@ class ActuatorComponent(Component):
         for joint_name in self.joint_names:
             prefixed = f"{self._instance_prefix}{joint_name}" if self._instance_prefix else joint_name
             try:
-                joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, prefixed)
+                # PERFORMANCE: Use cache instead of mj_name2id
+                if cache and prefixed in joint_name_to_id:
+                    joint_id = joint_name_to_id[prefixed]
+                else:
+                    joint_id = mujoco.mj_name2id(model, mujoco.mjtObj.mjOBJ_JOINT, prefixed)
                 if joint_id >= 0:
                     qvel_addr = model.jnt_dofadr[joint_id]
                     velocities.append(abs(data.qvel[qvel_addr]))
@@ -491,6 +510,21 @@ class ActuatorComponent(Component):
             "is_active": self.is_active,
             "unit": self.unit,
             "range": self.range
+        })
+
+        # ================================================================
+        # PERCENTAGE & RANGE INFO - for cleaner control
+        # ================================================================
+        min_val, max_val = self.range
+        if max_val != min_val:
+            position_percent = ((self.position - min_val) / (max_val - min_val)) * 100.0
+        else:
+            position_percent = 0.0
+
+        data.update({
+            "position_percent": position_percent,
+            "min_position": min_val,
+            "max_position": max_val
         })
 
         # ================================================================
@@ -612,6 +646,11 @@ class Asset:
         self.config = config
         self.components: Dict[str, Component] = {}
 
+        # MOP: Asset knows if it's tracked by rewards (collision optimization!)
+        # Default False = visual only (no physics collisions)
+        # Set to True when reward is added for this asset
+        self._is_tracked = False
+
         # MOP: Normalize config to have Component instances (not dicts!)
         # This ensures _build_from_config() has ONE path only
         if 'components' in config and config['components']:
@@ -620,6 +659,15 @@ class Asset:
         else:
             # Auto-discover from XML
             self.components = self._discover_from_xml()
+
+        # PERFORMANCE: Cache component signature inspections (eliminates 4.175x inspect.signature per step!)
+        # Signatures don't change during runtime - inspect ONCE at init
+        self._component_sync_param_counts = {}
+        import inspect
+        for comp_name, component in self.components.items():
+            if hasattr(component, 'sync_from_mujoco'):
+                sig = inspect.signature(component.sync_from_mujoco)
+                self._component_sync_param_counts[comp_name] = len(sig.parameters)
 
     def _normalize_components(self):
         """Convert dict specs to Component instances - ONE place only!
@@ -840,12 +888,12 @@ class Asset:
 
         Note: Sensors need robot arg, skip them here (synced via RobotModal)
         """
-        for component in self.components.values():
+        for comp_name, component in self.components.items():
             if hasattr(component, 'sync_from_mujoco'):
-                import inspect
-                sig = inspect.signature(component.sync_from_mujoco)
+                # PERFORMANCE: Use cached param count instead of inspect.signature (eliminates 4.175x calls per step!)
+                param_count = self._component_sync_param_counts.get(comp_name, 3)
                 # Only sync if method accepts (model, data), not (model, data, robot)
-                if len(sig.parameters) == 2:
+                if param_count == 2:
                     component.sync_from_mujoco(model, data)
 
     def analyze(self) -> Dict[str, Dict[str, Any]]:
@@ -870,6 +918,19 @@ class Asset:
             result[comp_name] = comp_data
 
         return result
+
+    def mark_as_tracked(self):
+        """Mark this asset as tracked by rewards - COLLISION OPTIMIZATION
+
+        MOP: Reward tells asset "I'm tracking you!"
+        Asset responds: "I need full physics then" (_is_tracked = True)
+
+        Tracked assets get full collision detection.
+        Non-tracked assets are visual only (contype=0, conaffinity=0).
+
+        Called by Scene.add_reward() when reward is added for this asset.
+        """
+        self._is_tracked = True
 
     def get_data(self, extracted_state: Dict = None) -> Dict[str, Any]:
         """Flatten analyze() output - VIEW INTERFACE

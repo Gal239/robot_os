@@ -432,18 +432,29 @@ class StateExtractor:
         from simulation_center.core.modals.behavior_extractors import build_extraction_cache
         extraction_cache = build_extraction_cache(self.backend.model, data_source)
 
-        # MOP: PIGGYBACK cache to all components (auto-discover ONCE, reuse everywhere!)
-        # This prevents components from rebuilding cache 19,373x in get_state()/get_data()
+        # PERFORMANCE: Extract ONLY tracked assets (selective state extraction)!
+        # Assets become tracked when:
+        #   1. add_reward() is called on them (marks _is_tracked=True)
+        #   2. add_asset(..., is_tracked=True) is used
+        #   3. They're the robot (always tracked)
+        # This prevents extracting state for 100+ background objects when only 5 are reward-relevant
+        tracked_assets = scene.get_tracked_assets()  # Only tracked assets
+
+        # MOP: PIGGYBACK cache to ALL asset components (auto-discover ONCE, reuse everywhere!)
+        # PERFORMANCE: Must give cache to ALL assets (not just tracked), because sync_assets_from_backend()
+        # syncs ALL assets at throttled rate. Non-tracked assets without cache do expensive mj_name2id() lookups!
+        # This prevents 2,000+ extra name lookups per 500 steps (walls, floor, ceiling, table, etc.)
         for asset in scene.assets.values():
             for comp in asset.components.values():
                 comp._extraction_cache = extraction_cache
 
         # ================================================================
-        # EXTRACT STATE - UNIFORM for all assets!
+        # EXTRACT STATE - SELECTIVE for tracked assets only!
         # ================================================================
+        # Only process assets that are tracked (robot + reward targets + tracked objects)
         # ALL assets have .components - no special cases!
 
-        for asset_name, asset in scene.assets.items():
+        for asset_name, asset in tracked_assets.items():
             asset_state = {}
 
             # Get asset config for unit conversion - OFFENSIVE!
@@ -468,7 +479,7 @@ class StateExtractor:
                     self.backend.model,
                     data_source,  # Use snapshot or live data (thread-safe!)
                     comp,
-                    scene.assets,  # Pass all assets for relational properties
+                    tracked_assets,  # PERFORMANCE: Pass tracked assets only (not all assets!)
                     asset_config,  # Pass config for unit conversion
                     event_log=event_log,  # Pass event log for tracking (optional)
                     asset_id=asset_name,  # Pass asset name for event source
@@ -1139,7 +1150,13 @@ class RuntimeEngine:
 
         # 4. CRITICAL: Sync robot state from backend (with async rates!)
         if self.robot:
-            self.backend.sync_actuators_from_backend(self.robot)
+            # PERFORMANCE: Build extraction cache ONCE for name→ID lookups (eliminates 47.5x mj_name2id per step!)
+            # Name→ID mappings never change during runtime - build once and reuse!
+            if not hasattr(self, '_sync_cache'):
+                from simulation_center.core.modals.behavior_extractors import build_extraction_cache
+                self._sync_cache = build_extraction_cache(self.backend.model, self.backend.data)
+
+            self.backend.sync_actuators_from_backend(self.robot, cache=self._sync_cache)
             self.backend.sync_sensors_from_backend(self.robot, update_cameras=update_cameras, update_sensors=update_sensors, event_log=self.event_log, camera_backends=self.camera_backends)
 
         # 4b. Sync FREE cameras (virtual viewpoints) - MAIN THREAD ONLY (OpenGL not thread-safe!)

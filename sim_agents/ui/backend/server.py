@@ -4,11 +4,31 @@ Echo Scene Builder Server - Dream Factory
 Minimal Flask server with static file serving
 """
 import sys
+import os
+import subprocess
 from pathlib import Path
 
 # Add simulation_center to path
 simulation_center = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(simulation_center))
+
+
+def kill_existing_server(port=5050):
+    """Kill any existing process on the port before starting"""
+    try:
+        # Find and kill process on port
+        result = subprocess.run(
+            f"fuser -k {port}/tcp",
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+        if result.returncode == 0:
+            print(f"[Server] Killed existing process on port {port}")
+            import time
+            time.sleep(0.5)  # Give it time to release the port
+    except Exception as e:
+        pass  # No process on port, that's fine
 
 # Add backend to path for local imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -40,6 +60,9 @@ def serve_static(path):
 if __name__ == '__main__':
     import os
 
+    # Kill any existing server on port 5050 before starting
+    kill_existing_server(5050)
+
     print("\n" + "="*60)
     print("Echo Scene Builder - Dream Factory")
     print("="*60)
@@ -68,11 +91,14 @@ if __name__ == '__main__':
                 if filepath.is_file() and filepath.suffix in ['.html', '.css', '.js', '.svg', '.py']:
                     extra_files.append(str(filepath))
 
+    # Force stat reloader by setting environment variable BEFORE Flask checks
+    import os
+    os.environ['WERKZEUG_RUN_MAIN'] = 'false'  # Reset to avoid issues
+
     app.run(
         host='0.0.0.0',
         port=5050,
         debug=True,
         extra_files=extra_files,
-        use_reloader=True,
-        reloader_type='stat'  # Use stat reloader instead of watchdog (checks only extra_files)
+        use_reloader=False  # DISABLE auto-reload entirely to avoid session crashes
     )

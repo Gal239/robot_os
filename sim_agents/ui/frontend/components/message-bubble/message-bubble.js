@@ -5,7 +5,7 @@
  * Chat message display for Echo and user messages
  */
 
-import { formatTime, parseMarkdown } from '../../shared_scripts/utils.js';
+import { formatTime } from '../../js/utils.js';
 
 export class MessageBubble {
     /**
@@ -22,13 +22,21 @@ export class MessageBubble {
         const isEcho = message.role === 'echo';
         const isUser = message.role === 'user';
 
-        const bubbleClass = isEcho ? 'message-bubble-echo' : 'message-bubble-user';
+        const bubbleClass = isEcho ? 'message-bubble echo' : 'message-bubble user';
         const icon = isEcho ? '🤖' : '👤';
         const name = isEcho ? 'Echo' : 'You';
         const time = formatTime(message.timestamp);
 
-        // Parse markdown for Echo messages
-        const content = isEcho ? parseMarkdown(message.message) : message.message;
+        // Parse markdown for Echo messages using marked.js
+        let content = message.message;
+        if (isEcho && typeof marked !== 'undefined') {
+            // Configure marked for GitHub Flavored Markdown
+            marked.setOptions({
+                breaks: true,  // Convert line breaks to <br>
+                gfm: true      // GitHub Flavored Markdown
+            });
+            content = marked.parse(message.message);
+        }
 
         // Response type badge (for Echo)
         let badge = '';

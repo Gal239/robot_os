@@ -1,0 +1,151 @@
+/**
+ * Metalog Viewer Component
+ * =========================
+ * Debug/metalog information display
+ */
+
+.metalog-viewer {
+    height: 100%;
+    background: var(--color-bg-base);
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ========== Content Area ========== */
+.metalog-viewer-content {
+    flex: 1;
+    overflow: auto;
+    padding: var(--spacing-lg);
+}
+
+.metalog-viewer-content-fullscreen {
+    padding: 0;
+}
+
+/* ========== Code Display ========== */
+.metalog-viewer-code {
+    background: var(--color-bg-elevated);
+    border-radius: var(--border-radius-md);
+    overflow: auto;
+    height: 100%;
+}
+
+.metalog-viewer-code pre {
+    margin: 0;
+    padding: var(--spacing-lg);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.metalog-viewer-code code {
+    font-family: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+/* ========== Dark Mode Code ========== */
+[data-theme="dark"] .metalog-viewer-code {
+    background: #2B2B2B;
+}
+
+[data-theme="dark"] .metalog-viewer-code pre {
+    color: #A9B7C6;
+}
+
+/* ========== Empty State ========== */
+.metalog-viewer-empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.metalog-viewer-empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--color-text-muted);
+    stroke-width: 1.5;
+    position: relative;
+    z-index: 1;
+}
+
+.metalog-viewer-empty-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    position: relative;
+    z-index: 1;
+}
+
+.metalog-viewer-empty-text {
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Dark Mode Empty State ========== */
+[data-theme="dark"] .metalog-viewer-empty-icon {
+    color: #555555;
+}
+
+[data-theme="dark"] .metalog-viewer-empty-title {
+    color: #CCCCCC;
+}
+
+[data-theme="dark"] .metalog-viewer-empty-text {
+    color: #888888;
+}
+
+/* ========== Lava Lamp Particles ========== */
+.lava-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: riseLavaParticle linear infinite, lavaPulse ease-in-out infinite;
+}
+
+@keyframes riseLavaParticle {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-120vh);
+    }
+}
+
+@keyframes lavaPulse1 {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes lavaPulse2 {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes lavaPulse3 {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse4 {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+}

@@ -100,7 +100,11 @@ class TimelineSaver:
 
         # ASYNC I/O: Background writer for non-blocking disk writes
         # Prevents blocking simulation for slow disk/video operations
-        self.async_writer = AsyncWriter(maxsize=200, name="TimelineSaver")
+        def on_async_error(exc, task):
+            print(f"❌ AsyncWriter ERROR: {exc}")
+            import traceback
+            traceback.print_exc()
+        self.async_writer = AsyncWriter(maxsize=200, name="TimelineSaver", error_callback=on_async_error)
 
     def _create_timeline_structure(self):
         """Create timeline directory structure - OFFENSIVE"""

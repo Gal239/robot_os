@@ -1,0 +1,115 @@
+/**
+ * App Header Layout
+ * ==================
+ * Top navigation bar positioning and structure
+ * Uses: robot-icon, theme-toggle components
+ */
+
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--color-bg-elevated);
+    border-bottom: 2px solid var(--color-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    z-index: 1000;
+    transition: all var(--transition-base);
+}
+
+.app-header:hover {
+    border-bottom-color: var(--color-border-strong);
+}
+
+/* ========== Left Section - Branding ========== */
+.app-header-left {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* ========== Center Section ========== */
+.app-header-center {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* ========== Right Section ========== */
+.app-header-right {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+/* ========== Session Button ========== */
+.app-header-session-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.app-header-session-btn i {
+    width: 16px;
+    height: 16px;
+}
+
+.app-header-session-btn:hover {
+    background: var(--color-bg-elevated);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.app-header-session-btn:active {
+    transform: translateY(0);
+}
+
+/* ========== Dark Mode ========== */
+[data-theme="dark"] .app-header {
+    background: #2B2B2B;
+    border-bottom-color: #555555;
+}
+
+[data-theme="dark"] .app-header:hover {
+    border-bottom-color: #34d399;
+    box-shadow: 0 1px 0 0 rgba(52, 211, 153, 0.2);
+}
+
+[data-theme="dark"] .app-header-session-btn {
+    background: #2B2B2B;
+    border-color: #00FF00;
+}
+
+[data-theme="dark"] .app-header-session-btn i {
+    color: #00FF00;
+}
+
+[data-theme="dark"] .app-header-session-btn:hover {
+    background: #003300;
+    border-color: #00FF00;
+    color: #00FF00;
+    box-shadow: 0 0 12px rgba(0, 255, 0, 0.6),
+                0 0 24px rgba(0, 255, 0, 0.3);
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 768px) {
+    .app-header {
+        padding: 0 var(--spacing-md);
+    }
+}

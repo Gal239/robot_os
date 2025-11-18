@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echo Scene Builder</title>
+</head>
+<body>
+    <!-- Scene Maker Page Container -->
+    <div id="scene-maker-page"></div>
+
+    <!-- Initialize Scene Maker Page -->
+    <script>
+        // Wait for DOM and SceneMaker to be loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof SceneMaker !== 'undefined') {
+                SceneMaker.render('scene-maker-page');
+            } else {
+                console.error('[Scene Maker] SceneMaker class not found!');
+            }
+        });
+    </script>
+</body>
+</html>

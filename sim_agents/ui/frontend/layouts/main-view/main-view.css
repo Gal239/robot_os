@@ -1,0 +1,190 @@
+/**
+ * Main View Layout
+ * =================
+ * Main content area structure with navigation and canvas
+ */
+
+/* ========== Main Content Container ========== */
+.main-content {
+    position: fixed;
+    top: var(--app-bar-height);
+    left: var(--chat-sidebar-width);
+    width: var(--main-area-width);
+    height: calc(100vh - var(--app-bar-height));
+    background: var(--color-bg-base);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 50;
+}
+
+/* ========== Main View Structure ========== */
+.main-view-nav {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.main-view-canvas {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ========== Tab Container ========== */
+.tab-content {
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-pane {
+    height: 100%;
+    padding: var(--spacing-lg);
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+#script-viewer-container,
+#camera-gallery-container,
+#scene-inspector-container,
+#metalog-viewer-container {
+    height: 100%;
+}
+
+/* ========== Responsive ========== */
+@media (max-width: 1024px) {
+    .main-content {
+        left: 400px;
+    }
+}
+
+/* ========== Empty State ========== */
+.main-view-empty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    text-align: center;
+    padding: var(--spacing-2xl);
+    background: var(--color-bg-base);
+}
+
+.main-view-empty-icon {
+    width: 80px;
+    height: 80px;
+    color: var(--color-primary);
+    stroke-width: 1.5;
+    position: relative;
+    z-index: 1;
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+
+.main-view-empty-title {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    position: relative;
+    z-index: 1;
+}
+
+.main-view-empty-text {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    max-width: 500px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== Dark Mode Empty State ========== */
+[data-theme="dark"] .main-view-empty {
+    background: #1E1E1E;
+}
+
+[data-theme="dark"] .main-view-empty-icon {
+    color: #00FF00;
+}
+
+[data-theme="dark"] .main-view-empty-title {
+    color: #CCCCCC;
+}
+
+[data-theme="dark"] .main-view-empty-text {
+    color: #888888;
+}
+
+/* ========== Pulse Glow Animation ========== */
+@keyframes pulseGlow {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Dark mode pulse with LED glow */
+[data-theme="dark"] .main-view-empty-icon {
+    animation: pulseGlowLED 3s ease-in-out infinite;
+}
+
+@keyframes pulseGlowLED {
+    0%, 100% {
+        opacity: 0.8;
+        filter: drop-shadow(0 0 8px rgba(0, 255, 0, 0.4));
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        filter: drop-shadow(0 0 16px rgba(0, 255, 0, 0.8));
+        transform: scale(1.05);
+    }
+}
+
+/* ========== Lava Lamp Particles ========== */
+.lava-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: riseLavaParticle linear infinite, lavaPulse ease-in-out infinite;
+}
+
+@keyframes riseLavaParticle {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-120vh);
+    }
+}
+
+@keyframes lavaPulse1 {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes lavaPulse2 {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes lavaPulse3 {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 0.9; }
+}
+
+@keyframes lavaPulse4 {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0.6; }
+}

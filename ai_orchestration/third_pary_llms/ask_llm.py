@@ -14,6 +14,7 @@ MODEL_MAPPING = {
 
     # GPT-5 series ONLY
     "gpt-5": "openai",
+    "gpt-5.1": "openai",  # Newest version
     "gpt-5-mini": "openai",
     "gpt-5-nano": "openai",
 }

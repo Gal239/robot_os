@@ -234,7 +234,8 @@ def handle_scene_maker_handoff(
     edits: List[Dict[str, Any]],
     message: str,
     scene_name: str = None,
-    document_ops = None  # DocumentOps instance for edit tracking
+    document_ops = None,  # DocumentOps instance for edit tracking
+    execute_scene: bool = False  # NEW: Control scene execution (default OFF)
 ) -> Dict[str, Any]:
     """
     Main handoff handler for scene_maker agent
@@ -329,81 +330,98 @@ def handle_scene_maker_handoff(
     print(f"   ✓ Workspace saved to database/runs/{document_ops.workspace.session_id}/workspace/")
     print(f"   ✓ scene_script.py saved WITH imports ({len(script.split(chr(10)))} lines)")
 
-    # 2. Execute script
-    print(f"\n⚙️  Executing scene script...")
-    result = execute_scene_script(script, scene_name or f"scene_{datetime.now().strftime('%H%M%S')}")
+    # 2. Execute script (ONLY if execute_scene=True)
+    if execute_scene:
+        print(f"\n⚙️  Executing scene script...")
+        result = execute_scene_script(script, scene_name or f"scene_{datetime.now().strftime('%H%M%S')}")
 
-    if not result["success"]:
-        return {
-            "success": False,
-            "message": f"❌ Scene execution failed: {result['error']}",
-            "error": result["error"]
-        }
+        if not result["success"]:
+            return {
+                "success": False,
+                "message": f"❌ Scene execution failed: {result['error']}",
+                "error": result["error"]
+            }
 
-    ops = result["ops"]
-    screenshots = result["screenshots"]
-    experiment_id = result["experiment_id"]
+        ops = result["ops"]
+        screenshots = result["screenshots"]
+        experiment_id = result["experiment_id"]
 
-    print(f"   ✓ Scene executed successfully")
-    print(f"   ✓ Experiment ID: {experiment_id}")
-    print(f"   ✓ Screenshots: {len(screenshots)} cameras")
+        print(f"   ✓ Scene executed successfully")
+        print(f"   ✓ Experiment ID: {experiment_id}")
+        print(f"   ✓ Screenshots: {len(screenshots)} cameras")
 
-    # 3. Save to Scene Maker database
-    print(f"\n💾 Saving to Scene Maker database...")
-    db = SceneMakerDB()
-    session_id = db.create_session(scene_name or "scene", ops)
+        # 3. Save to Scene Maker database
+        print(f"\n💾 Saving to Scene Maker database...")
+        db = SceneMakerDB()
+        session_id = db.create_session(scene_name or "scene", ops)
 
-    # Save conversation turn
-    db.save_conversation_turn({
-        "turn_number": 1,  # TODO: Track turn number
-        "timestamp": datetime.now().isoformat(),
-        "user_message": "",  # TODO: Pass user message
-        "agent_message": message,
-        "agent_action": "handoff",
-        "edits_applied": edits,
-        "all_cameras": screenshots  # ALL cameras!
-    })
-
-    # Save edits to history (block-based)
-    for i, edit in enumerate(edits):
-        db.save_edit({
-            "edit_number": i + 1,
+        # Save conversation turn
+        db.save_conversation_turn({
             "turn_number": 1,  # TODO: Track turn number
             "timestamp": datetime.now().isoformat(),
-            "operation": edit["op"],
-            "block": edit.get("block", edit.get("after_block")),  # Block ID
-            "code": edit.get("code", ""),
-            "success": True
+            "user_message": "",  # TODO: Pass user message
+            "agent_message": message,
+            "agent_action": "handoff",
+            "edits_applied": edits,
+            "all_cameras": screenshots  # ALL cameras!
         })
 
-    # Generate knowledge base
-    db.generate_knowledge_base()
+        # Save edits to history (block-based)
+        for i, edit in enumerate(edits):
+            db.save_edit({
+                "edit_number": i + 1,
+                "turn_number": 1,  # TODO: Track turn number
+                "timestamp": datetime.now().isoformat(),
+                "operation": edit["op"],
+                "block": edit.get("block", edit.get("after_block")),  # Block ID
+                "code": edit.get("code", ""),
+                "success": True
+            })
 
-    print(f"   ✓ Session ID: {session_id}")
+        # Generate knowledge base
+        db.generate_knowledge_base()
 
-    # 4. Export complete data for UI
-    print(f"\n📦 Exporting data for UI...")
-    ui_data = db.export_for_ui()
-    print(f"   ✓ UI data exported")
-    print(f"      - Cameras: {len(ui_data['cameras'])}")
-    print(f"      - Sensors: {len(ui_data['sensors'])}")
-    print(f"      - Assets: {len(ui_data['assets'])}")
+        print(f"   ✓ Session ID: {session_id}")
 
-    # 5. Close ops
-    ops.close()
+        # 4. Export complete data for UI
+        print(f"\n📦 Exporting data for UI...")
+        ui_data = db.export_for_ui()
+        print(f"   ✓ UI data exported")
+        print(f"      - Cameras: {len(ui_data['cameras'])}")
+        print(f"      - Sensors: {len(ui_data['sensors'])}")
+        print(f"      - Assets: {len(ui_data['assets'])}")
 
-    # 6. Return to user
-    return {
-        "success": True,
-        "message": message,  # Agent's message
-        "screenshots": screenshots,  # Dict[camera_id -> path]
-        "script": script,  # Final script
-        "experiment_id": experiment_id,
-        "session_id": session_id,
-        "ui_data": ui_data,  # Complete export
-        "total_cameras": len(screenshots),
-        "total_edits": len(edits)
-    }
+        # 5. Close ops
+        ops.close()
+
+        # 6. Return to user
+        return {
+            "success": True,
+            "message": message,  # Agent's message
+            "screenshots": screenshots,  # Dict[camera_id -> path]
+            "script": script,  # Final script
+            "experiment_id": experiment_id,
+            "session_id": session_id,
+            "ui_data": ui_data,  # Complete export
+            "total_cameras": len(screenshots),
+            "total_edits": len(edits)
+        }
+    else:
+        # EXECUTION DISABLED - just return script edits
+        print(f"\n⏸️  Scene execution DISABLED (execute_scene=False)")
+        print(f"   Script saved but NOT compiled/run")
+
+        return {
+            "success": True,
+            "message": message,  # Agent's message
+            "screenshots": {},  # No screenshots (not executed)
+            "script": script,  # Final script WITH imports
+            "experiment_id": None,
+            "session_id": None,
+            "ui_data": {},  # No scene data
+            "total_cameras": 0,
+            "total_edits": len(edits)
+        }
 
 
 if __name__ == "__main__":

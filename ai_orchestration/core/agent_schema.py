@@ -52,10 +52,11 @@ class AgentConfig(BaseModel):
 
     @validator('force_model')
     def validate_model(cls, v):
-        """OFFENSIVE: Crash if invalid model"""
+        """OFFENSIVE: Crash if invalid model - uses MODEL_MAPPING as single source of truth"""
         if v:
-            allowed = ["claude-sonnet-4-5", "gpt-5", "gpt-5-mini", "gpt-5-nano"]
-            assert v in allowed, f"Invalid model: {v}. Allowed: {allowed}"
+            # Import here to avoid circular dependency
+            from ai_orchestration.third_pary_llms.ask_llm import MODEL_MAPPING
+            assert v in MODEL_MAPPING, f"Invalid model: {v}. Allowed: {list(MODEL_MAPPING.keys())}"
         return v
 
     def to_dict(self) -> Dict[str, Any]:

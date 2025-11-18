@@ -93,6 +93,44 @@ def load_asset_config(name: str) -> dict:
     }
 
 
+def get_asset_xml_path(asset_name: str, asset_type: str, xml_file: str) -> Path:
+    """Get full path to asset XML file - SINGLE SOURCE OF TRUTH!
+
+    MOP: Centralized path resolution - change file structure in ONE place!
+
+    Args:
+        asset_name: Asset name (e.g., "table", "apple")
+        asset_type: Asset type category (e.g., "furniture", "objects")
+        xml_file: XML filename (e.g., "table.xml")
+
+    Returns:
+        Path object pointing to XML file
+
+    Raises:
+        FileNotFoundError: If XML file doesn't exist in expected locations
+
+    Example:
+        path = get_asset_xml_path("table", "furniture", "table.xml")
+        # Returns: Path(".../core/modals/mujoco_assets/furniture/table/table.xml")
+    """
+    # Search paths (in order of preference)
+    search_paths = [
+        ASSETS_DIR / asset_type / asset_name / xml_file,  # Standard: furniture/table/table.xml
+        ASSETS_DIR / asset_type / xml_file,               # Fallback: furniture/table.xml
+    ]
+
+    for path in search_paths:
+        if path.exists():
+            return path
+
+    # OFFENSIVE: Crash with helpful message!
+    raise FileNotFoundError(
+        f"XML file '{xml_file}' not found for asset '{asset_name}' (type: {asset_type})\n"
+        f"Searched:\n" +
+        "\n".join(f"  - {p}" for p in search_paths)
+    )
+
+
 def load_asset(name: str) -> Asset:
     """Load asset with components and behaviors - OFFENSIVE"""
     if name in ASSET_CACHE:
