@@ -19,15 +19,21 @@ class ChatSidebar {
      * Render the complete chat sidebar
      * @param {Array} messages - Array of message objects
      * @param {string} status - Echo status: 'ready', 'thinking', 'building', 'error'
+     * @param {number} previousCount - Previous message count (for animation control)
+     * @param {boolean} isInitialLoad - Whether this is loading conversation history
      * @returns {string} HTML string
      */
-    static render(messages = [], status = 'ready') {
+    static render(messages = [], status = 'ready', previousCount = 0, isInitialLoad = false) {
         const hasMessages = messages.length > 0;
 
         // Generate message bubbles HTML
-        const messagesHTML = messages.map(msg => {
-            return this.renderMessageBubble(msg);
+        const messagesHTML = messages.map((msg, index) => {
+            const isNew = index >= previousCount;
+            return this.renderMessageBubble(msg, isNew);
         }).join('');
+
+        // Add fade-in class for initial conversation load
+        const fadeInClass = (isInitialLoad && hasMessages) ? 'chat-messages-fade-in' : '';
 
         // Empty state or messages
         const contentHTML = hasMessages ? messagesHTML : this.renderEmptyState();
@@ -41,7 +47,7 @@ class ChatSidebar {
                 </div>
 
                 <!-- Messages Area -->
-                <div class="chat-messages" id="chat-messages">
+                <div class="chat-messages ${fadeInClass}" id="chat-messages">
                     ${contentHTML}
 
                     <!-- Typing Indicator -->
@@ -73,9 +79,10 @@ class ChatSidebar {
     /**
      * Render a single message bubble
      * @param {Object} message - Message object with role, message, timestamp
+     * @param {boolean} isNew - Whether this is a new message (for animation)
      * @returns {string} HTML string
      */
-    static renderMessageBubble(message) {
+    static renderMessageBubble(message, isNew = false) {
         const isEcho = message.role === 'echo';
         const icon = isEcho ? '🤖' : '👤';
         const name = isEcho ? 'Echo' : 'You';
@@ -99,7 +106,7 @@ class ChatSidebar {
         }
 
         return `
-            <div class="message-bubble ${message.role}">
+            <div class="message-bubble ${message.role} ${isNew ? 'message-bubble-new' : ''}">
                 <div class="message-content">
                     ${content}
                 </div>
@@ -131,8 +138,9 @@ class ChatSidebar {
      * @param {string} containerId - Container element ID
      * @param {Array} messages - Array of message objects
      * @param {string} status - Echo status
+     * @param {number} previousCount - Previous message count (for animation control)
      */
-    static update(containerId, messages = [], status = 'ready') {
+    static update(containerId, messages = [], status = 'ready', previousCount = 0) {
         const container = document.getElementById(containerId);
         if (!container) {
             console.error(`[ChatSidebar] Container '${containerId}' not found`);
@@ -140,7 +148,7 @@ class ChatSidebar {
         }
 
         // Re-render with new data
-        container.innerHTML = this.render(messages, status);
+        container.innerHTML = this.render(messages, status, previousCount);
 
         // Re-initialize nested components
         if (typeof StatusIndicator !== 'undefined') {

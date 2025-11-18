@@ -43,6 +43,8 @@ def test_perfect_alignment():
     # Get table specs from XML (table knows itself!)
     table_info = ops.get_asset_info("table")
     table_height = table_info['height']  # 0.76m from XML
+    table_width = table_info.get('width', 1.2)  # Table width (X dimension)
+    table_depth = table_info.get('depth', 0.8)  # Table depth (Y dimension)
 
     # Get robot specs (robot knows itself!)
     robot_info = ops.get_robot_info("stretch")
@@ -50,31 +52,34 @@ def test_perfect_alignment():
     gripper_length = robot_info['geometry']['gripper_length']  # 0.144m from XML!
     comfortable_pct = robot_info['comfortable_pct']['arm_reach']  # 0.7 from physics
     safety_margin = robot_info['margins']['reach_safety']  # 0.05m from physics
+    robot_base_radius = 0.15  # Robot base radius (approximate)
 
     # CALCULATE robot position for PERFECT alignment (no hardcoding!)
     # Wood block is at center of table
     block_x = table_pos[0]
     block_y = table_pos[1]
 
+    # Calculate distance from TABLE EDGE (not center!)
+    table_south_edge_y = table_pos[1] - (table_depth / 2)  # South edge of table
+
     # Calculate comfortable reach distance
     comfortable_reach = arm_max * comfortable_pct  # 0.52 * 0.7 = 0.364m
-    distance_needed = comfortable_reach - gripper_length - safety_margin  # 0.364 - 0.144 - 0.05 = 0.17m
 
-    # Position robot south of block for perfect alignment
+    # Robot must be: table edge + robot radius + safety margin
+    distance_from_edge = robot_base_radius + safety_margin + 0.1  # Extra 0.1m clearance
+
+    # Position robot south of TABLE EDGE (not center!)
     robot_x = block_x  # Same X as block (perfect horizontal alignment!)
-    robot_y = block_y - distance_needed  # South of block by calculated distance
+    robot_y = table_south_edge_y - distance_from_edge  # South of TABLE EDGE
     robot_z = 0  # On floor
 
     print(f"\n  MOP Calculations (Everything from XML + Physics!):")
     print(f"  Table position: {table_pos} (WE set this)")
+    print(f"  Table depth: {table_depth:.3f}m (from XML)")
     print(f"  Table height: {table_height:.3f}m (from XML)")
-    print(f"  Arm max reach: {arm_max:.3f}m (from XML)")
-    print(f"  Gripper length: {gripper_length:.3f}m (from XML!)")
-    print(f"  Comfortable %: {comfortable_pct:.1%} (from physics)")
-    print(f"  Safety margin: {safety_margin:.3f}m (from physics)")
-    print(f"  → Comfortable reach: {comfortable_reach:.3f}m")
-    print(f"  → Distance needed: {distance_needed:.3f}m")
-    print(f"  → Robot position: ({robot_x:.1f}, {robot_y:.3f}, {robot_z})")
+    print(f"  Table south edge: Y={table_south_edge_y:.3f}m")
+    print(f"  Distance from edge: {distance_from_edge:.3f}m (robot radius + safety)")
+    print(f"  → Robot position: ({robot_x:.1f}, {robot_y:.3f}, {robot_z}) - SAFE from table!")
 
     ops.add_robot("stretch",
         position=(robot_x, robot_y, robot_z),  # CALCULATED, not hardcoded!

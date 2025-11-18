@@ -56,6 +56,7 @@ class SceneMakerPage {
         this.currentTab = 'script';
         this.isEchoThinking = false;
         this.currentStatus = 'not_started';
+        this.previousMessageCount = 0;  // Track for animation purposes
 
         // Component instances
         this.appHeader = null;
@@ -101,8 +102,9 @@ class SceneMakerPage {
                     });
                 });
 
-                // Update chat sidebar with messages
-                ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus);
+                // Update chat sidebar with messages (no animation for history)
+                ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus, this.messages.length);
+                this.previousMessageCount = this.messages.length;
                 this.setupEventListeners();
             }
 
@@ -134,8 +136,9 @@ class SceneMakerPage {
         SceneInspector.render('scene-inspector-container', {});
         MetalogViewer.render('metalog-viewer-container', '');
 
-        // Render chat sidebar
-        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus);
+        // Render chat sidebar (no animation for initial render)
+        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus, this.messages.length);
+        this.previousMessageCount = this.messages.length;
 
         // Align LED nav with chat header
         this.alignNavHeights();
@@ -316,8 +319,9 @@ class SceneMakerPage {
             timestamp: new Date().toISOString()
         });
 
-        // Update chat sidebar
-        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus);
+        // Update chat sidebar (animate new message)
+        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus, this.previousMessageCount);
+        this.previousMessageCount = this.messages.length;
 
         // Re-attach event listeners
         this.setupEventListeners();
@@ -334,8 +338,8 @@ class SceneMakerPage {
             this.appHeader.setStatus(status);
         }
 
-        // Update chat sidebar (for typing indicator)
-        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus);
+        // Update chat sidebar (for typing indicator, no new messages)
+        ChatSidebar.update('chat-sidebar-container', this.messages, this.currentStatus, this.messages.length);
         this.setupEventListeners();
     }
 
